@@ -1,0 +1,32 @@
+@for $i from 1 through 50 {
+  .ml#{$i} {
+    margin-left: #{$i}px !important;
+  }
+  .mt#{$i} {
+    margin-top: #{$i}px !important;
+  }
+  .mb#{$i} {
+    margin-bottom: #{$i}px !important;
+  }
+  .mr#{$i} {
+    margin-right: #{$i}px !important;
+  }
+  .padding#{$i} {
+    padding: #{$i}px !important;
+  }
+  .gap#{$i} {
+    gap: #{$i}px !important;
+  }
+  .size-#{$i} {
+    width: #{$i}px !important;
+    height: #{$i}px !important;
+  }
+}
+@for $i from 1 through 300 {
+  .height#{$i} {
+    height: #{$i}px !important;
+  }
+  .width#{$i} {
+    width: #{$i}px !important;
+  }
+}
