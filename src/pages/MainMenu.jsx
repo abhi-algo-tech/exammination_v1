@@ -11,7 +11,7 @@ const menuItems = [
     key: "dashboard",
     icon: (
       <img
-        src="/wow_icons/png/Dashboard.png"
+        src="/icons/png/Dashboard.png"
         width={22}
         height={22}
         alt="Dashboard"
@@ -34,38 +34,82 @@ const menuItems = [
     link: "/exam-management",
   },
   {
-    key: "classroom",
+    key: "Question Bank",
     icon: (
       <img
-        src="/wow_icons/png/Dashboard-1.png"
+        src="/icons/png/question-bank.png"
         width={22}
         height={22}
-        alt="Classroom"
+        alt="Question Bank"
       />
     ),
-    label: "Classroom",
-    link: "/classroom",
+    label: "Question Bank",
+    link: "/question-bank",
   },
   {
-    key: "student",
+    key: "The Learning Hub",
     icon: (
       <img
-        src="/wow_icons/png/Students.png"
+        src="/icons/png/learning-hub.png"
         width={22}
         height={22}
-        alt="Students"
+        alt="The Learning Hubs"
       />
     ),
-    label: "Students",
-    link: "/student",
+    label: "The Learning Hubs",
+    link: "/learning-hub",
   },
   {
-    key: "staff",
+    key: "Proctoring",
     icon: (
-      <img src="/wow_icons/png/Staff.png" width={22} height={18} alt="Staff" />
+      <img
+        src="/icons/png/proctoring.png"
+        width={22}
+        height={18}
+        alt="Proctoring"
+      />
     ),
-    label: "Staff",
-    link: "/staff",
+    label: "Proctoring",
+    link: "/proctoring",
+  },
+  {
+    key: "Student Management",
+    icon: (
+      <img
+        src="/icons/png/student.png"
+        width={22}
+        height={18}
+        alt="Student Management"
+      />
+    ),
+    label: "Student Management",
+    link: "/student-management",
+  },
+  {
+    key: "Grading & Assessment",
+    icon: (
+      <img
+        src="/icons/png/grading-assessment.png"
+        width={22}
+        height={18}
+        alt="Grading & Assessment"
+      />
+    ),
+    label: "Grading & Assessment",
+    link: "/grading&assessment",
+  },
+  {
+    key: "AI Integration",
+    icon: (
+      <img
+        src="/icons/png/ai.png"
+        width={22}
+        height={18}
+        alt="AI Integration"
+      />
+    ),
+    label: "AI Integration",
+    link: "/ai-integration",
   },
 ];
 

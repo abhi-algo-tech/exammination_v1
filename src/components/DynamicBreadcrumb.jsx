@@ -11,7 +11,7 @@ const DynamicBreadcrumb = () => {
   // Image separator to use as a React Node
   const separator = (
     <img
-      src="/wow_icons/png/breadcrumb.png"
+      src="/icons/png/breadcrumb.png"
       alt="breadcrumb-icon"
       style={{ width: "16px", margin: "0 4px" }}
     />

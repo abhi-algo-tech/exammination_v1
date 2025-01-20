@@ -21,7 +21,7 @@ function MainHeader({
   const profileData = {
     name: "Anna Smith",
     role: "Admin",
-    avatar: "/wow_images/person1.png",
+    avatar: "/exam_images/person1.png",
     menuItems: [
       { key: "1", label: "Profile" },
       { key: "2", label: "Settings" },

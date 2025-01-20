@@ -1,0 +1,8 @@
+.input-otp__field {
+  font-size: 20px;
+  font-weight: 700;
+  height: 59px !important;
+  max-width: 61px !important;
+  text-align: center;
+  width: 100%;
+}
