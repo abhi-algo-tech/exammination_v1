@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { InputOTP } from "antd-input-otp";
 import styled from "styled-components";
-import "./InputOTP.css"; // Assuming your styles are kept here
+import "./InputOtp.css"; // Assuming your styles are kept here
 
 const Timer = styled.span`
   color: #6b7280;
