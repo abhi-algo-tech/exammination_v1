@@ -1,6 +1,6 @@
 import React from "react";
 
-function Fotter() {
+function Footer() {
   // Data variable storing footer content
   const data = {
     companyName: "Sketchers Technologies",
@@ -32,4 +32,4 @@ function Fotter() {
   );
 }
 
-export default Fotter;
+export default Footer;
