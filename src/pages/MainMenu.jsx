@@ -1,7 +1,11 @@
 import { Layout, Menu, Button, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import {
+  CloudUploadOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
 import "./MainMenu.css";
 
 const { Sider } = Layout;
@@ -110,6 +114,12 @@ const menuItems = [
     ),
     label: "AI Integration",
     link: "/ai-integration",
+  },
+  {
+    key: "upload",
+    icon: <CloudUploadOutlined />,
+    label: "Upload",
+    link: "/upload",
   },
 ];
 

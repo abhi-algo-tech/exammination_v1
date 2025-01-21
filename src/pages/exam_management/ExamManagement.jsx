@@ -6,7 +6,7 @@ function ExamManagement() {
   return (
     <div>
       <CreateQuestionPaper />
-      <AddQuestion />
+      {/* <AddQuestion /> */}
     </div>
   );
 }

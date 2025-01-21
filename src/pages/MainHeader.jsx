@@ -63,7 +63,7 @@ function MainHeader({
     <Header
       style={{
         background: "#EBEBEB",
-        padding: "0 40px",
+        padding: "0 30px",
         position: "sticky",
         top: 0,
         zIndex: 1000,

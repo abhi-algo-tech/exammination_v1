@@ -22,17 +22,16 @@
 /***************************************input-box*************************************/
 .input-box {
   border-radius: 8px;
-  background: #fff;
-  /* box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.10); */
-  height: 40px;
-  /* border: 1px solid #797979; */
+    background: #FFF;
+    /* box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.10); */
+    height: 40px;
+    border: 1px solid #797979;
 }
 
 /***************************************select*************************************/
 .select {
   border-radius: 8px;
-  background: #fff;
-  /* box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.10); */
-  height: 42px;
-  /* border: 1px solid #797979; */
+    background: #FFF;
+    /* box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.10); */
+    height: 40px;
 }
