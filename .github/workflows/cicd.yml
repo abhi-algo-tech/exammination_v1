@@ -20,21 +20,21 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build -t exam_frontend_v1_dev .
+        run: docker build -t abhialgotech/exam_frontend_v1_dev .
 
       - name: Publish Image to Docker Hub
-        run: docker push exam_frontend_v1_dev:latest
+        run: docker push abhialgotech/exam_frontend_v1_dev:latest
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Pull Image from Docker Hub
-        run: docker pull exam_frontend_v1_dev:latest
+        run: docker pull abhialgotech/exam_frontend_v1_dev:latest
       - name: Stop Old Container
         run: docker stop exam-react-app-dev || true # Allow continuation if the container doesn't exist
       - name: Delete Old Container
         run: docker rm -f exam-react-app-dev || true # Allow continuation if the container doesn't exist
 
       - name: Run Docker Container
-        run: docker run -d -p 3088:80 --name exam-react-app-dev exam_frontend_v1_dev
+        run: docker run -d -p 3088:80 --name exam-react-app-dev abhialgotech/exam_frontend_v1_dev
