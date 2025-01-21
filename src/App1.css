@@ -55,7 +55,7 @@
   font-weight: 600;
   line-height: normal;
 }
-.label-20-600 {
+.label-20-600-b {
   color: var(--font-colour, #573353) !important;
   font-family: Manrope;
   font-size: 20px;
@@ -64,21 +64,65 @@
   line-height: 24px; /* 120% */
   letter-spacing: -0.6px;
 }
+.label-20-500 {
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.label-20-500 {
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.label-20-600 {
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
 .label-12-400 {
   color: var(--font-colour, #573353) !important;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
 }
-.label-20-500 {
-  color: var(--font-colour, #573353) !important;
+.label-20-500-b {
+  color: var(--text-color, #573353) !important;
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
 }
-
-.lable-16-600 {
+.label-28-600 {
+  color: #000;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.label-14-500-g {
+  color: #4f4f4f;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: normal;
+}
+.label-14-600-blue {
+  color: #07617d;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+}
+.label-16-600 {
   color: var(--Color-Secondary, #573353);
 
   /* H1 */
@@ -338,4 +382,16 @@
 
 .pointer {
   cursor: pointer;
+}
+
+.left-container-question-create {
+  border-radius: 12px;
+  background: #e4e7ee;
+  width: 396px;
+  height: 1063px;
+  flex-shrink: 0;
+}
+
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: red !important;
 }
