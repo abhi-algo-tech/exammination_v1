@@ -1,7 +1,11 @@
 import { Layout, Menu, Button, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import {
+  CloudUploadOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
 import "./MainMenu.css";
 
 const { Sider } = Layout;
@@ -34,39 +38,45 @@ const menuItems = [
     link: "/exam-management",
   },
   {
-    key: "classroom",
-    icon: (
-      <img
-        src="/wow_icons/png/Dashboard-1.png"
-        width={22}
-        height={22}
-        alt="Classroom"
-      />
-    ),
-    label: "Classroom",
-    link: "/classroom",
+    key: "upload",
+    icon: <CloudUploadOutlined />,
+    label: "Upload",
+    link: "/upload",
   },
-  {
-    key: "student",
-    icon: (
-      <img
-        src="/wow_icons/png/Students.png"
-        width={22}
-        height={22}
-        alt="Students"
-      />
-    ),
-    label: "Students",
-    link: "/student",
-  },
-  {
-    key: "staff",
-    icon: (
-      <img src="/wow_icons/png/Staff.png" width={22} height={18} alt="Staff" />
-    ),
-    label: "Staff",
-    link: "/staff",
-  },
+  // {
+  //   key: "classroom",
+  //   icon: (
+  //     <img
+  //       src="/wow_icons/png/Dashboard-1.png"
+  //       width={22}
+  //       height={22}
+  //       alt="Classroom"
+  //     />
+  //   ),
+  //   label: "Classroom",
+  //   link: "/classroom",
+  // },
+  // {
+  //   key: "student",
+  //   icon: (
+  //     <img
+  //       src="/wow_icons/png/Students.png"
+  //       width={22}
+  //       height={22}
+  //       alt="Students"
+  //     />
+  //   ),
+  //   label: "Students",
+  //   link: "/student",
+  // },
+  // {
+  //   key: "staff",
+  //   icon: (
+  //     <img src="/wow_icons/png/Staff.png" width={22} height={18} alt="Staff" />
+  //   ),
+  //   label: "Staff",
+  //   link: "/staff",
+  // },
 ];
 
 function MainMenu({ collapsed, setCollapsed }) {

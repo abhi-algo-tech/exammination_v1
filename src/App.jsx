@@ -24,6 +24,9 @@ import Schedule from "./pages/schedule/Schedule";
 import ClassroomView from "./pages/schedule/ClassroomView";
 import StaffOverview from "./pages/schedule/staff/StaffOverview";
 import ExamManagement from "./pages/exam_management/ExamManagement";
+import UploadTemplate from "./pages/exam_management/UploadTemplate";
+import TeacherQuestionPaper from "./pages/exam_management/TeacherQuestionPaper";
+import CreateQuestionPaper from "./pages/exam_management/CreateQuestionPaper";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -43,7 +46,12 @@ function App() {
         {/* {isLogin ? ( */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/exam-management" element={<ExamManagement />} />
+          <Route path="/exam-management" element={<TeacherQuestionPaper />} />
+          <Route
+            path="/create-question-paper"
+            element={<CreateQuestionPaper />}
+          />
+          <Route path="/upload" element={<UploadTemplate />} />
           <Route path="/classroom" element={<Classroom />} />
           <Route path="/classroom-profile" element={<ClassroomProfile />} />
           <Route path="/student" element={<Student />} />
