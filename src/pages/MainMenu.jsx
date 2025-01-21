@@ -115,6 +115,12 @@ const menuItems = [
     label: "AI Integration",
     link: "/ai-integration",
   },
+  {
+    key: "upload",
+    icon: <CloudUploadOutlined />,
+    label: "Upload",
+    link: "/upload",
+  },
 ];
 
 function MainMenu({ collapsed, setCollapsed }) {
