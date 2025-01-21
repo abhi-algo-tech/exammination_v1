@@ -82,7 +82,7 @@ function MainLayout() {
             margin: 0,
             minHeight: "100vh",
             overflowY: "auto",
-            background: "#EBEBEB",
+            background: "#ffffff",
           }}
         >
           <Outlet />

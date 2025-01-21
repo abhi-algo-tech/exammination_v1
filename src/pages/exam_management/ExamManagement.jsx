@@ -5,7 +5,7 @@ import AddQuestion from "./AddQuestion";
 function ExamManagement() {
   return (
     <div>
-      {/* <CreateQuestionPaper /> */}
+      <CreateQuestionPaper />
       <AddQuestion />
     </div>
   );
