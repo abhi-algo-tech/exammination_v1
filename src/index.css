@@ -1,34 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
 
 :root {
   --background-color: #ffffff;
-  /* --active-nav: linear-gradient(180deg, #657af9, #4f46e5); */
   --active-nav: #465cb3;
-  --light-purple: #e6e5ffb0;
-  /* --active-nav: #fff3e9; */
-  --header-background-color: #eaeaeb;
-  --input-bg-color: #fff6ed;
-  --primary-color: #fda758;
-  --clear-color: #ebdbf4;
-  --blue-magenta: #f8f7fd;
-  --border-radius: 12px;
-  --button-bg: #ffcc00;
-  --color-white: #ffffff;
-  --color-primary: #5978f7;
-  --text-color: #573353;
-  --color-secondary: #573353;
-  --variable-collection-color-secondary: #573353;
-  --variable-collection-color-black-2: #41414e;
-  --font-family: "Manrope" !important;
+  --color-primary: #07617d;
+  --color-secondary: #f9a828;
+  --color-disabled: #bdbdc2;
+  --text-color: #000;
+  --font-family: "Poppins" !important;
   --font-weight-300: 300;
   --font-weight-light: 500;
   --font-weight-medium: 600;
   --font-weight-bold: 700;
-
-  --color-dark-blue: #2c63e2;
-  --light-blue: #5978f7;
-  --color-green: #00ac5e;
-  --color-green-light: #42b862;
 }
 
 body {
@@ -86,68 +69,9 @@ h4 {
   font-weight: var(--font-weight-bold);
 }
 
-/* input,
-select {
-  height: 40px !important;
-} */
-/* pagination override start*/
-.ant-pagination .ant-pagination-item-active {
-  font-weight: var(--font-weight-medium);
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 3px 16px;
-  border-radius: 17px;
-  color: var(--color-white);
-  margin: 0 15px !important;
-  background-image: linear-gradient(to right, #6f8cff 0%, #9c84ff 100%);
-  border: none;
-}
-/* pagination override end*/
-.underline-user-profile {
-  width: 274px;
-  height: 1px;
-  margin: 15.5px 23.5px 15.5px 0;
-  transform: rotate(-360deg);
-  opacity: 0.1;
-  background-color: var(--color-secondary);
-}
-
-.ant-space-gap-row-large {
-  row-gap: 0px;
-}
-
-.Frame-1000005063 {
-  border-bottom-left-radius: 14px;
-  border-bottom-right-radius: 14px;
-  align-items: center;
-  padding: 12px 32px;
-  background-color: #fea800;
-}
-.icon-wrapper {
-  /* width: 19px; */
-  height: 18.5px;
-  flex-grow: 0;
-}
-
-.icon-wrapper svg {
-  width: 100%;
-  height: 100%;
-}
-
-.avatar-active {
-  border: 2px solid green;
-}
-
-.avatar-inactive {
-  border: 2px solid red;
-}
-
 /* App.css */
 
-Sidebar Logo
-.nav-logo {
+.Sidebar .Logo .nav-logo {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,16 +95,6 @@ Sidebar Logo
   }
 }
 
-/* Side Menu Start */
-
-
-/* Custom Menu Background */
-
-/* Submenu Styling */
-
-
-
-
 /*********************** Side Menu End *************/
 
 /*********************** Header Start **************/
@@ -189,35 +103,6 @@ Sidebar Logo
   max-width: 136.3px;
 }
 
-.search-bar {
-  flex: 1;
-  max-width: 403px;
-  height: 30px;
-  margin: 0 48px;
-  display: flex;
-  justify-content: center;
-}
-.globle-search {
-  background-color: var(--light-purple);
-  border-radius: 12px;
-}
-
-.custom-badge .ant-badge-count {
-  width: 16px !important;
-  height: 13px !important;
-  font-size: 11px;
-  line-height: 1;
-  padding: 1px;
-  color: var(--color-white);
-  box-sizing: border-box;
-  font-weight: var(--font-weight-bold);
-}
-
-.custom-badge img {
-  width: 20.2px;
-  height: 22px;
-  cursor: pointer;
-}
 .profile-name {
   height: 0px;
   flex-grow: 0;
@@ -274,11 +159,9 @@ Sidebar Logo
 }
 /************************ Header End **************************/
 
-
-
 /************************ page-head start **************************/
 
-.page-head{
+.page-head {
   color: #000;
     font-size: 20px;
     font-style: normal;

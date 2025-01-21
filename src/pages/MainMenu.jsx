@@ -15,7 +15,7 @@ const menuItems = [
     key: "dashboard",
     icon: (
       <img
-        src="/wow_icons/png/Dashboard.png"
+        src="/icons/png/Dashboard.png"
         width={22}
         height={22}
         alt="Dashboard"
@@ -38,45 +38,83 @@ const menuItems = [
     link: "/exam-management",
   },
   {
-    key: "upload",
-    icon: <CloudUploadOutlined />,
-    label: "Upload",
-    link: "/upload",
+    key: "Question Bank",
+    icon: (
+      <img
+        src="/icons/png/question-bank.png"
+        width={22}
+        height={22}
+        alt="Question Bank"
+      />
+    ),
+    label: "Question Bank",
+    link: "/question-bank",
   },
-  // {
-  //   key: "classroom",
-  //   icon: (
-  //     <img
-  //       src="/wow_icons/png/Dashboard-1.png"
-  //       width={22}
-  //       height={22}
-  //       alt="Classroom"
-  //     />
-  //   ),
-  //   label: "Classroom",
-  //   link: "/classroom",
-  // },
-  // {
-  //   key: "student",
-  //   icon: (
-  //     <img
-  //       src="/wow_icons/png/Students.png"
-  //       width={22}
-  //       height={22}
-  //       alt="Students"
-  //     />
-  //   ),
-  //   label: "Students",
-  //   link: "/student",
-  // },
-  // {
-  //   key: "staff",
-  //   icon: (
-  //     <img src="/wow_icons/png/Staff.png" width={22} height={18} alt="Staff" />
-  //   ),
-  //   label: "Staff",
-  //   link: "/staff",
-  // },
+  {
+    key: "The Learning Hub",
+    icon: (
+      <img
+        src="/icons/png/learning-hub.png"
+        width={22}
+        height={22}
+        alt="The Learning Hubs"
+      />
+    ),
+    label: "The Learning Hubs",
+    link: "/learning-hub",
+  },
+  {
+    key: "Proctoring",
+    icon: (
+      <img
+        src="/icons/png/proctoring.png"
+        width={22}
+        height={18}
+        alt="Proctoring"
+      />
+    ),
+    label: "Proctoring",
+    link: "/proctoring",
+  },
+  {
+    key: "Student Management",
+    icon: (
+      <img
+        src="/icons/png/student.png"
+        width={22}
+        height={18}
+        alt="Student Management"
+      />
+    ),
+    label: "Student Management",
+    link: "/student-management",
+  },
+  {
+    key: "Grading & Assessment",
+    icon: (
+      <img
+        src="/icons/png/grading-assessment.png"
+        width={22}
+        height={18}
+        alt="Grading & Assessment"
+      />
+    ),
+    label: "Grading & Assessment",
+    link: "/grading&assessment",
+  },
+  {
+    key: "AI Integration",
+    icon: (
+      <img
+        src="/icons/png/ai.png"
+        width={22}
+        height={18}
+        alt="AI Integration"
+      />
+    ),
+    label: "AI Integration",
+    link: "/ai-integration",
+  },
 ];
 
 function MainMenu({ collapsed, setCollapsed }) {
