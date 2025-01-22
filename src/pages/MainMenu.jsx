@@ -115,12 +115,18 @@ const menuItems = [
     label: "AI Integration",
     link: "/ai-integration",
   },
-  {
-    key: "upload",
-    icon: <CloudUploadOutlined />,
-    label: "Upload",
-    link: "/upload",
-  },
+  // {
+  //   key: "upload",
+  //   icon: <CloudUploadOutlined />,
+  //   label: "Upload",
+  //   link: "/upload",
+  // },
+  // {
+  //   key: "upload",
+  //   icon: <CloudUploadOutlined />,
+  //   label: "Upload",
+  //   link: "/upload",
+  // },
 ];
 
 function MainMenu({ collapsed, setCollapsed }) {
@@ -141,6 +147,13 @@ function MainMenu({ collapsed, setCollapsed }) {
       trigger={null}
       className="custom-sider"
       collapsible
+      style={{
+        overflowY: "auto", // Enables scrolling when content overflows
+        height: "70vh", // Ensures the sidebar takes full height
+        background: "rgba(0, 0, 0, 0.5)", // Transparent background (you can adjust the opacity)
+        backdropFilter: "blur(10px)", // Optional: Adds blur effect to the background
+        boxShadow: "none", // Optional: Removes the box shadow
+      }}
     >
       {/* Sidebar Logo */}
       <div
@@ -211,6 +224,10 @@ function MainMenu({ collapsed, setCollapsed }) {
           ),
         }))}
         className="custom-menu"
+        style={{
+          background: "transparent", // Transparent background for the menu
+          border: "none", // Optional: Removes the border for a cleaner look
+        }}
       />
     </Sider>
   );
