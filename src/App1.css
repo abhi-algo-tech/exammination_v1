@@ -48,8 +48,8 @@
   font-weight: 500;
   line-height: normal;
 }
-.label-16-600 {
-  color: #573353;
+.label-16-600-b {
+  color: #000;
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
@@ -164,7 +164,13 @@
 
 .label-12-600 {
   color: var(--Color-Secondary, #573353);
-  font-family: Manrope;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.label-12-600-grey {
+  color: #5c6f88;
   font-size: 12px;
   font-style: normal;
   font-weight: 600;

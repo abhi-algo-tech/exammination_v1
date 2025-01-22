@@ -82,7 +82,7 @@ const SignInWithPin = ({ setSignInWith }) => {
 
         {/* Remember Me */}
         <Form.Item name="remember" valuePropName="checked" className="mb-3">
-          <Checkbox>
+          <Checkbox defaultChecked={true}>
             <span className="lable-14-400-b">Keep me signed in</span>
           </Checkbox>
         </Form.Item>

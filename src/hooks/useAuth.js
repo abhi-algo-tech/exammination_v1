@@ -1,86 +1,40 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { login, logout } from "../store/authSlice";
 import { authKeys } from "../utils/queryKeys";
 import AuthService from "../services/authService";
 
-// Fetch all schools
-// export const useGetAllSchools = () => {
-//   return useQuery({
-//     queryKey: [schoolKeys.schools],
-//     queryFn: SchoolService.getAllSchools,
-//     refetchOnWindowFocus: false,
-//     retry: 3,
-//     onError: (error) => {
-//       // console.error("Error fetching schools:", error);
-//       // CustomMessage.error("Error fetching schools!"); // Uncomment for error message
-//     },
-//   });
-// };
-
-// Fetch a single school by ID
-// export const useSchoolById = (schoolId) => {
-//   return useQuery({
-//     queryKey: [schoolKeys.schools, schoolId],
-//     queryFn: () => SchoolService.getSchool(schoolId),
-//     enabled: Boolean(schoolId), // Enable query only if schoolId is defined
-//     onError: (error) => {
-//       console.error(`Error fetching school with ID ${schoolId}:`, error);
-//       // CustomMessage.error(`Error fetching school with ID ${schoolId}`); // Uncomment for error message
-//     },
-//   });
-// };
-
-// Create a new school
+// User login hook
 export const useUserLogin = () => {
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   return useMutation({
     mutationFn: (payload) => AuthService.authUserLogin(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries(authKeys.login); // Refetch all schools
-      // CustomMessage.success("School created successfully!"); // Success message
+    onSuccess: (data) => {
+      // Store token and user info in Redux
+      dispatch(
+        login({
+          token: data.token,
+          user: data.user,
+        })
+      );
+      queryClient.invalidateQueries(authKeys.login); // Refetch any related queries if needed
     },
     onError: (error) => {
-      // CustomMessage.error("Error creating school!"); // Uncomment for error message
-      console.error("Error creating school:", error);
+      console.error("Login failed:", error);
     },
   });
 };
 
-// Update an existing school
-// export const useUpdateSchool = () => {
-//   const queryClient = useQueryClient();
+export const useUserLogout = () => {
+  const dispatch = useDispatch();
+  // const navigate = useNavigate();
 
-//   return useMutation({
-//     mutationFn: ({ schoolId, schoolData }) =>
-//       SchoolService.updateSchool(schoolId, schoolData),
-//     onSuccess: (data, { schoolId }) => {
-//       // Invalidate the relevant queries
-//       queryClient.invalidateQueries(schoolKeys.schools); // Refetch all schools
-//       queryClient.invalidateQueries({
-//         queryKey: [schoolKeys.schools, schoolId],
-//       });
-//       // CustomMessage.success("School updated successfully!"); // Success message
-//     },
-//     onError: (error) => {
-//       // CustomMessage.error("Error updating school!"); // Uncomment for error message
-//       console.error("Error updating school:", error);
-//     },
-//   });
-// };
+  const handleLogout = () => {
+    dispatch(logout()); // Dispatch the logout action to clear the auth state
+    // navigate("/signin"); // Redirect the user to the sign-in page
+  };
 
-// Delete a school
-// export const useDeleteSchool = () => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: SchoolService.deleteSchool,
-//     onSuccess: () => {
-//       queryClient.invalidateQueries(schoolKeys.schools); // Refetch all schools
-//       // CustomMessage.success("School deleted successfully!"); // Success message
-//     },
-//     onError: (error) => {
-//       // CustomMessage.error("Error deleting school!"); // Uncomment for error message
-//       console.error("Error deleting school:", error);
-//     },
-//   });
-// };
+  return handleLogout;
+};

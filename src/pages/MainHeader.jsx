@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
+import { useUserLogout } from "../hooks/useAuth";
 
 const { Header } = Layout;
 
@@ -18,14 +19,19 @@ function MainHeader({
   collapsed,
   isMobile,
 }) {
+  const logout = useUserLogout();
+
+  const handleLogout = () => {
+    logout(); // Perform logout action
+  };
   const profileData = {
     name: "Anna Smith",
-    role: "Admin",
+    role: "Teacher",
     avatar: "/exam_images/person1.png",
     menuItems: [
       { key: "1", label: "Profile" },
       { key: "2", label: "Settings" },
-      { key: "3", label: "Logout" },
+      { key: "3", label: "Logout", onClick: handleLogout },
     ],
   };
 
@@ -153,12 +159,11 @@ function MainHeader({
                 />
                 <div className="d-none d-md-block">
                   <div className="profile-info">
-                    <span className="profile-name">{profileData.name}</span>
-                    <br />
-                    <span className="active-role">{profileData.role}</span>
+                    <div className="label-16-600-b">{profileData.name}</div>
+                    <div className="label-12-600-grey">{profileData.role}</div>
                   </div>
                 </div>
-                <CaretDownOutlined />
+                <CaretDownOutlined className="pointer" />
               </Space>
             </Dropdown>
           </Space>
