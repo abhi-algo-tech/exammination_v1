@@ -7,7 +7,7 @@ import MainHeader from "./MainHeader";
 import Logo from "../components/Logo";
 import MainMenu from "./MainMenu";
 import SideNavbarMobile from "./SideNavbarMobile";
-import Fotter from "./fotter"; // Corrected component name
+import Fotter from "./Footer"; // Corrected component name
 
 const { Content } = Layout;
 

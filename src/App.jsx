@@ -18,6 +18,7 @@ import SignUp from "./pages/auth/signup/SignUp";
 import UploadTemplate from "./pages/exam_management/UploadTemplate";
 import TeacherQuestionPaper from "./pages/exam_management/TeacherQuestionPaper";
 import CreateQuestionPaper from "./pages/exam_management/CreateQuestionPaper";
+import AddQuestion from "./pages/exam_management/AddQuestion";
 
 function App() {
   const [isLogin, setIsLogin] = useState(true);
@@ -37,6 +38,7 @@ function App() {
               path="/create-question-paper"
               element={<CreateQuestionPaper />}
             />
+            <Route path="/add-question" element={<AddQuestion />} />
             <Route path="/upload" element={<UploadTemplate />} />
             {/* Redirect to default dashboard route */}
             <Route path="/*" element={<Navigate to="/dashboard" />} />

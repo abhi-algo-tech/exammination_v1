@@ -14,6 +14,7 @@ import Select from "react-select";
 import CustomSelect from "../../exam_components/select/CustomSelect";
 import DynamicNumericInput from "../../exam_components/dynamic_numeric_input/DynamicNumericInput";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // Options for Select and Multi-select
 const examTypeOptions = [
@@ -39,6 +40,7 @@ const name = "Abhi.s"; // Example variable for name
 const time = "12:14 - 11.12.24"; // Example variable for time
 
 function CreateQuestionPaper() {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [sections, setSections] = useState(0);
 
@@ -54,6 +56,9 @@ function CreateQuestionPaper() {
     setSections(value);
   };
 
+  const createQuestion = () => {
+    navigate("/add-question");
+  };
   return (
     <div className="mt-2">
       <h2 className="page-head mb-4">Enter the Exam Details</h2>
@@ -458,6 +463,7 @@ function CreateQuestionPaper() {
                   width="236px"
                   label="Create Question Paper"
                   htmlType="submit"
+                  onClick={createQuestion}
                 />
               </Form.Item>
             </div>
