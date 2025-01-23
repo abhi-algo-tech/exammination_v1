@@ -86,7 +86,7 @@ function MainLayout() {
               margin: 0,
               minHeight: "100%", // Ensures the content area takes the full height
               overflowY: "auto", // Allow content to scroll if it's long\
-              background: "#EBEBEB",
+              background: "#F5F7FA",
               paddingBottom: "70px",
             }}
           >

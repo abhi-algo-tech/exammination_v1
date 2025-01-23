@@ -19,6 +19,7 @@ import UploadTemplate from "./pages/exam_management/UploadTemplate";
 import TeacherQuestionPaper from "./pages/exam_management/TeacherQuestionPaper";
 import CreateQuestionPaper from "./pages/exam_management/CreateQuestionPaper";
 import AddQuestion from "./pages/exam_management/AddQuestion";
+import AddQuestionFromBank from "./pages/exam_management/AddQuestionFromBank";
 
 function App() {
   const [isLogin, setIsLogin] = useState(true);
@@ -34,6 +35,10 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/exam-management" element={<TeacherQuestionPaper />} />
+            <Route
+              path="/add-question-by-bank"
+              element={<AddQuestionFromBank />}
+            />
             <Route
               path="/create-question-paper"
               element={<CreateQuestionPaper />}

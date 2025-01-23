@@ -3,6 +3,7 @@ import { Tabs, Select, Button, Input, Row, Col, Space, Checkbox } from "antd";
 import { PlusOutlined, UploadOutlined, BankOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import ShortType from "../questionType/ShortType";
+import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -46,9 +47,14 @@ const questionTypes = [
 ];
 
 const AddQuestion = () => {
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
   const [marks, setMarks] = useState(0);
+
+  const handleAddQuestionThroughBank = () => {
+    navigate("/add-question-by-bank");
+  };
 
   const handleMarksChange = (e) => {
     const value = e.target.value; // Get the input value as a string
@@ -213,9 +219,14 @@ const AddQuestion = () => {
                   <span className="label-16-500-g-u">Upload Questions</span>
                 </div>
 
-                <div className="d-flex align-items-center gap-3 mb20">
+                <div
+                  className="d-flex align-items-center gap-3 mb20"
+                  onClick={handleAddQuestionThroughBank}
+                >
                   <BankOutlined style={{ color: "#215988" }} />
-                  <span className="label-16-500-g-u">Question Bank</span>
+                  <span className="label-16-500-g-u">
+                    Add Questions from Question Bank
+                  </span>
                 </div>
 
                 <div className="d-flex align-items-center gap-3 mb20">
