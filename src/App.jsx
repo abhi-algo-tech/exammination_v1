@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,11 +7,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import "./App.css";
-import "./App1.css";
-
 import Dashboard from "./pages/Dashboard";
-
 import MainLayout from "./pages/MainLayout";
 import ExamManagement from "./pages/exam_management/ExamManagement";
 import SignIn from "./pages/auth/signin/SignIn";
@@ -22,16 +19,26 @@ import AddQuestion from "./pages/exam_management/AddQuestion";
 import AddQuestionFromBank from "./pages/exam_management/AddQuestionFromBank";
 
 function App() {
-  const [isLogin, setIsLogin] = useState(true);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route
+          path="/signin"
+          element={
+            isAuthenticated ? <Navigate to="/dashboard" replace /> : <SignIn />
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            isAuthenticated ? <Navigate to="/dashboard" replace /> : <SignUp />
+          }
+        />
         {/* Protected Routes */}
-        {isLogin ? (
+        {isAuthenticated ? (
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/exam-management" element={<TeacherQuestionPaper />} />
