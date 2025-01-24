@@ -32,14 +32,17 @@
 .table-card {
     border: none;
     /* Remove card border */
-    background-color: #D5D5D5;
+    background-color: #F0F0F0;
     /* Default background */
+    border: 1px solid #D5D5D5;
     border-radius: 8px;
     transition: background-color 0.3s ease;
 }
 
 .table-card.selected {
     background-color: #F5F7FA;
+    border: none;
+    /* border-bottom: 1px solid #D5D5D5; */
     /* Background for selected card */
 }
 
@@ -65,7 +68,7 @@
 }
 
 .quextion-sr{
-    color: #000;
+        color: #000;
         font-family: Poppins;
         font-size: 12px;
         font-style: normal;

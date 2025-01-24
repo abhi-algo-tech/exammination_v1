@@ -17,6 +17,7 @@ import TeacherQuestionPaper from "./pages/exam_management/TeacherQuestionPaper";
 import CreateQuestionPaper from "./pages/exam_management/CreateQuestionPaper";
 import AddQuestion from "./pages/exam_management/AddQuestion";
 import AddQuestionFromBank from "./pages/exam_management/AddQuestionFromBank";
+import SelectedQuestionFromBank from "./pages/exam_management/SelectedQuestionFromBank";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -42,6 +43,10 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/exam-management" element={<TeacherQuestionPaper />} />
+            <Route
+              path="/selected-question-by-bank"
+              element={<SelectedQuestionFromBank />}
+            />
             <Route
               path="/add-question-by-bank"
               element={<AddQuestionFromBank />}

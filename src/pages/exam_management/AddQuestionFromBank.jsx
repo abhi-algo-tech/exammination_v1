@@ -3,6 +3,9 @@ import CustomSelect from "../../exam_components/select/CustomSelect";
 import { Col, Row } from "antd";
 import TableCardComponent from "../../exam_components/table/TableCardComponent";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
+import { useNavigate } from "react-router-dom";
+import QuestionBankCard from "../../exam_components/card/QuestionBankCard";
+import { CustomMessage } from "../../utils/CustomMessage";
 
 const examNameOptions = [
   { value: "1", label: "Summative Assessment - I" },
@@ -59,6 +62,8 @@ const keywordNameOptions = [
 ];
 
 function AddQuestionFromBank() {
+  const navigate = useNavigate();
+  const [selectedRow, setSelectedRow] = useState({});
   const [filters, setFilters] = useState({
     examName: null,
     subjectName: null,
@@ -89,6 +94,22 @@ function AddQuestionFromBank() {
   // Callback for updating the selected question count
   const handleSelectedCountChange = (count) => {
     setSelectedCount(count);
+  };
+  const handleSetSelectedRow = (data) => {
+    setSelectedRow(data);
+  };
+
+  const handleSelectedQuestionThroughBank = () => {
+    if (selectedCount > 0) {
+      navigate("/selected-question-by-bank", {
+        state: {
+          selectedRow: selectedRow,
+          selectedCount: selectedCount,
+        },
+      });
+    } else {
+      CustomMessage.error("Please select at least one question to proceed."); // Show warning message
+    }
   };
 
   return (
@@ -203,7 +224,17 @@ function AddQuestionFromBank() {
         <div>
           <TableCardComponent
             onSelectedCountChange={handleSelectedCountChange}
+            onSelectedRows={handleSetSelectedRow}
           />
+        </div>
+        <div
+          style={{
+            paddingTop: "20px",
+            paddingRight: "100px",
+            paddingLeft: "100px",
+          }}
+        >
+          <QuestionBankCard columns={8} />
         </div>
         <div className="d-flex mt20 justify-content-center gap20">
           <div>
@@ -214,6 +245,7 @@ function AddQuestionFromBank() {
               label={`Add (${selectedCount}) Questions`}
               labelColor="#FFF"
               fontWeight="700"
+              onClick={handleSelectedQuestionThroughBank}
             />
           </div>
           <div>

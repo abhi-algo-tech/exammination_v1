@@ -291,10 +291,10 @@ const data = [
   },
 ];
 
-function TableCardComponent({ onSelectedCountChange }) {
+function TableCardComponent({ onSelectedCountChange, onSelectedRows }) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5); // Default page size
+  const [pageSize, setPageSize] = useState(10); // Default page size
 
   const handleSelectRow = (id) => {
     setSelectedRows((prev) => {
@@ -302,8 +302,15 @@ function TableCardComponent({ onSelectedCountChange }) {
         ? prev.filter((rowId) => rowId !== id)
         : [...prev, id];
 
-      // Pass the updated selected count to the parent
-      onSelectedCountChange(updatedSelection.length);
+      // Filter data based on updatedSelection (selected ids)
+      const selectedData = data.filter((item) =>
+        updatedSelection.includes(item.id)
+      );
+
+      // Update selected rows in the parent component or wherever needed
+      onSelectedRows(selectedData); // Assuming setSelectedRow is a function passed as a prop
+      onSelectedCountChange(updatedSelection.length); // Pass the updated selected count to the parent
+
       return updatedSelection;
     });
   };
@@ -376,7 +383,7 @@ function TableCardComponent({ onSelectedCountChange }) {
                       viewBox="0 0 14 14"
                       style={{ margin: "0 5px" }}
                     >
-                      <circle cx="7" cy="7" r="4" fill="#e1e2e3" />
+                      <circle cx="7" cy="7" r="4" fill="#D9D9D9" />
                     </svg>
                     {item.level}
                     <svg
@@ -428,14 +435,6 @@ function TableCardComponent({ onSelectedCountChange }) {
           onShowSizeChange={handlePageChange}
           pageSizeOptions={["5", "10", "15", "20"]} // Options for page sizes
         />
-      </div>
-      <div
-        style={{
-          paddingRight: "100px",
-          paddingLeft: "100px",
-        }}
-      >
-        <QuestionBankCard columns={8} />
       </div>
     </div>
   );
