@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Row, Col } from "antd";
+import { Row, Col, Space, Button } from "antd";
 import styled from "styled-components";
 import ShortType from "../questionType/ShortType";
+import { PlusOutlined, BankOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import RightSection from "./RightSection";
 import CommonModalComponent from "../../components/CommonModalComponent";
