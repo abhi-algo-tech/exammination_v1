@@ -171,3 +171,13 @@ h4 {
   text-underline-position: from-font;
   cursor: pointer;
 }
+
+/************************ select-question-type **************************/
+.select-question-type{
+color: #000;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}

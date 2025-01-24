@@ -1,0 +1,91 @@
+.question-bank-card {
+    display: flex;
+    border-radius: 8px;
+    height: 135px;
+    border: 2px solid #215988;
+    background: #215988;
+    overflow: hidden;
+}
+
+.fixed-column {
+    flex: 0 0 322px;
+    /* Fixed width for the first column */
+    color: #fff;
+        display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    /* For pseudo-element positioning */
+    padding: 20px;
+}
+
+.scrollable-columns {
+    display: flex;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    flex-grow: 1;
+}
+
+.scrollable-columns::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, and Opera */
+}
+
+.scrollable-column {
+    min-width: 195px;
+    /* Minimum width for each column */
+    color: #fff;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    position: relative;
+    flex-direction: column;
+    /* For pseudo-element positioning */
+    padding: 10px;
+}
+
+/* Separator Line with Top and Bottom Padding */
+.fixed-column::after,
+.scrollable-column::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 10px;
+    /* Padding from top */
+    bottom: 10px;
+    /* Padding from bottom */
+    width: 1px;
+    /* Line width */
+    background-color: #fff;
+    /* Line color */
+}
+
+.scrollable-column:last-child {
+    border-right: none;
+    /* Remove separator from the last column */
+}
+
+.card-head{
+    color: #FFF;
+        font-family: Montserrat;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 150%;
+        /* 36px */
+}
+
+.columns-head{
+    color: #FFF;
+        font-family: Montserrat;
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 150%;
+        padding-right: 4px;
+        /* 30px */
+}

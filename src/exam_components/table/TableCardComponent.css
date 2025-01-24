@@ -1,0 +1,89 @@
+.table-card-grid {
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Space between rows */
+}
+
+.table-header {
+    /* background-color: #f0f0f0; */
+    padding: 8px 16px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 16px;
+    color: #215988;
+    border-radius: 8px;
+    /* margin-bottom: 8px; */
+    font-style: normal;
+        font-weight: 700;
+        line-height: 150%;
+    display: flex;
+}
+
+.table-row {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+.table-card {
+    border: none;
+    /* Remove card border */
+    background-color: #F0F0F0;
+    /* Default background */
+    border: 1px solid #D5D5D5;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.table-card.selected {
+    background-color: #F5F7FA;
+    border: none;
+    /* border-bottom: 1px solid #D5D5D5; */
+    /* Background for selected card */
+}
+
+.options-list {
+    margin: 8px 0 0 0;
+    padding-left: 16px;
+    font-size: 13px;
+    color: #555;
+    list-style-type: none;
+}
+
+.options-list li {
+    list-style-type: disc;
+}
+
+.topic {
+    border-radius: 24px;
+        border: 1px solid #07617D;
+        background: #215988;
+        font-size: 12px;
+        color: #FFF;
+        padding: 4px 22px;
+}
+
+.quextion-sr{
+        color: #000;
+        font-family: Poppins;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+}
+
+/* .option-letter {
+    font-weight: bold;
+    color: #000;
+    margin-right: 8px;
+} */
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+}

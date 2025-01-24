@@ -68,7 +68,7 @@ function MainHeader({
   return (
     <Header
       style={{
-        background: "#EBEBEB",
+        background: "#F5F7FA",
         padding: "0 30px",
         position: "sticky",
         top: 0,
@@ -108,7 +108,7 @@ function MainHeader({
             style={{
               width: "100%", // Ensure the input takes up 100% width of its container
               height: "40px",
-              background: "#EBEBEB",
+              background: "#F5F7FA",
               borderColor: "#4C4A4F",
               fontFamily: "Montserrat, sans-serif", // Apply Montserrat font
               color: "#373737", // Apply font color
