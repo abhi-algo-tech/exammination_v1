@@ -18,6 +18,10 @@ import AddQuestion from "./pages/exam_management/AddQuestion";
 import AddQuestionFromBank from "./pages/exam_management/AddQuestionFromBank";
 import SelectedQuestionFromBank from "./pages/exam_management/SelectedQuestionFromBank";
 import Dashboard from "./pages/dashboard/Dashboard";
+import UploadQuestion from "./pages/exam_management/UploadQuestion";
+import ReviewQuestions from "./pages/exam_management/ReviewQuestions";
+import PublishForm from "./pages/exam_management/PublishForm";
+import PreviewPaper from "./pages/exam_management/PreviewPaper";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -43,6 +47,10 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/exam-management" element={<TeacherQuestionPaper />} />
+            <Route path="/upload-questions" element={<UploadQuestion />} />
+            <Route path="/preview-questions" element={<ReviewQuestions />} />
+            <Route path="/preview-paper" element={<PreviewPaper />} />
+            <Route path="/publish-questions" element={<PublishForm />} />
             <Route
               path="/selected-question-by-bank"
               element={<SelectedQuestionFromBank />}

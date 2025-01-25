@@ -5,7 +5,7 @@ import CustomSelect from "../../exam_components/select/CustomSelect";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
 import QuestionBankCard from "../../exam_components/card/QuestionBankCard";
 import { Col, Row, Checkbox, Space, Popconfirm, message } from "antd";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
 
 const examNameOptions = [
@@ -15,6 +15,7 @@ const examNameOptions = [
 ];
 
 function SelectedQuestionFromBank() {
+  const navigate = useNavigate();
   const location = useLocation();
   const {
     selectedRow: initialSelectedRows,
@@ -31,6 +32,10 @@ function SelectedQuestionFromBank() {
   const handleFilterChange = (value) => {
     setExamName(value);
     console.log("examName", value);
+  };
+
+  const handlePreview = () => {
+    navigate("/preview-questions");
   };
 
   const handleCheckboxChange = (questionId, checked) => {
@@ -175,6 +180,7 @@ function SelectedQuestionFromBank() {
           label="Confirm"
           labelColor="#FFF"
           fontWeight="700"
+          onClick={handlePreview}
         />
         <ButtonComponent
           bgColor="rgba(7, 97, 125, 0.2)"
