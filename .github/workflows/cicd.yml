@@ -1,40 +1,90 @@
-name: CICD
+name: CI/CD for Exam Frontend
+
 on:
   push:
     branches:
-      - main
+      - main # Change 'main' to 'dev' if deploying from the dev branch
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Source
+      # Step 1: Checkout the source code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+      # Step 2: Deploy to VPS using Username and Password
+      - name: Deploy to VPS
+        env:
+          VPS_USER: ${{ secrets.VPS_USERNAME }} # Username for VPS
+          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }} # Password for VPS
+          VPS_HOST: ${{ secrets.VPS_HOST }} # VPS IP or Hostname
+        run: |
+          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no $VPS_USERNAME@$VPS_HOST << 'EOF'
+          # Remove old application files
+          sudo rm -rf /var/www/exam_frontend_v1_dev
 
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          # Clone the repository
+          cd /var/www
+          git clone https://github.com/abhi-algo-tech/wow_frontend_v1.git exam_frontend_v1_dev
 
-      - name: Build Docker Image
-        run: docker build -t abhialgotech/exam_frontend_v1_dev .
+          # Navigate to the directory and install dependencies
+          cd exam_frontend_v1_dev
+          npm install
 
-      - name: Publish Image to Docker Hub
-        run: docker push abhialgotech/exam_frontend_v1_dev:latest
+          # Build the Docker image
+          docker build -t exam_frontend_v1_dev .
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Pull Image from Docker Hub
-        run: docker pull abhialgotech/exam_frontend_v1_dev:latest
-      - name: Stop Old Container
-        run: docker stop exam-react-app-dev || true # Allow continuation if the container doesn't exist
-      - name: Delete Old Container
-        run: docker rm -f exam-react-app-dev || true # Allow continuation if the container doesn't exist
+          # Stop and remove old Docker container
+          docker stop exam-react-app-dev || true
+          docker rm exam-react-app-dev || true
 
-      - name: Run Docker Container
-        run: docker run -d -p 3088:80 --name exam-react-app-dev abhialgotech/exam_frontend_v1_dev
+          # Run the new container
+          docker run -d -p 3088:80 --name exam-react-app-dev exam_frontend_v1_dev
+          EOF
+
+      # Install sshpass (if it's not already installed)
+      # - name: Install sshpass
+      #   run: sudo apt-get update && sudo apt-get install -y sshpass
+
+# name: CICD
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Source
+#         uses: actions/checkout@v3
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 20
+
+#       - name: Login to Docker Hub
+#         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+#       - name: Build Docker Image
+#         run: docker build -t abhialgotech/exam_frontend_v1_dev .
+
+#       - name: Publish Image to Docker Hub
+#         run: docker push abhialgotech/exam_frontend_v1_dev:latest
+
+#   deploy:
+#     needs: build
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Pull Image from Docker Hub
+#         run: docker pull abhialgotech/exam_frontend_v1_dev:latest
+#       - name: Stop Old Container
+#         run: docker stop exam-react-app-dev || true # Allow continuation if the container doesn't exist
+#       - name: Delete Old Container
+#         run: docker rm -f exam-react-app-dev || true # Allow continuation if the container doesn't exist
+
+#       - name: Run Docker Container
+#         run: docker run -d -p 3088:80 --name exam-react-app-dev abhialgotech/exam_frontend_v1_dev

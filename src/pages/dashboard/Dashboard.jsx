@@ -55,8 +55,8 @@ function Dashboard() {
               <ButtonComponent
                 bgColor="#215988"
                 height="40px"
-                width="269px"
-                label="Create Question Bank"
+                width="235px"
+                label="Create Classroom"
                 icon={<PlusOutlined />}
               />
             </Form.Item>
