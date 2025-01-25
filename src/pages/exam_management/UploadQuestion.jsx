@@ -4,6 +4,7 @@ import { PlusOutlined, UploadOutlined, BankOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import ShortType from "../questionType/ShortType";
 import { useNavigate } from "react-router-dom";
+import CommonUploads from "../../exam_components/upload/CommonUploads";
 
 const { TabPane } = Tabs;
 
@@ -46,7 +47,7 @@ const questionTypes = [
   "True/False",
 ];
 
-const AddQuestion = () => {
+const UploadQuestion = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
@@ -54,9 +55,6 @@ const AddQuestion = () => {
 
   const handleAddQuestionThroughBank = () => {
     navigate("/add-question-by-bank");
-  };
-  const handleUpload = () => {
-    navigate("/upload-questions");
   };
 
   const handleMarksChange = (e) => {
@@ -98,92 +96,8 @@ const AddQuestion = () => {
       <Row gutter={[24, 24]}>
         {/* Left Section */}
         <Col xs={24} md={16}>
-          <Tabs
-            activeKey={String(activeSection)} // Ensure this is a string matching the `key`
-            onChange={(key) => setActiveSection(Number(key))}
-            items={sections.map((section) => ({
-              key: String(section.key), // Ensure key is a string
-              label: (
-                <span
-                  className={
-                    activeSection === section.key
-                      ? "label-20-600"
-                      : "label-20-500"
-                  }
-                  style={{
-                    color:
-                      activeSection === section.key ? "#4B4B4B" : "#797979",
-                  }}
-                >
-                  {section.name}
-                </span>
-              ),
-              children: (
-                <>
-                  <ShortType />
-                  {/* <Space
-                    direction="vertical"
-                    style={{ width: "100%" }}
-                    size="large"
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "16px",
-                      }}
-                    >
-                      <Checkbox className="label-18-500-b">Question 1</Checkbox>
-                      <Select
-                        value={questionType}
-                        onChange={setQuestionType}
-                        style={{
-                          display: "flex",
-                          width: "363px",
-                          height: "44px",
-                          alignItems: "center",
-                          gap: "139px",
-                          flexShrink: 0,
-                          borderRadius: "8px",
-                          border: "1px solid #797979",
-                        }}
-                      >
-                        {questionTypes.map((type) => (
-                          <Select.Option key={type} value={type}>
-                            {type}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <Input
-                          min={0}
-                          max={20}
-                          value={marks}
-                          onChange={handleMarksChange}
-                          style={{ width: 50 }}
-                        />
-                        <span className="label-16-500-g-i">Marks</span>
-                      </div>
-                    </div>
-                    <Input.TextArea
-                      placeholder="Type the question here"
-                      rows={4}
-                    />
-                    <Button type="link" icon={<PlusOutlined />}>
-                      Add a New Question
-                    </Button>
-                  </Space> */}
-                </>
-              ),
-            }))}
-          />
+          <div>Upload your Question Paper here.</div>
+          <CommonUploads containerHeight="171px" />
         </Col>
 
         {/* Right Section */}
@@ -213,10 +127,7 @@ const AddQuestion = () => {
                   />
                   <span className="label-16-500-g-u">Add All Questions</span>
                 </div>
-                <div
-                  className="d-flex align-items-center gap-3 mb20"
-                  onClick={handleUpload}
-                >
+                <div className="d-flex align-items-center gap-3 mb20">
                   {/* <UploadOutlined style={{ color: "#215988" }} /> */}
                   <img
                     src="./icons/png/upload.png"
@@ -251,4 +162,4 @@ const AddQuestion = () => {
   );
 };
 
-export default AddQuestion;
+export default UploadQuestion;

@@ -4,6 +4,8 @@ import { PlusOutlined, UploadOutlined, BankOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import ShortType from "../questionType/ShortType";
 import { useNavigate } from "react-router-dom";
+import QuestionList from "./QuestionList";
+import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
 
 const { TabPane } = Tabs;
 
@@ -46,7 +48,7 @@ const questionTypes = [
   "True/False",
 ];
 
-const AddQuestion = () => {
+const ReviewQuestions = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
@@ -57,6 +59,10 @@ const AddQuestion = () => {
   };
   const handleUpload = () => {
     navigate("/upload-questions");
+  };
+
+  const handlePublish = () => {
+    navigate("/publish-questions");
   };
 
   const handleMarksChange = (e) => {
@@ -95,6 +101,9 @@ const AddQuestion = () => {
         <div className="label-28-600">Summative Assessment - I</div>
         <div className="label-14-600-blue">View Examination Details</div>
       </div>
+      <div>
+        Exam Now has added questions to the question. Please review them.
+      </div>
       <Row gutter={[24, 24]}>
         {/* Left Section */}
         <Col xs={24} md={16}>
@@ -120,66 +129,7 @@ const AddQuestion = () => {
               ),
               children: (
                 <>
-                  <ShortType />
-                  {/* <Space
-                    direction="vertical"
-                    style={{ width: "100%" }}
-                    size="large"
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "16px",
-                      }}
-                    >
-                      <Checkbox className="label-18-500-b">Question 1</Checkbox>
-                      <Select
-                        value={questionType}
-                        onChange={setQuestionType}
-                        style={{
-                          display: "flex",
-                          width: "363px",
-                          height: "44px",
-                          alignItems: "center",
-                          gap: "139px",
-                          flexShrink: 0,
-                          borderRadius: "8px",
-                          border: "1px solid #797979",
-                        }}
-                      >
-                        {questionTypes.map((type) => (
-                          <Select.Option key={type} value={type}>
-                            {type}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <Input
-                          min={0}
-                          max={20}
-                          value={marks}
-                          onChange={handleMarksChange}
-                          style={{ width: 50 }}
-                        />
-                        <span className="label-16-500-g-i">Marks</span>
-                      </div>
-                    </div>
-                    <Input.TextArea
-                      placeholder="Type the question here"
-                      rows={4}
-                    />
-                    <Button type="link" icon={<PlusOutlined />}>
-                      Add a New Question
-                    </Button>
-                  </Space> */}
+                  <QuestionList />
                 </>
               ),
             }))}
@@ -188,14 +138,27 @@ const AddQuestion = () => {
 
         {/* Right Section */}
         <Col xs={24} md={8}>
+          <div>
+            <ButtonComponent
+              bgColor="#F9A828"
+              height="40px"
+              width="222px"
+              label="Change Questions"
+              // onClick={handleUploadClick}
+            />
+          </div>
           <div
-            className="left-container-question-create"
+            className="left-container-question-create mt-4"
             style={{ padding: "37px 36px" }}
           >
             {sections.map(renderQuestionGrid)}
             <Space direction="vertical" size="middle" style={{ width: "100%" }}>
               <div className="d-flex justify-content-between gap11">
-                <Button type="primary" className="btn-review">
+                <Button
+                  type="primary"
+                  className="btn-review"
+                  onClick={handlePublish}
+                >
                   Review Paper
                 </Button>
                 <Button className="btn-save-draft">Save as Draft</Button>
@@ -251,4 +214,4 @@ const AddQuestion = () => {
   );
 };
 
-export default AddQuestion;
+export default ReviewQuestions;
