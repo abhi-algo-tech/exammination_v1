@@ -7,7 +7,6 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import Dashboard from "./pages/Dashboard";
 import MainLayout from "./pages/MainLayout";
 import ExamManagement from "./pages/exam_management/ExamManagement";
 import SignIn from "./pages/auth/signin/SignIn";
@@ -18,6 +17,7 @@ import CreateQuestionPaper from "./pages/exam_management/CreateQuestionPaper";
 import AddQuestion from "./pages/exam_management/AddQuestion";
 import AddQuestionFromBank from "./pages/exam_management/AddQuestionFromBank";
 import SelectedQuestionFromBank from "./pages/exam_management/SelectedQuestionFromBank";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);

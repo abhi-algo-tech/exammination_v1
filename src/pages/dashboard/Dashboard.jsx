@@ -1,0 +1,76 @@
+import { Form } from "antd";
+import React from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
+import DashboardCard from "./DashboardCard";
+import DashboardTable from "./DashboardTable";
+
+function Dashboard() {
+  const assessmentCards = [
+    {
+      title: "Summative Assessment - I",
+      subject: "Mathematics",
+      classes: "10A, 10B, 10D",
+      status: "Published",
+      totalMarks: 80,
+      totalSections: 4,
+    },
+    {
+      title: "Unit Test - III",
+      subject: "Science",
+      classes: "10A, 10B, 10D",
+      status: "In-Progress",
+      statusPercent: "44%",
+      totalMarks: 40,
+      totalSections: 4,
+    },
+    {
+      title: "Formative Assessment - IV",
+      subject: "English",
+      classes: "10A, 10B, 10D",
+      status: "In-Review",
+      statusPercent: "44%",
+      totalMarks: 40,
+      totalSections: 4,
+    },
+  ];
+  return (
+    <div className="mt-2">
+      <div className="d-flex justify-content-between">
+        <div className="d-flex mt-2">
+          <div style={{ paddingRight: "20px" }}>
+            <Form.Item>
+              <ButtonComponent
+                bgColor="#F9A828"
+                height="40px"
+                width="269px"
+                label="Create Question Paper"
+                icon={<PlusOutlined />}
+                //   onClick={handleCreateQuestionPaper} // Attach the navigation function
+              />
+            </Form.Item>
+          </div>
+          <div>
+            <Form.Item>
+              <ButtonComponent
+                bgColor="#215988"
+                height="40px"
+                width="269px"
+                label="Create Question Bank"
+                icon={<PlusOutlined />}
+              />
+            </Form.Item>
+          </div>
+        </div>
+      </div>
+      <div className="question-paper-manager">
+        {/* Assessment Cards */}
+        <DashboardCard assessmentCards={assessmentCards} />
+        {/* Assessment Table */}
+        <DashboardTable />
+      </div>
+    </div>
+  );
+}
+
+export default Dashboard;
