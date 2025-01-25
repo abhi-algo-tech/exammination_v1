@@ -14,7 +14,7 @@
     margin-right: 15px;
 }
 
-.question-item {
+.question-list-item {
     display: flex;
     flex-direction: column;
     padding: 10px;

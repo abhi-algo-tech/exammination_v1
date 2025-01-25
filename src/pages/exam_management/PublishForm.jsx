@@ -15,6 +15,8 @@ import CustomSelect from "../../exam_components/select/CustomSelect";
 import DynamicNumericInput from "../../exam_components/dynamic_numeric_input/DynamicNumericInput";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
 import { Navigate, useNavigate } from "react-router-dom";
+import CommonModal from "../../exam_components/model_window/CommonModal";
+import PublishView from "./PublishView";
 
 // Options for Select and Multi-select
 const examTypeOptions = [
@@ -43,6 +45,7 @@ function PublishForm() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [sections, setSections] = useState(0);
+  const [isModal, setIsModal] = useState(false);
 
   const handleSubmit = (values) => {
     console.log("Form values:", values);
@@ -56,6 +59,20 @@ function PublishForm() {
   const createQuestion = () => {
     navigate("/add-question");
   };
+
+  const showModal = () => {
+    setIsModal(true);
+  };
+
+  const handleCancel = () => {
+    setIsModal(false);
+  };
+
+  const handleOk = () => {
+    console.log("Confirmed");
+    setIsModal(false);
+  };
+
   return (
     <div className="mt-2">
       <h2 className="page-head mb-4">Publish Paper</h2>
@@ -142,7 +159,7 @@ function PublishForm() {
               <Col
                 md={1}
                 className="d-flex align-items-center justify-content-center"
-                style={{ marginBottom: "30px" }}
+                // style={{ marginBottom: "30px" }}
               >
                 <span>-</span>
               </Col>
@@ -175,7 +192,7 @@ function PublishForm() {
               <Col
                 md={1}
                 className="d-flex align-items-center justify-content-center"
-                style={{ marginBottom: "30px" }}
+                // style={{ marginBottom: "30px" }}
               >
                 <span>-</span>
               </Col>
@@ -293,8 +310,8 @@ function PublishForm() {
                   height="40px"
                   width="236px"
                   label="Publish Paper"
-                  htmlType="submit"
-                  //   onClick={createQuestion}
+                  // htmlType="submit"
+                  onClick={showModal}
                 />
               </Form.Item>
             </div>
@@ -323,6 +340,18 @@ function PublishForm() {
           </div>
         </div>
       </Form>
+      {isModal && (
+        <CommonModal
+          title=" "
+          isVisible={isModal}
+          onClose={handleCancel}
+          onOk={handleOk}
+          confirmLabel="Publish Paper"
+          cancelLabel="Cancel"
+        >
+          <PublishView />
+        </CommonModal>
+      )}
     </div>
   );
 }

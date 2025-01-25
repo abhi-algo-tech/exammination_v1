@@ -53,56 +53,60 @@ const AddQuestion = () => {
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
   const [marks, setMarks] = useState(0);
-  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+  // const [isReviewModalOpen, setReviewModalOpen] = useState(false);
 
-  const handleAddQuestionThroughBank = () => {
-    navigate("/add-question-by-bank");
-  };
-  const handleUpload = () => {
-    navigate("/upload-questions");
-  };
+  // const handleAddQuestionThroughBank = () => {
+  //   navigate("/add-question-by-bank");
+  // };
+  // const handleUpload = () => {
+  //   navigate("/upload-questions");
+  // };
 
-  const handleMarksChange = (e) => {
-    const value = e.target.value; // Get the input value as a string
-
-    // Allow empty input (for backspace) and numbers within the range
-    if (
-      value === "" ||
-      (/^\d+$/.test(value) &&
-        parseInt(value, 10) >= 0 &&
-        parseInt(value, 10) <= 20)
-    ) {
-      setMarks(value === "" ? "" : parseInt(value, 10)); // Allow empty or valid number
-    }
+  const handlePreview = () => {
+    navigate("/preview-questions");
   };
 
-  const handleTabChange = (key) => setActiveSection(Number(key));
+  // const handleMarksChange = (e) => {
+  //   const value = e.target.value; // Get the input value as a string
 
-  const renderQuestionGrid = (section, sectionIndex) => (
-    <div key={section.key} style={{ marginBottom: "24px" }}>
-      <div className="d-flex justify-content-between mb12">
-        <div className="label-20-500-b">{section.name}</div>
-        <div className="label-14-500-g">{section.marks} marks</div>
-      </div>
-      <QuestionGrid>
-        {Array.from({ length: section.questions }, (_, i) => (
-          <QuestionBox key={i}>
-            {" "}
-            {i + 1 + sectionIndex * section.questions}
-          </QuestionBox>
-        ))}
-      </QuestionGrid>
-    </div>
-  );
+  //   // Allow empty input (for backspace) and numbers within the range
+  //   if (
+  //     value === "" ||
+  //     (/^\d+$/.test(value) &&
+  //       parseInt(value, 10) >= 0 &&
+  //       parseInt(value, 10) <= 20)
+  //   ) {
+  //     setMarks(value === "" ? "" : parseInt(value, 10)); // Allow empty or valid number
+  //   }
+  // };
+
+  // const handleTabChange = (key) => setActiveSection(Number(key));
+
+  // const renderQuestionGrid = (section, sectionIndex) => (
+  //   <div key={section.key} style={{ marginBottom: "24px" }}>
+  //     <div className="d-flex justify-content-between mb12">
+  //       <div className="label-20-500-b">{section.name}</div>
+  //       <div className="label-14-500-g">{section.marks} marks</div>
+  //     </div>
+  //     <QuestionGrid>
+  //       {Array.from({ length: section.questions }, (_, i) => (
+  //         <QuestionBox key={i}>
+  //           {" "}
+  //           {i + 1 + sectionIndex * section.questions}
+  //         </QuestionBox>
+  //       ))}
+  //     </QuestionGrid>
+  //   </div>
+  // );
 
   return (
     <div>
-      <ButtonComponent
+      {/* <ButtonComponent
         label="Review Modal"
         gradient={true}
         buttonActionType="create"
         onClick={() => setReviewModalOpen(true)}
-      />
+      /> */}
       <div style={{ marginBottom: "24px" }}>
         {/* <CommonModalComponent /> */}
         <div className="label-28-600">Summative Assessment - I</div>
@@ -116,80 +120,9 @@ const AddQuestion = () => {
 
         {/* Right Section */}
         <Col xs={24} md={8}>
-          <div
-            className="left-container-question-create"
-            style={{ padding: "37px 36px" }}
-          >
-            {sections.map(renderQuestionGrid)}
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-              <div className="d-flex justify-content-between gap11">
-                <Button type="primary" className="btn-review">
-                  Review Paper
-                </Button>
-                <Button className="btn-save-draft">Save as Draft</Button>
-              </div>
-              <div className="diflex gap-3 mb20">
-                <div className="d-flex align-items-center gap-3 mb20">
-                  <PlusOutlined style={{ color: "#215988" }} />
-                  <span className="label-16-500-g-u">Add a New Question</span>
-                </div>
-                <div className="d-flex align-items-center gap-3 mb20">
-                  {/* <PlusOutlined style={{ color: "#215988" }} /> */}
-                  <img
-                    src="./icons/png/add-question.png"
-                    className="height15 width16"
-                  />
-                  <span className="label-16-500-g-u">Add All Questions</span>
-                </div>
-                <div
-                  className="d-flex align-items-center gap-3 mb20"
-                  onClick={handleUpload}
-                >
-                  {/* <UploadOutlined style={{ color: "#215988" }} /> */}
-                  <img
-                    src="./icons/png/upload.png"
-                    className="height15 width12"
-                  />
-                  <span className="label-16-500-g-u">Upload Questions</span>
-                </div>
-
-                <div
-                  className="d-flex align-items-center gap-3 mb20"
-                  onClick={handleAddQuestionThroughBank}
-                >
-                  <BankOutlined style={{ color: "#215988" }} />
-                  <span className="label-16-500-g-u">
-                    Add Questions from Question Bank
-                  </span>
-                </div>
-
-                <div className="d-flex align-items-center gap-3 mb20">
-                  <img
-                    src="./icons/png/ai-green.png"
-                    className="height15 width16"
-                  />
-                  <span className="label-16-500-g-u">Create with AI</span>
-                </div>
-              </div>
-            </Space>
-          </div>
+          <RightSection sections={sections} onPreview={handlePreview} />
         </Col>
       </Row>
-      {isReviewModalOpen && (
-        <CommonModalComponent
-          open={isReviewModalOpen}
-          setOpen={setReviewModalOpen}
-          modalWidthSize={696}
-          modalHeightSize={599}
-          isClosable={true}
-        >
-          <ReviewModal
-            // CardTitle={"Add Student"}
-            // classroomId={null}
-            closeModal={() => setReviewModalOpen(false)}
-          />
-        </CommonModalComponent>
-      )}
     </div>
   );
 };

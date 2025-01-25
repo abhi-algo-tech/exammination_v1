@@ -289,7 +289,7 @@ const data = [
     datePublished: "2025-01-20",
   },
 ];
-function QuestionList() {
+function PaperList() {
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -323,12 +323,6 @@ function QuestionList() {
             <div className="question-list-item">
               <div className="question-content">
                 <div className="question-header">
-                  <div className="checkbox-container">
-                    <Checkbox
-                      checked={isSelected}
-                      onChange={() => handleCheckboxChange(item.id)}
-                    />
-                  </div>
                   <span className="question-index">{`Question ${
                     index + 1
                   }`}</span>
@@ -340,30 +334,13 @@ function QuestionList() {
                   >
                     <circle cx="7" cy="7" r="4" fill="#D9D9D9" />
                   </svg>
-                  <span className="question-level">{item.level}</span>
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    style={{ margin: "0 5px" }}
-                  >
-                    <circle cx="7" cy="7" r="4" fill="#D9D9D9" />
-                  </svg>
+
                   <div>{item.questionType}</div>
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    style={{ margin: "0 5px" }}
-                  >
-                    <circle cx="7" cy="7" r="4" fill="#D9D9D9" />
-                  </svg>
-                  <span className="question-topic">{item.topic}</span>
 
                   {/* Align these to the left */}
                   <div className="marks-container">
                     <span>{item.marks} marks</span>
-                    <svg
+                    {/* <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="4"
                       height="18"
@@ -373,7 +350,7 @@ function QuestionList() {
                       <circle cx="2" cy="2" r="2" fill="#747474" />
                       <circle cx="2" cy="9" r="2" fill="#747474" />
                       <circle cx="2" cy="16" r="2" fill="#747474" />
-                    </svg>
+                    </svg> */}
                   </div>
                 </div>
 
@@ -390,14 +367,6 @@ function QuestionList() {
                     ))}
                   </ul>
                 )}
-              </div>
-              <div className="question-details">
-                <div className="hiperLink ">
-                  <span>Add a tag</span>
-                </div>
-                <div className="hiperLink ">
-                  <span>Edit tag</span>
-                </div>
               </div>
             </div>
           </div>
@@ -419,4 +388,4 @@ function QuestionList() {
   );
 }
 
-export default QuestionList;
+export default PaperList;

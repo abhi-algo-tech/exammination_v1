@@ -1,11 +1,13 @@
 import React from "react";
 import { Button, Row, Col } from "antd";
+import { useNavigate } from "react-router-dom";
 // import "./review-modal.css";
 
 export default function ReviewModal({
   closeModal,
   //   onReview = () => {},
 }) {
+  const navigate = useNavigate();
   const incompleteQuestions = [
     { number: 19, subject: "Practical Chemistry", marks: 1 },
     { number: 20, subject: "Practical Chemistry", marks: 1 },
@@ -20,6 +22,10 @@ export default function ReviewModal({
     { number: 29, subject: "Practical Chemistry", marks: 1 },
     { number: 30, subject: "Practical Chemistry", marks: 1 },
   ];
+
+  const handlePublish = () => {
+    navigate("/preview-paper");
+  };
 
   return (
     // <Modal
@@ -61,7 +67,10 @@ export default function ReviewModal({
         </div>
 
         <div className="modal-actions">
-          <Button className="review-button label-18-700-grey">
+          <Button
+            className="review-button label-18-700-grey"
+            onClick={handlePublish}
+          >
             Review Paper
           </Button>
           <Button className="cancel-button" onClick={() => closeModal()}>

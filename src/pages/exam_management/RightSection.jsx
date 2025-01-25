@@ -2,6 +2,7 @@ import { Tabs, Select, Button, Input, Row, Col, Space, Checkbox } from "antd";
 import { PlusOutlined, UploadOutlined, BankOutlined } from "@ant-design/icons";
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -29,7 +30,8 @@ const QuestionBox = styled.div`
     color: #6366f1;
   }
 `;
-function RightSection({ sections = [] }) {
+function RightSection({ sections = [], onPreview }) {
+  const navigate = useNavigate();
   const handleMarksChange = (e) => {
     const value = e.target.value; // Get the input value as a string
 
@@ -42,6 +44,17 @@ function RightSection({ sections = [] }) {
     ) {
       setMarks(value === "" ? "" : parseInt(value, 10)); // Allow empty or valid number
     }
+  };
+
+  // const handlePreview = () => {
+  //   navigate("/preview-questions");
+  // };
+
+  const handleAddQuestionThroughBank = () => {
+    navigate("/add-question-by-bank");
+  };
+  const handleUpload = () => {
+    navigate("/upload-questions");
   };
 
   const handleTabChange = (key) => setActiveSection(Number(key));
@@ -67,7 +80,7 @@ function RightSection({ sections = [] }) {
       {sections.map(renderQuestionGrid)}
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
         <div className="d-flex justify-content-between gap11">
-          <Button type="primary" className="btn-review">
+          <Button type="primary" className="btn-review" onClick={onPreview}>
             Review Paper
           </Button>
           <Button className="btn-save-draft">Save as Draft</Button>
@@ -83,17 +96,27 @@ function RightSection({ sections = [] }) {
               src="./icons/png/add-question.png"
               className="height15 width16"
             />
-            <span className="label-16-500-g-u">Add All Questions</span>
+            <span className="label-16-500-g-u">
+              Add Questions according to topic
+            </span>
           </div>
-          <div className="d-flex align-items-center gap-3 mb20">
+          <div
+            className="d-flex align-items-center gap-3 mb20"
+            onClick={handleUpload}
+          >
             {/* <UploadOutlined style={{ color: "#215988" }} /> */}
             <img src="./icons/png/upload.png" className="height15 width12" />
-            <span className="label-16-500-g-u">Upload Questions</span>
+            <span className="label-16-500-g-u">Upload Question Paper</span>
           </div>
 
-          <div className="d-flex align-items-center gap-3 mb20">
+          <div
+            className="d-flex align-items-center gap-3 mb20"
+            onClick={handleAddQuestionThroughBank}
+          >
             <BankOutlined style={{ color: "#215988" }} />
-            <span className="label-16-500-g-u">Question Bank</span>
+            <span className="label-16-500-g-u">
+              Add Questions from Question Bank
+            </span>
           </div>
 
           <div className="d-flex align-items-center gap-3 mb20">
