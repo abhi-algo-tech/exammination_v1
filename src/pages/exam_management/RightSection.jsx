@@ -29,7 +29,7 @@ const QuestionBox = styled.div`
     color: #6366f1;
   }
 `;
-function RightSection({ sections }) {
+function RightSection({ sections = [] }) {
   const handleMarksChange = (e) => {
     const value = e.target.value; // Get the input value as a string
 
@@ -60,53 +60,48 @@ function RightSection({ sections }) {
     </div>
   );
   return (
-    <div>
-      <div
-        className="left-container-question-create"
-        style={{ padding: "37px 36px" }}
-      >
-        {sections.map(renderQuestionGrid)}
-        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-          <div className="d-flex justify-content-between gap11">
-            <Button type="primary" className="btn-review">
-              Review Paper
-            </Button>
-            <Button className="btn-save-draft">Save as Draft</Button>
+    <div
+      className="left-container-question-create"
+      style={{ padding: "37px 36px" }}
+    >
+      {sections.map(renderQuestionGrid)}
+      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <div className="d-flex justify-content-between gap11">
+          <Button type="primary" className="btn-review">
+            Review Paper
+          </Button>
+          <Button className="btn-save-draft">Save as Draft</Button>
+        </div>
+        <div className="diflex gap-3 mb20">
+          <div className="d-flex align-items-center gap-3 mb20">
+            <PlusOutlined style={{ color: "#215988" }} />
+            <span className="label-16-500-g-u">Add a New Question</span>
           </div>
-          <div className="diflex gap-3 mb20">
-            <div className="d-flex align-items-center gap-3 mb20">
-              <PlusOutlined style={{ color: "#215988" }} />
-              <span className="label-16-500-g-u">Add a New Question</span>
-            </div>
-            <div className="d-flex align-items-center gap-3 mb20">
-              {/* <PlusOutlined style={{ color: "#215988" }} /> */}
-              <img
-                src="./icons/png/add-question.png"
-                className="height15 width16"
-              />
-              <span className="label-16-500-g-u">Add All Questions</span>
-            </div>
-            <div className="d-flex align-items-center gap-3 mb20">
-              {/* <UploadOutlined style={{ color: "#215988" }} /> */}
-              <img src="./icons/png/upload.png" className="height15 width12" />
-              <span className="label-16-500-g-u">Upload Questions</span>
-            </div>
-
-            <div className="d-flex align-items-center gap-3 mb20">
-              <BankOutlined style={{ color: "#215988" }} />
-              <span className="label-16-500-g-u">Question Bank</span>
-            </div>
-
-            <div className="d-flex align-items-center gap-3 mb20">
-              <img
-                src="./icons/png/ai-green.png"
-                className="height15 width16"
-              />
-              <span className="label-16-500-g-u">Create with AI</span>
-            </div>
+          <div className="d-flex align-items-center gap-3 mb20">
+            {/* <PlusOutlined style={{ color: "#215988" }} /> */}
+            <img
+              src="./icons/png/add-question.png"
+              className="height15 width16"
+            />
+            <span className="label-16-500-g-u">Add All Questions</span>
           </div>
-        </Space>
-      </div>
+          <div className="d-flex align-items-center gap-3 mb20">
+            {/* <UploadOutlined style={{ color: "#215988" }} /> */}
+            <img src="./icons/png/upload.png" className="height15 width12" />
+            <span className="label-16-500-g-u">Upload Questions</span>
+          </div>
+
+          <div className="d-flex align-items-center gap-3 mb20">
+            <BankOutlined style={{ color: "#215988" }} />
+            <span className="label-16-500-g-u">Question Bank</span>
+          </div>
+
+          <div className="d-flex align-items-center gap-3 mb20">
+            <img src="./icons/png/ai-green.png" className="height15 width16" />
+            <span className="label-16-500-g-u">Create with AI</span>
+          </div>
+        </div>
+      </Space>
     </div>
   );
 }

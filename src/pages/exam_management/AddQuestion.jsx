@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Tabs, Select, Button, Input, Row, Col, Space, Checkbox } from "antd";
-import { PlusOutlined, UploadOutlined, BankOutlined } from "@ant-design/icons";
+import { Row, Col, Space, Button } from "antd";
 import styled from "styled-components";
 import ShortType from "../questionType/ShortType";
+import { PlusOutlined, BankOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-
-const { TabPane } = Tabs;
+import RightSection from "./RightSection";
+import CommonModalComponent from "../../components/CommonModalComponent";
+import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
+import ReviewModal from "./ReviewModal";
 
 const QuestionGrid = styled.div`
   display: grid;
@@ -51,6 +53,7 @@ const AddQuestion = () => {
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
   const [marks, setMarks] = useState(0);
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
 
   const handleAddQuestionThroughBank = () => {
     navigate("/add-question-by-bank");
@@ -75,7 +78,7 @@ const AddQuestion = () => {
 
   const handleTabChange = (key) => setActiveSection(Number(key));
 
-  const renderQuestionGrid = (section) => (
+  const renderQuestionGrid = (section, sectionIndex) => (
     <div key={section.key} style={{ marginBottom: "24px" }}>
       <div className="d-flex justify-content-between mb12">
         <div className="label-20-500-b">{section.name}</div>
@@ -83,7 +86,10 @@ const AddQuestion = () => {
       </div>
       <QuestionGrid>
         {Array.from({ length: section.questions }, (_, i) => (
-          <QuestionBox key={i}>{i + 1}</QuestionBox>
+          <QuestionBox key={i}>
+            {" "}
+            {i + 1 + sectionIndex * section.questions}
+          </QuestionBox>
         ))}
       </QuestionGrid>
     </div>
@@ -91,99 +97,21 @@ const AddQuestion = () => {
 
   return (
     <div>
+      <ButtonComponent
+        label="Review Modal"
+        gradient={true}
+        buttonActionType="create"
+        onClick={() => setReviewModalOpen(true)}
+      />
       <div style={{ marginBottom: "24px" }}>
+        {/* <CommonModalComponent /> */}
         <div className="label-28-600">Summative Assessment - I</div>
         <div className="label-14-600-blue">View Examination Details</div>
       </div>
       <Row gutter={[24, 24]}>
         {/* Left Section */}
         <Col xs={24} md={16}>
-          <Tabs
-            activeKey={String(activeSection)} // Ensure this is a string matching the `key`
-            onChange={(key) => setActiveSection(Number(key))}
-            items={sections.map((section) => ({
-              key: String(section.key), // Ensure key is a string
-              label: (
-                <span
-                  className={
-                    activeSection === section.key
-                      ? "label-20-600"
-                      : "label-20-500"
-                  }
-                  style={{
-                    color:
-                      activeSection === section.key ? "#4B4B4B" : "#797979",
-                  }}
-                >
-                  {section.name}
-                </span>
-              ),
-              children: (
-                <>
-                  <ShortType />
-                  {/* <Space
-                    direction="vertical"
-                    style={{ width: "100%" }}
-                    size="large"
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "16px",
-                      }}
-                    >
-                      <Checkbox className="label-18-500-b">Question 1</Checkbox>
-                      <Select
-                        value={questionType}
-                        onChange={setQuestionType}
-                        style={{
-                          display: "flex",
-                          width: "363px",
-                          height: "44px",
-                          alignItems: "center",
-                          gap: "139px",
-                          flexShrink: 0,
-                          borderRadius: "8px",
-                          border: "1px solid #797979",
-                        }}
-                      >
-                        {questionTypes.map((type) => (
-                          <Select.Option key={type} value={type}>
-                            {type}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <Input
-                          min={0}
-                          max={20}
-                          value={marks}
-                          onChange={handleMarksChange}
-                          style={{ width: 50 }}
-                        />
-                        <span className="label-16-500-g-i">Marks</span>
-                      </div>
-                    </div>
-                    <Input.TextArea
-                      placeholder="Type the question here"
-                      rows={4}
-                    />
-                    <Button type="link" icon={<PlusOutlined />}>
-                      Add a New Question
-                    </Button>
-                  </Space> */}
-                </>
-              ),
-            }))}
-          />
+          <ShortType />
         </Col>
 
         {/* Right Section */}
@@ -247,6 +175,21 @@ const AddQuestion = () => {
           </div>
         </Col>
       </Row>
+      {isReviewModalOpen && (
+        <CommonModalComponent
+          open={isReviewModalOpen}
+          setOpen={setReviewModalOpen}
+          modalWidthSize={696}
+          modalHeightSize={599}
+          isClosable={true}
+        >
+          <ReviewModal
+            // CardTitle={"Add Student"}
+            // classroomId={null}
+            closeModal={() => setReviewModalOpen(false)}
+          />
+        </CommonModalComponent>
+      )}
     </div>
   );
 };

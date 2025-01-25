@@ -84,12 +84,12 @@ function CommonModalComponent({
         )}
         width={modalWidthSize > 0 ? modalWidthSize : "auto"}
         height={modalHeightSize > 0 ? modalHeightSize : "auto"}
-        styles={{
-          body: {
-            backgroundColor: "#fff3e9",
-            borderRadius: 8,
-          },
-        }}
+        // styles={{
+        //   body: {
+        //     backgroundColor: "#fff3e9",
+        //     borderRadius: 8,
+        //   },
+        // }}
       >
         <div>{children}</div>
       </Modal>
