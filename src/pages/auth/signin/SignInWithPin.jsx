@@ -30,8 +30,12 @@ const SignInWithPin = ({ setSignInWith }) => {
   };
   return (
     <div className="d-flex flex-column align-items-center auth-form-container">
-      <div className="box-orange"></div>
-      <div className="mt20">
+      <img
+        src="/icons/png/auth-logo.png"
+        alt="Logo"
+        style={{ transition: "width 0.3s", width: "300px" }}
+      />
+      <div className="mt0">
         <div className="label-36-600-b ">Sign in to your account</div>
         <div className="label-16-400">
           Welcome back! Please enter your details.

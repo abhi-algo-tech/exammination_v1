@@ -101,8 +101,12 @@ const SignInWithOTP = ({ setSignInWith }) => {
 
   return (
     <div className="d-flex flex-column align-items-center auth-form-container">
-      <div className="box-orange"></div>
-      <div className="mt20 text-center">
+      <img
+        src="/icons/png/auth-logo.png"
+        alt="Logo"
+        style={{ transition: "width 0.3s", width: "300px" }}
+      />
+      <div className=" text-center">
         <div className="label-36-600-b">
           {formStep === 1 ? "Sign in to your account" : "Enter OTP"}
         </div>

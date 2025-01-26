@@ -3,7 +3,7 @@ import React from "react";
 function Footer() {
   // Data variable storing footer content
   const data = {
-    companyName: "Sketchers Technologies",
+    companyName: "Sketchboard",
     privacyPolicy: "/privacy-policy", // You can link this to an actual page
     termsConditions: "/terms-conditions", // You can link this to an actual page
   };

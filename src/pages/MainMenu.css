@@ -1,97 +1,104 @@
+.main-menu-icon {
+  width: 62.72px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: #f9a828;
+}
 /* Sidebar Logo Section */
 .sidebar-logo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2px 0;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 0;
+  text-align: center;
 }
 
 .sidebar-logo img {
-    transition: width 0.3s, height 0.3s;
+  transition: width 0.3s, height 0.3s;
 }
 
 .sidebar-title {
-    color: #797979;
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 2px;
+  color: #797979;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 2px;
 }
 
 /* Sider Styling */
 .ant-layout-sider {
-    background: #edf0f7 !important;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #d9d9d9;
-    transition: margin-left 0.1s ease;
+  background: #edf0f7 !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #d9d9d9;
+  transition: margin-left 0.1s ease;
 }
 
 /* Collapse Button */
 .sider-collapse-button {
-    text-align: center;
-    margin: 10px 0;
+  text-align: center;
+  margin: 10px 0;
 }
 
 .sider-collapse-button img {
-    transition: transform 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 /* Scrollable Menu Container */
 .menu-scroll-container {
-    overflow-y: auto;
-    flex-grow: 1;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 .menu-scroll-container::-webkit-scrollbar {
-    width: 0;
-    background: transparent;
+  width: 0;
+  background: transparent;
 }
 
 /* Menu Items */
 .custom-menu {
-    background: transparent;
+  background: transparent;
 }
 
 .custom-menu .ant-menu-item {
-    display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 48px;
-        padding: 8px 16px;
-        background-color: transparent;
-        border-radius: 8px;
-        transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 8px 16px;
+  background-color: transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
 }
 
 .custom-menu .ant-menu-item:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .custom-menu .ant-menu-item-selected {
-    background: #215988 !important;
-    color: #ffffff !important;
+  background: #215988 !important;
+  color: #ffffff !important;
 }
 
 .custom-menu .ant-menu-item span {
-    margin-left: 10px;
-    font-size: 14px;
-    white-space: nowrap;
-    transition: opacity 0.3s ease-in-out;
+  margin-left: 10px;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .custom-menu.collapsed .ant-menu-item span {
-    opacity: 0;
-    pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .custom-menu.expanded .ant-menu-item span {
-    opacity: 1;
+  opacity: 1;
 }
 
 .custom-menu .ant-menu-item .anticon {
-    font-size: 22px;
+  font-size: 22px;
 }
 
 /* Tooltip for Collapsed Sidebar */
@@ -102,56 +109,52 @@
 } */
 
 .custom-menu .ant-menu-item a:hover {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 /* Submenu Styling */
 .custom-menu .ant-menu-submenu-title {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  color: #ffffff;
 }
 
 .custom-menu .ant-menu-submenu-arrow {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 .custom-menu .ant-menu-sub .ant-menu-item {
-    padding-left: 32px !important;
+  padding-left: 32px !important;
 }
 
 .custom-menu .ant-menu-sub .ant-menu-item span {
-    font-size: 13px;
+  font-size: 13px;
 }
 
 /* Active and Hover States */
 .custom-menu .ant-menu-item:hover,
 .custom-menu .ant-menu-item-active {
-    background-color: #215988 !important;
+  background-color: #215988 !important;
 }
 
 /* Remove underline from links */
 .custom-menu a {
-    text-decoration: none !important;
+  text-decoration: none !important;
 }
 
 /* Ensure no underline on hover */
 .custom-menu a:hover {
-    text-decoration: none !important;
+  text-decoration: none !important;
 }
-
-
-
-
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .ant-layout-header {
-        padding: 0 8px;
-    }
+  .ant-layout-header {
+    padding: 0 8px;
+  }
 
-    .sidebar-title {
-        font-size: 16px;
-    }
+  .sidebar-title {
+    font-size: 16px;
+  }
 }

@@ -145,7 +145,7 @@ function MainMenu({ collapsed, setCollapsed }) {
       width={collapsed ? 80 : 250}
       collapsed={collapsed}
       trigger={null}
-      className="custom-sider"
+      className="custom-sider "
       collapsible
       style={{
         overflowY: "auto", // Enables scrolling when content overflows
@@ -157,15 +157,17 @@ function MainMenu({ collapsed, setCollapsed }) {
     >
       {/* Sidebar Logo */}
       <div
-        className="sidebar-logo"
-        style={{ textAlign: "center", paddingTop: "20px" }}
+        className=" text-center d-flex justify-content-center  my-2"
+        // style={{ textAlign: "center", paddingTop: "20px" }}
       >
-        <img
-          src="/icons/png/logoedu.png"
-          alt="Logo"
-          width={collapsed ? 50 : 100}
-          style={{ transition: "width 0.3s", height: "43px", width: "45px" }}
-        />
+        <div className="main-menu-icon d-flex justify-content-center align-items-center">
+          <img
+            src="/icons/png/Sketch-board-logo.png"
+            alt="Logo"
+            width={collapsed ? 50 : 100}
+            style={{ transition: "width 0.3s", height: "34px", width: "31px" }}
+          />
+        </div>
       </div>
       <div>
         {!collapsed && (

@@ -62,7 +62,7 @@ function DashboardTable() {
               borderRadius: "14px",
             }}
           >
-            <span className="label-16-600"> {status}</span>
+            <span className="label-12-600"> {status}</span>
           </Tag>
         );
       },
