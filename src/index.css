@@ -181,3 +181,14 @@ color: #000;
   font-weight: 600;
   line-height: normal;
 }
+
+/****************************  <label className="checkbox-lable"> ***************************/
+
+.checkbox-lable{
+  color: #6E6E6E;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}

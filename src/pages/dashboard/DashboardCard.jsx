@@ -1,8 +1,13 @@
 import { Card, Col, Row } from "antd";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function DashboardCard({ assessmentCards = [] }) {
+  const navigate = useNavigate();
   //   console.log("assessmentCards", assessmentCards);
+  const handlePaper = () => {
+    navigate("/paper");
+  };
 
   return (
     <>
@@ -16,7 +21,13 @@ function DashboardCard({ assessmentCards = [] }) {
                 className="assessment-card"
               >
                 <div className="d-flex gap8 align-items-center">
-                  <div className="label-14-600-b">{card.title}</div>
+                  <div
+                    className="label-14-600-b"
+                    style={{ cursor: "pointer" }}
+                    onClick={handlePaper}
+                  >
+                    {card.title}
+                  </div>
                   <span className="eclips-mark-4" />
                   <span className="label-10-500-grey">{card.subject}</span>
                 </div>
