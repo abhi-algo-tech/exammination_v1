@@ -1,6 +1,6 @@
 sudo rm -rf /var/www/exam_frontend_v1_dev
 cd /var/www
-git clone  https://github.com/abhi-algo-tech/wow_frontend_v1.git exam_frontend_v1_dev
+git clone  https://github.com/abhi-algo-tech/exammination_v1.git exam_frontend_v1_dev
 cd exam_frontend_v1_dev
 npm i
 docker build -t exam_frontend_v1_dev .
