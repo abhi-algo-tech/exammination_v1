@@ -186,3 +186,14 @@ h4 {
   padding: 0px !important;
 }
 /* footer */
+
+/****************************  <label className="checkbox-lable"> ***************************/
+
+.checkbox-lable {
+  color: #6e6e6e;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}

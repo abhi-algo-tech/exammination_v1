@@ -1,0 +1,42 @@
+.lable-marks{
+    color: #4F4F4F;
+        font-family: Poppins;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+}
+
+.value-marks{
+    color: #4F4F4F;
+        font-family: Poppins;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+}
+
+.card-student-paper{
+    border-radius: 8px;
+        border: 1px solid #215988;
+        background: #FFF;
+        padding: 20px;
+}
+
+.rule-lable {
+    color: #000;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.rule-value {
+    color: #000;
+    font-family: Poppins;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}

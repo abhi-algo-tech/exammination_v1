@@ -22,6 +22,8 @@ import UploadQuestion from "./pages/exam_management/UploadQuestion";
 import ReviewQuestions from "./pages/exam_management/ReviewQuestions";
 import PublishForm from "./pages/exam_management/PublishForm";
 import PreviewPaper from "./pages/exam_management/PreviewPaper";
+import ExamminationRule from "./pages/paper/ExamminationRule";
+import StudentPaper from "./pages/paper/StudentPaper";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -50,6 +52,8 @@ function App() {
             <Route path="/upload-questions" element={<UploadQuestion />} />
             <Route path="/preview-questions" element={<ReviewQuestions />} />
             <Route path="/preview-paper" element={<PreviewPaper />} />
+            <Route path="/paper" element={<ExamminationRule />} />
+            <Route path="/student-paper" element={<StudentPaper />} />
             <Route path="/publish-questions" element={<PublishForm />} />
             <Route
               path="/selected-question-by-bank"
