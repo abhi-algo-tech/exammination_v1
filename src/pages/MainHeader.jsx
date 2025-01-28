@@ -7,7 +7,6 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 import { useUserLogout } from "../hooks/useAuth";
 
 const { Header } = Layout;

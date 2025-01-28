@@ -7,7 +7,9 @@ import MainHeader from "./MainHeader";
 import Logo from "../components/Logo";
 import MainMenu from "./MainMenu";
 import SideNavbarMobile from "./SideNavbarMobile";
-import Fotter from "./Footer"; // Corrected component name
+
+import { Footer } from "antd/es/layout/layout";
+import FooterComp from "./FooterComp";
 
 const { Content } = Layout;
 
@@ -68,7 +70,7 @@ function MainLayout() {
             marginLeft,
             transition: "margin-left 0.2s ease",
             flex: 1, // Ensures that this section takes up the available space
-            paddingBottom: "70px", // Add space at the bottom to account for the footer
+            // paddingBottom: "70px", // Add space at the bottom to account for the footer
           }}
         >
           <MainHeader
@@ -84,33 +86,19 @@ function MainLayout() {
             style={{
               padding: "5px 30px",
               margin: 0,
-              minHeight: "100%", // Ensures the content area takes the full height
               overflowY: "auto", // Allow content to scroll if it's long\
               background: "#F5F7FA",
-              paddingBottom: "70px",
             }}
           >
             <Outlet />
           </Content>
+          <Footer>
+            <FooterComp />
+          </Footer>
         </Layout>
-      </Layout>
 
-      {/* Fixed Footer */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          bordertop: "1px solid var(--Gray-400, #CED4DA)",
-          backgroundColor: "#215988", // Add background color to make footer visible
-          zIndex: 1000, // Ensure the footer stays on top of other content
-          padding: "20px 20px",
-          boxShadow: "0 -2px 10px rgba(0,0,0,0.1)", // Optional shadow for footer
-        }}
-      >
-        <Fotter />
-      </div>
+        {/* Fixed Footer */}
+      </Layout>
     </div>
   );
 }

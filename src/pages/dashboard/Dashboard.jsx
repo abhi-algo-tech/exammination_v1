@@ -1,4 +1,4 @@
-import { Form } from "antd";
+import { Form, Layout } from "antd";
 import React from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";

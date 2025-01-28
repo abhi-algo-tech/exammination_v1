@@ -29,6 +29,7 @@
 .ant-layout-sider {
   background: #edf0f7 !important;
   min-height: 100vh;
+  height: 48px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #d9d9d9;
@@ -60,16 +61,25 @@
 .custom-menu {
   background: transparent;
 }
+.custom-menu li {
+  /* display: flex !important; */
+  align-items: center;
+}
 
 .custom-menu .ant-menu-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 48px;
-  padding: 8px 16px;
+  min-width: 10px;
   background-color: transparent;
   border-radius: 8px;
   transition: all 0.3s ease-in-out;
+}
+.custom-menu .ant-menu-inline-collapsed > .ant-menu-item {
+  justify-content: center; /* Center icon for collapsed menu */
+  padding: 0; /* Adjust padding to match layout */
+}
+
+.custom-menu .ant-menu-inline-collapsed .ant-menu-item .ant-menu-title-content {
+  display: none; /* Hide text in collapsed mode */
 }
 
 .custom-menu .ant-menu-item:hover {

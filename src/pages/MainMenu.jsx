@@ -1,11 +1,12 @@
-import { Layout, Menu, Button, Tooltip } from "antd";
+import { Layout, Menu, Button } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  CloudUploadOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from "@ant-design/icons";
+  MdOutlineCollectionsBookmark,
+  MdOutlineDashboard,
+  MdOutlineLibraryBooks,
+} from "react-icons/md";
+import { TbEyeCheck } from "react-icons/tb";
 import "./MainMenu.css";
 
 const { Sider } = Layout;
@@ -13,71 +14,75 @@ const { Sider } = Layout;
 const menuItems = [
   {
     key: "dashboard",
-    icon: (
-      <img
-        src="/icons/png/Dashboard.png"
-        width={22}
-        height={22}
-        alt="Dashboard"
-      />
-    ),
+    icon: <MdOutlineDashboard style={{ width: 22, height: 22 }} />,
+    // icon: (
+    //   <img
+    //     src="/icons/png/Dashboard.png"
+    //     width={22}
+    //     height={22}
+    //     alt="Dashboard"
+    //   />
+    // ),
     label: "Dashboard",
     link: "/dashboard",
   },
   {
     key: "exam-management",
-    icon: (
-      <img
-        src="/icons/png/exam-management.png"
-        width={22}
-        height={22}
-        alt="exam-management"
-      />
-    ),
+    icon: <MdOutlineLibraryBooks style={{ width: 22, height: 22 }} />,
+    // icon: (
+    //   <img
+    //     src="/icons/png/exam-management.png"
+    //     width={22}
+    //     height={22}
+    //     alt="Exam Management"
+    //   />
+    // ),
     label: "Exam Management",
     link: "/exam-management",
   },
   {
-    key: "Question Bank",
-    icon: (
-      <img
-        src="/icons/png/question-bank.png"
-        width={22}
-        height={22}
-        alt="Question Bank"
-      />
-    ),
+    key: "question-bank",
+    icon: <MdOutlineCollectionsBookmark style={{ width: 22, height: 22 }} />,
+    // icon: (
+    //   <img
+    //     src="/icons/png/question-bank.png"
+    //     width={22}
+    //     height={22}
+    //     alt="Question Bank"
+    //   />
+    // ),
     label: "Question Bank",
     link: "/question-bank",
   },
   {
-    key: "The Learning Hub",
+    key: "learning-hub",
     icon: (
       <img
         src="/icons/png/learning-hub.png"
         width={22}
         height={22}
-        alt="The Learning Hubs"
+        alt="Learning Hub"
       />
     ),
-    label: "The Learning Hubs",
+    label: "The Learning Hub",
     link: "/learning-hub",
   },
   {
-    key: "Proctoring",
-    icon: (
-      <img
-        src="/icons/png/proctoring.png"
-        width={22}
-        height={18}
-        alt="Proctoring"
-      />
-    ),
+    key: "proctoring",
+    icon: <TbEyeCheck style={{ width: 22, height: 22 }} />,
+    // icon: (
+    //   <img
+    //     src="/icons/png/proctoring.png"
+    //     width={22}
+    //     height={18}
+    //     alt="Proctoring"
+    //   />
+    // ),
     label: "Proctoring",
     link: "/proctoring",
   },
   {
-    key: "Student Management",
+    key: "student-management",
     icon: (
       <img
         src="/icons/png/student.png"
@@ -90,7 +95,7 @@ const menuItems = [
     link: "/student-management",
   },
   {
-    key: "Grading & Assessment",
+    key: "grading-assessment",
     icon: (
       <img
         src="/icons/png/grading-assessment.png"
@@ -100,10 +105,10 @@ const menuItems = [
       />
     ),
     label: "Grading & Assessment",
-    link: "/grading&assessment",
+    link: "/grading-assessment",
   },
   {
-    key: "AI Integration",
+    key: "ai-integration",
     icon: (
       <img
         src="/icons/png/ai.png"
@@ -115,18 +120,6 @@ const menuItems = [
     label: "AI Integration",
     link: "/ai-integration",
   },
-  // {
-  //   key: "upload",
-  //   icon: <CloudUploadOutlined />,
-  //   label: "Upload",
-  //   link: "/upload",
-  // },
-  // {
-  //   key: "upload",
-  //   icon: <CloudUploadOutlined />,
-  //   label: "Upload",
-  //   link: "/upload",
-  // },
 ];
 
 function MainMenu({ collapsed, setCollapsed }) {
@@ -145,21 +138,17 @@ function MainMenu({ collapsed, setCollapsed }) {
       width={collapsed ? 80 : 250}
       collapsed={collapsed}
       trigger={null}
-      className="custom-sider "
       collapsible
       style={{
-        overflowY: "auto", // Enables scrolling when content overflows
-        height: "70vh", // Ensures the sidebar takes full height
-        background: "rgba(0, 0, 0, 0.5)", // Transparent background (you can adjust the opacity)
-        backdropFilter: "blur(10px)", // Optional: Adds blur effect to the background
-        boxShadow: "none", // Optional: Removes the box shadow
+        overflowY: "auto",
+        height: "auto",
+        background: "rgba(0, 0, 0, 0.5)",
+        backdropFilter: "blur(10px)",
+        boxShadow: "none",
       }}
     >
       {/* Sidebar Logo */}
-      <div
-        className=" text-center d-flex justify-content-center  my-2"
-        // style={{ textAlign: "center", paddingTop: "20px" }}
-      >
+      <div className=" text-center d-flex justify-content-center  my-2">
         <div className="main-menu-icon d-flex justify-content-center align-items-center">
           <img
             src="/icons/png/Sketch-board-logo.png"
@@ -208,22 +197,8 @@ function MainMenu({ collapsed, setCollapsed }) {
         selectedKeys={selectedKeys}
         items={menuItems.map((item) => ({
           key: item.key,
+          label: <Link to={item.key}>{item.label}</Link>,
           icon: item.icon,
-          label: collapsed ? (
-            <Tooltip title={item.label}>
-              <Link
-                to={item.link}
-                style={{ display: "flex", alignItems: "center" }}
-              ></Link>
-            </Tooltip>
-          ) : (
-            <Link
-              to={item.link}
-              style={{ display: "flex", alignItems: "center", gap: "6px" }}
-            >
-              <span>{item.label}</span>
-            </Link>
-          ),
         }))}
         className="custom-menu"
         style={{

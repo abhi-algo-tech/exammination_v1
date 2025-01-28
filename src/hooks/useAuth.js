@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { login, logout } from "../store/authSlice";
 import { authKeys } from "../utils/queryKeys";
 import AuthService from "../services/authService";
+import { CustomMessage } from "../utils/CustomMessage";
 
 // User login hook
 export const useUserLogin = () => {
@@ -19,6 +20,7 @@ export const useUserLogin = () => {
           user: data.user,
         })
       );
+      CustomMessage.success("Login successful");
       queryClient.invalidateQueries(authKeys.login); // Refetch any related queries if needed
     },
     onError: (error) => {
