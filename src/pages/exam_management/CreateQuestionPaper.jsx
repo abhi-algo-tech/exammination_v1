@@ -15,26 +15,66 @@ import CustomSelect from "../../exam_components/select/CustomSelect";
 import DynamicNumericInput from "../../exam_components/dynamic_numeric_input/DynamicNumericInput";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useCreateExam } from "../../hooks/useExam";
+import { CustomMessage } from "../../utils/CustomMessage";
 
 // Options for Select and Multi-select
 const examTypeOptions = [
-  { value: "midterm", label: "Midterm" },
-  { value: "final", label: "Final" },
-  { value: "quiz", label: "Quiz" },
+  { value: 1, label: "Midterm" },
+  { value: 2, label: "Final" },
+  { value: 3, label: "Quiz" },
 ];
 
 const classTypeOptions = [
-  { value: "class 8", label: "Class 8" },
-  { value: "class 9", label: "Class 9" },
-  { value: "class 10", label: "Class 10" },
+  { value: 1, label: "Class 8" },
+  { value: 2, label: "Class 9" },
+  { value: 3, label: "Class 10" },
 ];
 
 const subjectOptions = [
-  { value: "math", label: "Math" },
-  { value: "science", label: "Science" },
-  { value: "history", label: "History" },
-  { value: "geography", label: "Geography" },
+  { value: 1, label: "Math" },
+  { value: 2, label: "Science" },
+  { value: 3, label: "History" },
+  { value: 4, label: "Geography" },
 ];
+
+const curriculumTypeOptions = [
+  { value: 1, label: "CBSC" },
+  { value: 2, label: "ICSE" },
+  { value: 3, label: "SB" },
+  { value: 4, label: "IB" },
+];
+
+// Assuming you have this convertToPayload function already defined
+const convertToPayload = (values) => {
+  return {
+    nameOfExam: values.examName,
+    typeOfExamId: values.examType.value,
+    curriculumId: values.curriculum.value,
+    classId: values.class.value,
+    division: values.division,
+    subjectId: values.subject.value,
+    subjectCode: parseInt(values.subjectCode.join("")), // Example, adjust according to your needs
+    dateOfExam: values.examDate.toISOString().split("T")[0], // Convert to YYYY-MM-DD format
+    examCreatedBy: 1, // Replace with actual user ID
+    examEvaluatedBy: 2, // Replace with actual evaluator ID
+    institution: values.institution,
+    duration: values.duration.toISOString().substr(11, 8), // Convert to HH:MM:SS format
+    marks: parseInt(values.totalMarks), // Assuming marks are integers
+    uniquePaperCode: parseInt(values.uniquePaperCode.join("")), // Example, adjust according to your needs
+    createdBy: 1, // Replace with actual user ID
+    statusId: 1, // Replace with actual status ID
+    sections: values.numberSections
+      ? Array.from({ length: values.numberSections }, (_, i) => ({
+          sectionName: String.fromCharCode(65 + i), // A, B, C, etc.
+          questionCount:
+            i < values.numberSections / 2
+              ? parseInt(values.noOfQuestionSectionA)
+              : parseInt(values.noOfQuestionSectionB),
+        }))
+      : [],
+  };
+};
 
 const name = "Abhi.s"; // Example variable for name
 const time = "12:14 - 11.12.24"; // Example variable for time
@@ -44,8 +84,22 @@ function CreateQuestionPaper() {
   const [form] = Form.useForm();
   const [sections, setSections] = useState(0);
 
+  const { mutate: createExam, isLoading, isError } = useCreateExam();
+
   const handleSubmit = (values) => {
-    console.log("Form values:", values);
+    const payload = convertToPayload(values);
+
+    // Call the createExam mutation
+    createExam(payload, {
+      onSuccess: () => {
+        CustomMessage.success("Exam created successfully!");
+        navigate("/add-question");
+      },
+      onError: (error) => {
+        CustomMessage.error("Failed to create exam. Please try again.");
+        console.error("Error creating exam:", error);
+      },
+    });
   };
   const handleAsignStudent = () => {
     console.log("assign Student");
@@ -56,9 +110,9 @@ function CreateQuestionPaper() {
     setSections(value);
   };
 
-  const createQuestion = () => {
-    navigate("/add-question");
-  };
+  // const createQuestion = () => {
+  //   navigate("/add-question");
+  // };
   return (
     <div className="mt-2">
       <h2 className="page-head mb-4">Enter the Exam Details</h2>
@@ -109,7 +163,7 @@ function CreateQuestionPaper() {
             </Col>
 
             <Col md={6} lg={8}>
-              <Form.Item
+              {/* <Form.Item
                 label="Curriculum"
                 name="curriculum"
                 // rules={[
@@ -119,6 +173,19 @@ function CreateQuestionPaper() {
                 <Input
                   placeholder="Enter the curriculum"
                   className="input-box"
+                />
+              </Form.Item> */}
+              <Form.Item
+                label="Curriculum"
+                name="curriculum"
+                // rules={[
+                //   { required: true, message: "Please select an exam type!" },
+                // ]}
+              >
+                <CustomSelect
+                  options={curriculumTypeOptions}
+                  placeholder="Select"
+                  isSearchable
                 />
               </Form.Item>
             </Col>
@@ -139,16 +206,16 @@ function CreateQuestionPaper() {
                     placeholder="Choose Class"
                     isSearchable
                   />
-                  <div className="mt-2">
-                    <ButtonComponent
-                      bgColor="#07617D"
-                      height="30px"
-                      width="140px"
-                      label="Assign Students"
-                      onClick={handleAsignStudent}
-                    />
-                  </div>
                 </Form.Item>
+                <div className="mt-2">
+                  <ButtonComponent
+                    bgColor="#07617D"
+                    height="30px"
+                    width="140px"
+                    label="Assign Students"
+                    onClick={handleAsignStudent}
+                  />
+                </div>
               </Col>
 
               <Col
@@ -379,20 +446,6 @@ function CreateQuestionPaper() {
                       ); // Generate current section letter
                       return (
                         <Col md={11} key={`col-${currentIndex}`}>
-                          {/* <Form.Item
-                            label={`Section ${currentAlpha}`}
-                            name={`section${currentAlpha}`}
-                            // Uncomment rules for validation
-                            // rules={[
-                            //   { required: true, message: "Please select a Section!" },
-                            // ]}
-                          >
-                            <CustomSelect
-                              options={subjectOptions}
-                              placeholder="Select Section"
-                              isSearchable
-                            />
-                          </Form.Item> */}
                           <Form.Item
                             label={`Total Question At Section ${currentAlpha}`}
                             name={`noOfQuestionSection${currentAlpha}`}
@@ -463,7 +516,7 @@ function CreateQuestionPaper() {
                   width="236px"
                   label="Create Question Paper"
                   htmlType="submit"
-                  onClick={createQuestion}
+                  disabled={isLoading}
                 />
               </Form.Item>
             </div>

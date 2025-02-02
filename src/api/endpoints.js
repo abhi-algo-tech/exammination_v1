@@ -10,4 +10,8 @@ export const API_ENDPOINTS = {
     LOGOUT: "/auth/logout",
     ME: "/auth/me",
   },
+  exam: {
+    BASE: "/exams",
+    BY_ID: "/exams/{id}",
+  },
 };

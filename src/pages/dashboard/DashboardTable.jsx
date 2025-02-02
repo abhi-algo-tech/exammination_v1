@@ -1,10 +1,98 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Table, Select, Input, Button, Tag, Dropdown } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
 import InputWithSearch from "../../components/input/InputWithSearch";
+import { useExams } from "../../hooks/useExam";
+import { debounce } from "lodash";
+
+function transformExamData(apiResponse) {
+  if (!apiResponse || !apiResponse.data || !Array.isArray(apiResponse.data)) {
+    return []; // Return empty array for invalid input
+  }
+
+  return apiResponse.data.map((exam, index) => ({
+    key: String(exam.id || index + 1), // Use exam.id if available, otherwise index
+    name: exam.nameOfExam || "Unknown Exam", // Provide default values
+    subject: getSubjectName(exam.subjectId), // Implement this function (see below)
+    class: getClassString(exam.classId, exam.division), // Implement this function (see below)
+    curriculum: getCurriculumName(exam.curriculumId), // Implement this function (see below)
+    totalMarks: exam.marks || 0,
+    status: getStatusString(exam.statusId), // Implement this function (see below)
+    author: getAuthorName(exam.examCreatedBy), // Implement this function (see below)
+    lastEdited: formatDate(exam.createdOn), // Implement this function (see below)
+  }));
+}
+
+// Helper functions (you'll need to implement these based on your data)
+
+function getSubjectName(subjectId) {
+  // Replace with your logic to get the subject name from the ID
+  // Example:
+  const subjectMap = {
+    1: "Chemistry",
+    2: "Physics",
+    3: "Mathematics",
+    5: "Science", // Add more mappings as needed
+  };
+  return subjectMap[subjectId] || "Unknown Subject";
+}
+
+function getCurriculumName(curriculumId) {
+  const curriculumMap = {
+    1: "CBSE",
+    2: "ICSE",
+    // ... other curriculum mappings
+  };
+  return curriculumMap[curriculumId] || "Unknown Curriculum";
+}
+
+function getClassString(classId, division) {
+  return `${classId}${division}`; // Or add logic if you have class names
+}
+
+function getStatusString(statusId) {
+  const statusMap = {
+    1: "Published (100%)", // Replace with your actual status mappings
+    // ... other status mappings
+  };
+  return statusMap[statusId] || "Unknown Status";
+}
+
+function getAuthorName(authorId) {
+  const authorMap = {
+    1: "Shaila.N",
+    2: "Nalini.M",
+  };
+  return authorMap[authorId] || "Unknown Author";
+}
+
+function formatDate(dateString) {
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Month is 0-indexed
+    const year = date.getFullYear();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "pm" : "am";
+    const formattedHours = hours % 12 || 12; // Handle midnight (0)
+    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+
+    return `${day}/${month} ${formattedHours}:${formattedMinutes} ${ampm}`;
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return dateString; // Return original string if formatting fails
+  }
+}
 
 function DashboardTable() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [subjectId, setSubjectId] = useState(null);
+  const [classId, setClassId] = useState(null);
+  const [curriculumId, setCurriculumId] = useState(null);
+  const [statusId, setStatusId] = useState(null);
+  const [search, setSearch] = useState("");
   const columns = [
     {
       className: "label-14-400",
@@ -99,167 +187,137 @@ function DashboardTable() {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      name: "Summative Assessment - 1",
-      subject: "Chemistry",
-      class: "10A, 10B",
-      curriculum: "CBSE",
-      totalMarks: 80,
-      status: "In-Progress (44%)",
-      author: "Shaila.N",
-      lastEdited: "12/12 7:00 am",
-    },
-    {
-      key: "2",
-      name: "Chemistry Paper Draft (Question Bank)",
-      subject: "Chemistry",
-      class: "10C, 10D",
-      curriculum: "CBSE",
-      totalMarks: 80,
-      status: "Published (100%)",
-      author: "Nalini.M",
-      lastEdited: "12/12 7:00 am",
-    },
-    {
-      key: "3",
-      name: "Math Assessment - 2",
-      subject: "Mathematics",
-      class: "9A, 9B",
-      curriculum: "ICSE",
-      totalMarks: 100,
-      status: "Published (100%)",
-      author: "Rajesh.K",
-      lastEdited: "11/12 5:30 pm",
-    },
-    {
-      key: "4",
-      name: "Physics Quiz",
-      subject: "Physics",
-      class: "10A",
-      curriculum: "State Board",
-      totalMarks: 50,
-      status: "In-Progress (60%)",
-      author: "Sangeetha.P",
-      lastEdited: "13/12 9:00 am",
-    },
-    {
-      key: "5",
-      name: "English Language Test",
-      subject: "English",
-      class: "8A, 8B, 8C",
-      curriculum: "CBSE",
-      totalMarks: 70,
-      status: "In-Review (80%)",
-      author: "Anjali.R",
-      lastEdited: "11/12 3:45 pm",
-    },
-    {
-      key: "6",
-      name: "History Final Exam",
-      subject: "History",
-      class: "9C",
-      curriculum: "ICSE",
-      totalMarks: 60,
-      status: "Published (100%)",
-      author: "Dinesh.K",
-      lastEdited: "10/12 4:00 pm",
-    },
-    {
-      key: "7",
-      name: "Geography Worksheet",
-      subject: "Geography",
-      class: "10A, 10B",
-      curriculum: "CBSE",
-      totalMarks: 30,
-      status: "In-Progress (50%)",
-      author: "Madhuri.S",
-      lastEdited: "12/12 6:00 pm",
-    },
-    {
-      key: "8",
-      name: "Biology Mid-Term Assessment",
-      subject: "Biology",
-      class: "10C",
-      curriculum: "State Board",
-      totalMarks: 75,
-      status: "In-Review (70%)",
-      author: "Krishna.M",
-      lastEdited: "14/12 8:15 am",
-    },
-    {
-      key: "9",
-      name: "Physics Sample Paper",
-      subject: "Physics",
-      class: "9D",
-      curriculum: "CBSE",
-      totalMarks: 90,
-      status: "Published (100%)",
-      author: "Lalitha.S",
-      lastEdited: "13/12 10:45 am",
-    },
-    {
-      key: "10",
-      name: "Computer Science Assessment - 1",
-      subject: "Computer Science",
-      class: "11A, 11B",
-      curriculum: "CBSE",
-      totalMarks: 100,
-      status: "In-Progress (30%)",
-      author: "Vikas.G",
-      lastEdited: "10/12 2:30 pm",
-    },
-  ];
+  // State for pagination and sorting
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
+
+  const [sorter, setSorter] = useState({
+    field: "createdOn",
+    order: "ascend",
+  });
+
+  // Fetch dataList using the custom hook
+  const { data, isLoading, error, refetch } = useExams({
+    page: pagination.current - 1,
+    size: pagination.pageSize,
+    sortBy: sorter?.field,
+    sortDirection:
+      sorter?.order === "ascend"
+        ? "asc"
+        : sorter?.order === "descend"
+        ? "desc"
+        : undefined,
+    subjectId,
+    classId,
+    curriculumId,
+    statusId,
+    search,
+  });
+
+  console.log("data123", data); // Log the 'data'
+  const exam = data && data ? transformExamData(data) : [];
+  console.log("exam:", exam);
+
+  // Handle table changes (pagination & sorting)
+  const handleTableChange = (pagination, filters, sorter) => {
+    setPagination({
+      current: pagination.current,
+      pageSize: pagination.pageSize,
+    });
+
+    setSorter(sorter.order ? sorter : null); // Update sorter or set to null if no sorting
+
+    refetch();
+  };
+
+  const debouncedSearch = useCallback(
+    debounce((value) => setSearch(value), 3000), // 500ms delay
+    []
+  );
+
+  const handleFilterChange = (type, value) => {
+    switch (type) {
+      case "subject":
+        setSubjectId(value);
+        break;
+      case "class":
+        setClassId(value);
+        break;
+      case "curriculum":
+        setCurriculumId(value);
+        break;
+      case "status":
+        setStatusId(value);
+        break;
+      case "search":
+        console.log("value:", value);
+        debouncedSearch(value);
+        break;
+      default:
+        break;
+    }
+    refetch(); // Trigger refetch after filter change
+  };
 
   return (
     <div className="mt36">
       {/* Filters */}
-      <div className="filters  d-flex mb32">
+      <div className="filters d-flex mb32">
         <Select
-          defaultValue="Chemistry"
+          value={subjectId}
+          onChange={(value) => handleFilterChange("subject", value)}
           className="mr14 alignCenter"
           style={{ width: 137 }}
+          placeholder="Subject"
         >
-          <Option value="Chemistry">Chemistry</Option>
-          <Option value="Physics">Physics</Option>
-          <Option value="Maths">Maths</Option>
+          <Option value={1}>Chemistry</Option>
+          <Option value={2}>Physics</Option>
+          <Option value={3}>Maths</Option>
         </Select>
 
         <Select
-          defaultValue="Class 10"
+          value={classId}
+          onChange={(value) => handleFilterChange("class", value)}
           className="mr14 alignCenter"
           style={{ width: 137 }}
+          placeholder="class"
         >
-          <Option value="Class 10">Class 10</Option>
-          <Option value="Class 9">Class 9</Option>
+          <Option value={10}>Class 10</Option>
+          <Option value={9}>Class 9</Option>
         </Select>
 
         <Select
-          defaultValue="CBSE"
+          value={curriculumId}
+          onChange={(value) => handleFilterChange("curriculum", value)}
           className="mr14 alignCenter"
-          style={{ width: 127 }}
+          style={{ width: 137 }}
+          placeholder="curriculum"
         >
-          <Option value="CBSE">CBSE</Option>
-          <Option value="ICSE">ICSE</Option>
+          <Option value={1}>CBSE</Option>
+          <Option value={2}>ICSE</Option>
         </Select>
 
         <Select
-          defaultValue="Published (100%)"
-          className="mr14"
-          style={{ width: 188 }}
+          value={statusId}
+          onChange={(value) => handleFilterChange("status", value)}
+          className="mr14 alignCenter"
+          style={{ width: 137 }}
+          placeholder="status"
         >
-          <Option value="published">Published (100%)</Option>
-          <Option value="in-progress">In-Progress</Option>
-          <Option value="in-review">In-Review</Option>
+          <Option value={1}>Published</Option>
+          <Option value={2}>In-Progress</Option>
+          <Option value={3}>In-Review</Option>
+          <Option value={4}>Exam Details</Option>
         </Select>
-        <InputWithSearch />
-        {/* <Input.Search
-          placeholder="Search by keyword/question..."
-          style={{ width: 300 }}
-        /> */}
 
-        {/* <Button type="primary">Apply Filters</Button> */}
+        <Input
+          onChange={(e) => handleFilterChange("search", e.target.value)}
+          className="mr14 alignCenter"
+          placeholder="Search"
+          style={{ width: "300px" }}
+        />
       </div>
 
       {/* Table */}
@@ -270,12 +328,16 @@ function DashboardTable() {
         }}
         position="bottomCenter"
         columns={columns}
-        dataSource={data}
+        dataSource={exam}
+        loading={isLoading}
         pagination={{
-          pageSize: 5,
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: data?.totalElements,
           showSizeChanger: true,
           showQuickJumper: true,
         }}
+        onChange={handleTableChange}
       />
     </div>
   );
