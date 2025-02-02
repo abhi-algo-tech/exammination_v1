@@ -37,7 +37,7 @@ function CommonUploads({ containerHeight = "auto" }) {
           borderRadius: "8px",
           height: containerHeight,
           justifyContent: "center",
-          alignItems: "flex-end",
+          // alignItems: "flex-end",
         }}
       >
         <svg

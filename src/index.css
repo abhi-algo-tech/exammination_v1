@@ -173,22 +173,27 @@ h4 {
 }
 
 /************************ select-question-type **************************/
-.select-question-type{
-color: #000;
+.select-question-type {
+  color: #000;
   font-family: Poppins;
   font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
 }
+/* footer */
+.ant-layout-footer {
+  padding: 0px !important;
+}
+/* footer */
 
 /****************************  <label className="checkbox-lable"> ***************************/
 
-.checkbox-lable{
-  color: #6E6E6E;
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
+.checkbox-lable {
+  color: #6e6e6e;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
