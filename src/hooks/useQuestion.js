@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { questionKeys } from "../utils/queryKeys";
-import QuestionService from "../services/QuestionService";
+import QuestionService from "../services/questionService";
 
 // Hook to fetch all questions with pagination and sorting
 export const useQuestions = ({
@@ -55,7 +55,7 @@ export const useQuestions = ({
 export const useQuestionById = (id) => {
   return useQuery({
     queryKey: [questionKeys.question, id],
-    queryFn: () => QuestionService.getQuestionById(id),
+    queryFn: () => questionService.getQuestionById(id),
     onError: (error) => {
       console.error("Error fetching question by ID:", error);
     },
@@ -67,7 +67,7 @@ export const useCreateQuestion = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload) => QuestionService.createQuestion(payload),
+    mutationFn: (payload) => questionService.createQuestion(payload),
     onSuccess: () => {
       // Invalidate the questions list query to refetch
       queryClient.invalidateQueries(questionKeys.question);
@@ -83,7 +83,7 @@ export const useUpdateQuestion = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data) => QuestionService.updateQuestion(data.id, data.payload),
+    mutationFn: (data) => questionService.updateQuestion(data.id, data.payload),
     onSuccess: (data) => {
       // Invalidate the questions list and the specific question cache
       queryClient.invalidateQueries(questionKeys.question);
