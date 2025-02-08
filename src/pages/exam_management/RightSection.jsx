@@ -1,4 +1,4 @@
-import { Tabs, Select, Button, Input, Row, Col, Space, Checkbox } from "antd";
+import { Tabs, Select, Button, Input, Row, Col, Space } from "antd";
 import { PlusOutlined, UploadOutlined, BankOutlined } from "@ant-design/icons";
 import React from "react";
 import styled from "styled-components";
@@ -30,48 +30,62 @@ const QuestionBox = styled.div`
     color: #6366f1;
   }
 `;
+
 function RightSection({ sections = [], onPreview }) {
   const navigate = useNavigate();
-  const handleMarksChange = (e) => {
-    const value = e.target.value; // Get the input value as a string
 
-    // Allow empty input (for backspace) and numbers within the range
-    if (
-      value === "" ||
-      (/^\d+$/.test(value) &&
-        parseInt(value, 10) >= 0 &&
-        parseInt(value, 10) <= 20)
-    ) {
-      setMarks(value === "" ? "" : parseInt(value, 10)); // Allow empty or valid number
+  const handleMarksChange = (e) => {
+    const value = e.target.value;
+    if (value === "" || (/^\d+$/.test(value) && parseInt(value, 10) <= 20)) {
+      setMarks(value === "" ? "" : parseInt(value, 10));
     }
   };
 
-  // const handlePreview = () => {
-  //   navigate("/preview-questions");
-  // };
+  // Map sections to get the questions to be highlighted
+  const sectionQuestionMap = sections.reduce((acc, section) => {
+    acc[section.name] = new Set(
+      section.questionList?.map((q) => q.questionNumber) || []
+    );
+    return acc;
+  }, {});
 
-  const handleAddQuestionThroughBank = () => {
-    navigate("/add-question-by-bank");
-  };
-  const handleUpload = () => {
-    navigate("/upload-questions");
-  };
+  const handleAddQuestionThroughBank = () => navigate("/add-question-by-bank");
+  const handleUpload = () => navigate("/upload-questions");
 
-  const handleTabChange = (key) => setActiveSection(Number(key));
+  const renderQuestionGrid = (section) => {
+    const highlightedQuestions = sectionQuestionMap[section.name] || new Set();
 
-  const renderQuestionGrid = (section) => (
-    <div key={section.key} style={{ marginBottom: "24px" }}>
-      <div className="d-flex justify-content-between mb12">
-        <div className="label-20-500-b">{section.name}</div>
-        <div className="label-14-500-g">{section.marks} marks</div>
+    return (
+      <div key={section.key} style={{ marginBottom: "24px" }}>
+        <div className="d-flex justify-content-between mb12">
+          <div className="label-20-500-b">{section.name}</div>
+          <div className="label-14-500-g">{section.marks} marks</div>
+        </div>
+        <QuestionGrid>
+          {Array.from({ length: section.questions }, (_, i) => {
+            const questionIndex = i + 1;
+            const isHighlighted = highlightedQuestions.has(questionIndex);
+
+            return (
+              <QuestionBox
+                key={i}
+                style={{
+                  backgroundColor: isHighlighted ? "green" : "white",
+                  color: isHighlighted ? "white" : "black",
+                  border: isHighlighted
+                    ? "2px solid darkgreen"
+                    : "1px solid gray",
+                }}
+              >
+                {questionIndex}
+              </QuestionBox>
+            );
+          })}
+        </QuestionGrid>
       </div>
-      <QuestionGrid>
-        {Array.from({ length: section.questions }, (_, i) => (
-          <QuestionBox key={i}>{i + 1}</QuestionBox>
-        ))}
-      </QuestionGrid>
-    </div>
-  );
+    );
+  };
+
   return (
     <div
       className="left-container-question-create"
@@ -91,10 +105,10 @@ function RightSection({ sections = [], onPreview }) {
             <span className="label-16-500-g-u">Add a New Question</span>
           </div>
           <div className="d-flex align-items-center gap-3 mb20">
-            {/* <PlusOutlined style={{ color: "#215988" }} /> */}
             <img
               src="./icons/png/add-question.png"
               className="height15 width16"
+              alt="Add Question"
             />
             <span className="label-16-500-g-u">
               Add Questions according to topic
@@ -104,11 +118,13 @@ function RightSection({ sections = [], onPreview }) {
             className="d-flex align-items-center gap-3 mb20"
             onClick={handleUpload}
           >
-            {/* <UploadOutlined style={{ color: "#215988" }} /> */}
-            <img src="./icons/png/upload.png" className="height15 width12" />
+            <img
+              src="./icons/png/upload.png"
+              className="height15 width12"
+              alt="Upload"
+            />
             <span className="label-16-500-g-u">Upload Question Paper</span>
           </div>
-
           <div
             className="d-flex align-items-center gap-3 mb20"
             onClick={handleAddQuestionThroughBank}
@@ -118,9 +134,12 @@ function RightSection({ sections = [], onPreview }) {
               Add Questions from Question Bank
             </span>
           </div>
-
           <div className="d-flex align-items-center gap-3 mb20">
-            <img src="./icons/png/ai-green.png" className="height15 width16" />
+            <img
+              src="./icons/png/ai-green.png"
+              className="height15 width16"
+              alt="AI"
+            />
             <span className="label-16-500-g-u">Create with AI</span>
           </div>
         </div>

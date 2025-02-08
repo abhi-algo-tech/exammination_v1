@@ -15,3 +15,7 @@ export const studentKeys = {
 export const staffKeys = {
   staff: "staff",
 };
+
+export const questionKeys = {
+  question: "question",
+};

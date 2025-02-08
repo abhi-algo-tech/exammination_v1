@@ -54,7 +54,10 @@ export const useExams = ({
 
 // Hook to fetch a single exam by ID
 export const useExamById = (id) => {
-  return useQuery([examKeys.exam, id], () => ExamService.getExamById(id), {
+  return useQuery({
+    queryKey: [examKeys.exam, id],
+    queryFn: () => ExamService.getExamById(id),
+    enabled: !!id, // Prevents query execution if id is falsy
     onError: (error) => {
       console.error("Error fetching exam by ID:", error);
     },

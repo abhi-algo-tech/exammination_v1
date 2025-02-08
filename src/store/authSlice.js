@@ -4,6 +4,7 @@ const initialState = {
   isAuthenticated: false,
   token: null,
   user: null,
+  exam: [],
 };
 
 const authSlice = createSlice({
@@ -19,9 +20,13 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = null;
       state.user = null;
+      state.exam = [];
+    },
+    setExam: (state, action) => {
+      state.exam = action.payload;
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, setExam } = authSlice.actions;
 export default authSlice.reducer;

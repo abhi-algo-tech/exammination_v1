@@ -17,6 +17,8 @@ import ButtonComponent from "../../exam_components/button_component/ButtonCompon
 import { Navigate, useNavigate } from "react-router-dom";
 import { useCreateExam } from "../../hooks/useExam";
 import { CustomMessage } from "../../utils/CustomMessage";
+import { useDispatch } from "react-redux";
+import { setExam } from "../../store/authSlice";
 
 // Options for Select and Multi-select
 const examTypeOptions = [
@@ -81,6 +83,7 @@ const time = "12:14 - 11.12.24"; // Example variable for time
 
 function CreateQuestionPaper() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [sections, setSections] = useState(0);
 
@@ -91,8 +94,11 @@ function CreateQuestionPaper() {
 
     // Call the createExam mutation
     createExam(payload, {
-      onSuccess: () => {
+      onSuccess: (result) => {
         CustomMessage.success("Exam created successfully!");
+        // Store the exam ID in Redux
+        console.log("result:", result);
+        dispatch(setExam(result.data));
         navigate("/add-question");
       },
       onError: (error) => {

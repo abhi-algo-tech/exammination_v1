@@ -8,6 +8,8 @@ import RightSection from "./RightSection";
 import CommonModalComponent from "../../components/CommonModalComponent";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
 import ReviewModal from "./ReviewModal";
+import { useSelector } from "react-redux";
+import { useExamById } from "../../hooks/useExam";
 
 const QuestionGrid = styled.div`
   display: grid;
@@ -34,12 +36,12 @@ const QuestionBox = styled.div`
   }
 `;
 
-const sections = [
-  { key: 1, name: "SECTION - A", marks: 15, questions: 11 },
-  { key: 2, name: "SECTION - B", marks: 15, questions: 19 },
-  { key: 3, name: "SECTION - C", marks: 15, questions: 9 },
-  { key: 4, name: "SECTION - D", marks: 15, questions: 6 },
-];
+// const sections = [
+//   { key: 1, name: "SECTION - A", marks: 15, questions: 11 },
+//   { key: 2, name: "SECTION - B", marks: 15, questions: 19 },
+//   { key: 3, name: "SECTION - C", marks: 15, questions: 9 },
+//   { key: 4, name: "SECTION - D", marks: 15, questions: 6 },
+// ];
 
 const questionTypes = [
   "Short Answer Type",
@@ -48,11 +50,37 @@ const questionTypes = [
   "True/False",
 ];
 
+const formatSections = (sections, lists) => {
+  return sections.map((section, index) => {
+    // Filter all matching lists for this section
+    const matchingLists = lists?.filter(
+      (list) =>
+        list.section === `SECTION - ${section.sectionName.toUpperCase()}`
+    );
+
+    // Merge all questions from matching lists
+    const allQuestions = matchingLists?.flatMap((list) => list);
+
+    return {
+      key: index + 1, // Unique key
+      name: `SECTION - ${section.sectionName.toUpperCase()}`, // Formatted section name
+      marks: 0, // Default marks
+      questions: section.questionCount, // Number of questions
+      questionList: allQuestions, // Assign all matching questions
+    };
+  });
+};
+
 const AddQuestion = () => {
   const navigate = useNavigate();
+  const exam = useSelector((state) => state.auth.exam);
+  const id = exam?.id;
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
   const [marks, setMarks] = useState(0);
+
+  const { data: ExamQuestionList, refetch } = useExamById(id);
+  console.log("ExamQuestionList:", ExamQuestionList);
   // const [isReviewModalOpen, setReviewModalOpen] = useState(false);
 
   // const handleAddQuestionThroughBank = () => {
@@ -61,6 +89,11 @@ const AddQuestion = () => {
   // const handleUpload = () => {
   //   navigate("/upload-questions");
   // };
+
+  const sections = formatSections(
+    exam.sections,
+    ExamQuestionList?.data?.examQuestions
+  );
 
   const handlePreview = () => {
     navigate("/preview-questions");
@@ -115,7 +148,11 @@ const AddQuestion = () => {
       <Row gutter={[24, 24]}>
         {/* Left Section */}
         <Col xs={24} md={16}>
-          <ShortType />
+          <ShortType
+            examQuestionList={ExamQuestionList}
+            refetch={refetch}
+            exam={exam}
+          />
         </Col>
 
         {/* Right Section */}

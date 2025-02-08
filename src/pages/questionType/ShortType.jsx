@@ -1,7 +1,16 @@
-import React, { useState } from "react";
-import { Tabs, Checkbox, Select, Input, Button, Divider } from "antd";
+import React, { useEffect, useState } from "react";
+import { Tabs, Checkbox, Select, Input, Button, Divider, Form } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import {
+  useCreateQuestion,
+  useQuestionById,
+  useUpdateQuestion,
+} from "../../hooks/useQuestion";
+import { CustomMessage } from "../../utils/CustomMessage";
+import { useExamById } from "../../hooks/useExam";
+import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
 
 const QuestionContainer = styled.div`
   margin-bottom: 24px;
@@ -37,40 +46,79 @@ const AddButton = styled(Button)`
   }
 `;
 
-const sections = [
-  { key: 1, name: "SECTION - A", marks: 15, questions: [] },
-  { key: 2, name: "SECTION - B", marks: 15, questions: [] },
-  { key: 3, name: "SECTION - C", marks: 15, questions: [] },
-  { key: 4, name: "SECTION - D", marks: 15, questions: [] },
-];
+const formatSections = (sections) => {
+  return sections.map((section, index) => ({
+    key: index + 1, // Using 'id' as a unique key
+    name: `SECTION - ${section.sectionName.toUpperCase()}`, // Formatting name
+    marks: 0, // Default marks
+    questions: [], // Empty questions array
+  }));
+};
 
-export default function ShortType() {
+export default function ShortType({ examQuestionList, refetch, exam }) {
+  const [form] = Form.useForm(); // Move useForm here
   const [activeSection, setActiveSection] = useState(1);
+  // const exam = useSelector((state) => state.auth.exam);
+
+  const sections = formatSections(exam?.sections);
   const [sectionsData, setSectionsData] = useState(sections);
 
-  const questionTypes = [
-    "Short Answer Type",
-    "Long Answer Type",
-    "Multiple Choice",
-    "True/False",
-  ];
-  const questionDifficulty = ["Hard", "Normal", "Easy", "Very Easy"];
+  const { mutate: createQuestion, isLoading, isError } = useCreateQuestion();
+  const { mutate: updateQuestion } = useUpdateQuestion();
+  // const { data: examQuestionList, refetch } = useExamById(id);
+
+  useEffect(() => {
+    if (examQuestionList?.data?.examQuestions) {
+      const updatedSections = sections.map((section) => {
+        const questions = examQuestionList.data.examQuestions
+          .filter((q) => q.section === section.name) // Match section names
+          .map((q, index) => ({
+            questionId: q.question.id,
+            id: index + 1,
+            isChecked: false,
+            level: q.question.levelId.toString(),
+            marks: q.question.marks,
+            options: q.question.options ? q.question.options.split(", ") : [],
+            text: q.question.name,
+            topic: q.question.topic,
+            type: q.question.typeId.toString(),
+          }));
+
+        return { ...section, questions };
+      });
+
+      setSectionsData(updatedSections);
+    }
+  }, [examQuestionList]); // Dependency array to trigger effect when examQuestionList updates
+
+  const questionTypes = {
+    1: "Short Answer Type",
+    2: "Long Answer Type",
+    3: "Multiple Choice",
+    4: "True/False",
+  };
+
+  const questionDifficulty = {
+    1: "Hard",
+    2: "Normal",
+    3: "Easy",
+    4: "Very Easy",
+  };
 
   const handleQuestionChange = (sectionKey, questionId, field, value) => {
-    setSectionsData((prevSections) =>
-      prevSections.map((section) =>
-        section.key === sectionKey
-          ? {
-              ...section,
-              questions: section.questions.map((question) =>
-                question.id === questionId
-                  ? { ...question, [field]: value }
-                  : question
-              ),
+    setSectionsData((prevSections) => {
+      const updatedSections = structuredClone(prevSections);
+      updatedSections.forEach((section) => {
+        if (section.key === sectionKey) {
+          section.questions.forEach((question) => {
+            if (question.id === questionId) {
+              question[field] = value;
             }
-          : section
-      )
-    );
+          });
+        }
+      });
+      return updatedSections;
+    });
   };
 
   const handleOptionChange = (questionId, idx, value) => {
@@ -112,28 +160,113 @@ export default function ShortType() {
   };
 
   const addQuestionToSection = (sectionKey) => {
-    setSectionsData((prevSections) =>
-      prevSections.map((section) =>
-        section.key === sectionKey
-          ? {
+    setSectionsData((prevSections) => {
+      return prevSections.map((section) => {
+        if (section.key === sectionKey) {
+          const latestQuestion = section.questions;
+
+          const latestQuestionId =
+            latestQuestion[latestQuestion?.length - 1]?.questionId || 0;
+
+          // Check if latestQuestion is empty or the last object has a questionId
+          if (!latestQuestion || latestQuestion.length === 0) {
+            // Skip form validation and directly create a new question
+
+            const newQuestion = {
+              id: section.questions.length + 1,
+              text: "",
+              // type: "", // Default type
+              // level: "Select Level", // Default level
+              topic: "",
+              marks: 0,
+              isChecked: false,
+              options: [], // Options are initially empty
+            };
+
+            return {
               ...section,
-              questions: [
-                ...section.questions,
-                {
-                  id: section.questions.length + 1,
-                  text: "",
-                  type: "Short Answer Type",
-                  level: "Normal",
-                  topic: "",
-                  marks: 0,
-                  isChecked: false,
-                  options: [],
+              questions: [...section.questions, newQuestion],
+            };
+          } else if (!latestQuestionId == 0) {
+            console.log("second:", latestQuestionId);
+            const newQuestion = {
+              id: section.questions.length + 1,
+              text: "",
+              // type: "Select Type", // Default type
+              // level: "Select Level", // Default level
+              topic: "",
+              marks: 0,
+              isChecked: false,
+              options: [], // Options are initially empty
+            };
+
+            return {
+              ...section,
+              questions: [...section.questions, newQuestion],
+            };
+          }
+
+          // Perform form validation before adding a new question
+          form
+            .validateFields()
+            .then(() => {
+              const newLatestQuestion =
+                latestQuestion[latestQuestion?.length - 1];
+              const payload = {
+                name: newLatestQuestion.text,
+                options: newLatestQuestion?.options?.join(", ") || "",
+                optionLength: newLatestQuestion?.options?.length,
+                // answer: "",
+                typeId: newLatestQuestion.type,
+                levelId: newLatestQuestion.level,
+                topic: newLatestQuestion.topic || "",
+                marks: newLatestQuestion.marks,
+                isDeleted: false,
+                examQuestion: {
+                  exam: exam?.id,
+                  questionNumber: latestQuestion.length,
+                  section: section.name,
+                  isPublished: false,
                 },
-              ],
-            }
-          : section
-      )
-    );
+              };
+
+              createQuestion(payload, {
+                onSuccess: () => {
+                  CustomMessage.success("Question created successfully!");
+                  refetch();
+
+                  const newQuestion = {
+                    id: section.questions.length + 1,
+                    text: "",
+                    // type: "Select Type",
+                    // level: "Select Level",
+                    topic: "",
+                    marks: 0,
+                    isChecked: false,
+                    options: [],
+                  };
+
+                  return {
+                    ...section,
+                    questions: [...section.questions, newQuestion],
+                  };
+                },
+                onError: (error) => {
+                  CustomMessage.error(
+                    "Failed to create question. Please try again."
+                  );
+                  console.error("Error creating question:", error);
+                },
+              });
+            })
+            .catch((error) => {
+              console.log("Form validation failed:", error);
+            });
+        }
+
+        return section;
+      });
+    });
   };
 
   const allQuestions = sectionsData.flatMap((section) => ({
@@ -141,11 +274,59 @@ export default function ShortType() {
     questions: section.questions,
   }));
 
+  const handleTabChange = (key) => {
+    setActiveSection(Number(key));
+    refetch();
+  };
+
+  const handleUpdate = ({ question, sectionName }) => {
+    form
+      .validateFields()
+      .then(() => {
+        const payload = {
+          name: question.text,
+          options: question?.options?.join(", ") || "",
+          optionLength: question?.options?.length || 0,
+          // answer: "",
+          typeId: question.type,
+          levelId: question.level,
+          topic: question.topic || "",
+          marks: question.marks,
+          isDeleted: false,
+          examQuestion: {
+            exam: exam?.id,
+            questionNumber: question.questionNumber ?? 0,
+            section: sectionName,
+            isPublished: false,
+          },
+        };
+
+        updateQuestion(
+          { id: question.questionId, payload },
+          {
+            onSuccess: () => {
+              CustomMessage.success("Question updated successfully!");
+              refetch();
+            },
+            onError: (error) => {
+              CustomMessage.error(
+                "Failed to update question. Please try again."
+              );
+              console.error("Error updating question:", error);
+            },
+          }
+        );
+      })
+      .catch((error) => {
+        console.log("Form validation failed:", error);
+      });
+  };
+
   return (
     <div>
       <Tabs
         activeKey={String(activeSection)}
-        onChange={(key) => setActiveSection(Number(key))}
+        onChange={handleTabChange}
         items={sectionsData.map((section) => ({
           key: String(section.key),
           label: (
@@ -161,126 +342,224 @@ export default function ShortType() {
             </span>
           ),
           children: (
-            <div>
+            <Form form={form}>
               {section.questions.map((question) => (
                 <QuestionContainer key={question.id}>
-                  <div className="d-flex justify-content-between mb12 align-items-center">
-                    <Checkbox
-                      checked={question.isChecked}
-                      onChange={(e) =>
-                        handleQuestionChange(
-                          section.key,
-                          question.id,
-                          "isChecked",
-                          e.target.checked
-                        )
-                      }
+                  <div className="d-flex  mb12 gap-4">
+                    <Form.Item
+                      name={`question-${question.id}-${section.name}-checked`}
+                      initialValue={question.isChecked}
+                      valuePropName="checked"
                     >
-                      Question {question.id}
-                    </Checkbox>
-
-                    <Select
-                      className="height36"
-                      value={question.type}
-                      onChange={(value) =>
-                        handleQuestionChange(
-                          section.key,
-                          question.id,
-                          "type",
-                          value
-                        )
-                      }
-                      style={{ width: 200 }}
-                      placeholder="Select Type"
-                    >
-                      {questionTypes.map((type) => (
-                        <Select.Option key={type} value={type}>
-                          {type}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                    <Select
-                      className="height36"
-                      value={question.level}
-                      onChange={(value) =>
-                        handleQuestionChange(
-                          section.key,
-                          question.id,
-                          "level",
-                          value
-                        )
-                      }
-                      style={{ width: 200 }}
-                      placeholder="Answer Difficulty"
-                    >
-                      {questionDifficulty.map((level) => (
-                        <Select.Option key={level} value={level}>
-                          {level}
-                        </Select.Option>
-                      ))}
-                    </Select>
-
-                    <div className="d-flex text-center align-items-center gap8">
-                      <Input
-                        className="text-center"
-                        value={question.marks}
+                      <Checkbox
+                        checked={question.isChecked}
                         onChange={(e) =>
                           handleQuestionChange(
                             section.key,
                             question.id,
-                            "marks",
-                            e.target.value
+                            "isChecked",
+                            e.target.checked
                           )
                         }
-                        style={{ width: 38, height: 36 }}
-                        type="text"
-                        min={0}
-                        max={20}
-                      />
-                      <span className="label-16-500-g-i">Marks</span>
+                      >
+                        <label style={{ width: "100px" }}>
+                          {" "}
+                          Question {question.id}
+                        </label>
+                      </Checkbox>
+                    </Form.Item>
+
+                    <Form.Item
+                      name={`question-${question.id}-${section.name}-type`}
+                      initialValue={question.type}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select a question type!",
+                        },
+                      ]}
+                    >
+                      <Select
+                        className="height36"
+                        value={question.type}
+                        onChange={(value) =>
+                          handleQuestionChange(
+                            section.key,
+                            question.id,
+                            "type",
+                            value
+                          )
+                        }
+                        style={{ width: 200 }}
+                        placeholder="Select Type"
+                      >
+                        {Object.entries(questionTypes).map(([key, type]) => (
+                          <Select.Option key={key} value={key}>
+                            {type}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                      name={`question-${question.id}-${section.name}-level`}
+                      initialValue={question.level}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select a difficulty level!",
+                        },
+                      ]}
+                    >
+                      <Select
+                        className="height36"
+                        value={question.level}
+                        onChange={(value) =>
+                          handleQuestionChange(
+                            section.key,
+                            question.id,
+                            "level",
+                            value
+                          )
+                        }
+                        style={{ width: 200 }}
+                        placeholder="Answer Difficulty"
+                      >
+                        {Object.entries(questionDifficulty).map(
+                          ([key, level]) => (
+                            <Select.Option key={key} value={key}>
+                              {level}
+                            </Select.Option>
+                          )
+                        )}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                      name={`question-${question.id}-${section.name}-marks`}
+                      initialValue={question.marks} // ✅ Set initial value
+                      rules={[
+                        { required: true, message: "Please enter marks!" },
+                        {
+                          validator: (_, value) => {
+                            // Handling empty input or non-numeric input
+                            if (
+                              value === "" ||
+                              value === undefined ||
+                              value === null
+                            ) {
+                              return Promise.reject("Please enter marks!");
+                            }
+                            if (isNaN(value) || value < 1 || value > 20) {
+                              return Promise.reject(
+                                "Marks must be between 0 and 20"
+                              );
+                            }
+                            return Promise.resolve();
+                          },
+                        },
+                      ]}
+                    >
+                      <div className="d-flex text-center align-items-center gap8 w-10px">
+                        <Input
+                          type="number"
+                          value={question.marks}
+                          onChange={(e) => {
+                            const newValue = Number(e.target.value); // Ensure it's a number
+                            form.setFieldsValue({
+                              [`question-${question.id}-marks`]: newValue,
+                            });
+                            handleQuestionChange(
+                              section.key,
+                              question.id,
+                              "marks",
+                              newValue
+                            );
+                          }}
+                        />
+                        <span className="label-16-500-g-i">Marks</span>
+                      </div>
+                    </Form.Item>
+                  </div>
+
+                  <div className="d-flex  gap-4 ">
+                    <div style={{ width: "100%" }}>
+                      <Form.Item
+                        name={`question-${question.id}-${section.name}-text`}
+                        initialValue={question.text}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please enter the question text!",
+                          },
+                        ]}
+                      >
+                        <QuestionInput
+                          placeholder="Type the question here"
+                          value={question.text}
+                          onChange={(e) =>
+                            handleQuestionChange(
+                              section.key,
+                              question.id,
+                              "text",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </Form.Item>
+                    </div>
+                    <div>
+                      <Form.Item
+                        name={`question-${question.id}-${section.name}-topic`}
+                        initialValue={question.topic}
+                        rules={[
+                          { required: true, message: "Please enter a topic!" },
+                        ]}
+                      >
+                        <Input
+                          className="enter-topic"
+                          placeholder="Enter Topic"
+                          value={question.topic}
+                          onChange={(e) =>
+                            handleQuestionChange(
+                              section.key,
+                              question.id,
+                              "topic",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </Form.Item>
                     </div>
                   </div>
 
-                  <div className="d-flex justify-content-between gap-2 align-items-center">
-                    <QuestionInput
-                      placeholder="Type the question here"
-                      value={question.text}
-                      onChange={(e) =>
-                        handleQuestionChange(
-                          section.key,
-                          question.id,
-                          "text",
-                          e.target.value
-                        )
-                      }
-                    />
-                    <Input
-                      className="enter-topic"
-                      placeholder="Enter Topic"
-                      value={question.topic}
-                      onChange={(e) =>
-                        handleQuestionChange(
-                          section.key,
-                          question.id,
-                          "topic",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-
-                  {question.type === "Multiple Choice" && (
+                  {question.type == 3 && (
                     <div>
                       {question.options.map((option, idx) => (
-                        <Input
+                        <Form.Item
                           key={idx}
-                          placeholder={`Option ${idx + 1}`}
-                          value={option}
-                          onChange={(e) =>
-                            handleOptionChange(question.id, idx, e.target.value)
-                          }
-                          style={{ marginTop: 8 }}
-                        />
+                          name={`question-${question.id}-${section.name}-option-${idx}`}
+                          initialValue={option}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please enter an option!",
+                            },
+                          ]}
+                        >
+                          <Input
+                            placeholder={`Option ${idx + 1}`}
+                            value={option}
+                            onChange={(e) =>
+                              handleOptionChange(
+                                question.id,
+                                idx,
+                                e.target.value
+                              )
+                            }
+                            style={{ marginTop: 8 }}
+                          />
+                        </Form.Item>
                       ))}
                       <Button
                         type="dashed"
@@ -292,12 +571,31 @@ export default function ShortType() {
                     </div>
                   )}
 
-                  {question.type === "True/False" && (
+                  {question.type == 4 && (
                     <div>
                       <Checkbox disabled>True</Checkbox>
                       <Checkbox disabled style={{ marginLeft: 16 }}>
                         False
                       </Checkbox>
+                    </div>
+                  )}
+
+                  {question?.questionId && (
+                    <div style={{ textAlign: "right" }}>
+                      <Form.Item>
+                        <ButtonComponent
+                          bgColor="#F9A828"
+                          height="30px"
+                          width="150px"
+                          label="Update"
+                          onClick={() =>
+                            handleUpdate({
+                              question,
+                              sectionName: section.name,
+                            })
+                          }
+                        />
+                      </Form.Item>
                     </div>
                   )}
 
@@ -312,13 +610,10 @@ export default function ShortType() {
               >
                 Add a New Question
               </AddButton>
-            </div>
+            </Form>
           ),
         }))}
       />
-
-      {/* <h3>All Questions:</h3> */}
-      {/* <pre>{JSON.stringify(allQuestions, null, 2)}</pre> */}
     </div>
   );
 }
