@@ -1,7 +1,7 @@
 // useExam.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import ExamService from "../services/examService";
 import { examKeys } from "../utils/queryKeys";
+import ExamService from "../services/ExamService";
 // Hook to fetch all exams with pagination and sorting
 
 export const useExams = ({
