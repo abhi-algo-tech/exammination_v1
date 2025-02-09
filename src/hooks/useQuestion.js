@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { questionKeys } from "../utils/queryKeys";
-import QuestionService from "../services/QuestionService";
+import QuestionService from "../services/questionService";
 
 // Hook to fetch a single question by ID
 export const useQuestionById = (id) => {
