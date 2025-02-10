@@ -14,7 +14,7 @@ const { Sider } = Layout;
 const menuItems = [
   {
     key: "dashboard",
-    icon: <MdOutlineDashboard style={{ width: 22, height: 22 }} />,
+    icon: <MdOutlineDashboard style={{ width: 25, height: 25 }} />,
     // icon: (
     //   <img
     //     src="/icons/png/Dashboard.png"
@@ -28,7 +28,7 @@ const menuItems = [
   },
   {
     key: "exam-management",
-    icon: <MdOutlineLibraryBooks style={{ width: 22, height: 22 }} />,
+    icon: <MdOutlineLibraryBooks style={{ width: 25, height: 25 }} />,
     // icon: (
     //   <img
     //     src="/icons/png/exam-management.png"
@@ -42,17 +42,13 @@ const menuItems = [
   },
   {
     key: "question-bank",
-    icon: <MdOutlineCollectionsBookmark style={{ width: 22, height: 22 }} />,
-    // icon: (
-    //   <img
-    //     src="/icons/png/question-bank.png"
-    //     width={22}
-    //     height={22}
-    //     alt="Question Bank"
-    //   />
-    // ),
+    icon: <MdOutlineCollectionsBookmark style={{ width: 25, height: 25 }} />,
     label: "Question Bank",
     link: "/question-bank",
+    children: [
+      { key: "theme-1", label: "Theme 1", link: "/question-bank/theme1" },
+      { key: "theme-2", label: "Theme 2", link: "/question-bank/theme2" },
+    ],
   },
   {
     key: "learning-hub",
@@ -69,7 +65,7 @@ const menuItems = [
   },
   {
     key: "proctoring",
-    icon: <TbEyeCheck style={{ width: 22, height: 22 }} />,
+    icon: <TbEyeCheck style={{ width: 25, height: 25 }} />,
     // icon: (
     //   <img
     //     src="/icons/png/proctoring.png"
@@ -191,19 +187,32 @@ function MainMenu({ collapsed, setCollapsed }) {
         </Button>
       </div>
 
-      {/* Menu Items */}
       <Menu
         mode="inline"
         selectedKeys={selectedKeys}
         items={menuItems.map((item) => ({
           key: item.key,
-          label: <Link to={item.key}>{item.label}</Link>,
-          icon: item.icon,
+          label: <Link to={item.link || "#"}>{item.label}</Link>,
+          icon: (
+            <span
+              style={{
+                color: selectedKeys.includes(item.key) ? "#fff" : "#797979",
+              }}
+            >
+              {item.icon}
+            </span>
+          ),
+          children: item.children
+            ? item.children.map((child) => ({
+                key: child.key,
+                label: <Link to={child.link}>{child.label}</Link>,
+              }))
+            : undefined, // Ensures `children` is only added when present
         }))}
         className="custom-menu"
         style={{
-          background: "transparent", // Transparent background for the menu
-          border: "none", // Optional: Removes the border for a cleaner look
+          background: "transparent",
+          border: "none",
         }}
       />
     </Sider>

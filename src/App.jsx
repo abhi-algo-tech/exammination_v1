@@ -24,6 +24,9 @@ import PublishForm from "./pages/exam_management/PublishForm";
 import PreviewPaper from "./pages/exam_management/PreviewPaper";
 import ExamminationRule from "./pages/paper/ExamminationRule";
 import StudentPaper from "./pages/paper/StudentPaper";
+import ComingSoon from "./pages/ComingSoon";
+import Theme1 from "./pages/paper_format/Theme1";
+import Theme2 from "./pages/paper_format/Theme2";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -69,8 +72,11 @@ function App() {
             />
             <Route path="/add-question" element={<AddQuestion />} />
             <Route path="/upload" element={<UploadTemplate />} />
+            <Route path="/coming-soon" element={<ComingSoon />} />
+            <Route path="/question-bank/theme1" element={<Theme1 />} />
+            <Route path="/question-bank/theme2" element={<Theme2 />} />
             {/* Redirect to default dashboard route */}
-            <Route path="/*" element={<Navigate to="/dashboard" />} />
+            <Route path="/*" element={<Navigate to="/coming-soon" />} />
             <Route path="/" element={<Navigate to="/dashboard" />} />
           </Route>
         ) : (
