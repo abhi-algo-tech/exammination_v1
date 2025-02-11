@@ -1,0 +1,32 @@
+@media print {
+  .container-fluid {
+    padding: 0 !important;
+  }
+
+  input[type="radio"] {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    forced-color-adjust: none;
+  }
+
+  .bg-warning {
+    background-color: #ffc107 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    forced-color-adjust: none;
+  }
+}
+
+/* Custom styles for better spacing */
+.form-check {
+  margin-bottom: 0.25rem;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table th,
+.table td {
+  padding: 0.5rem;
+}
