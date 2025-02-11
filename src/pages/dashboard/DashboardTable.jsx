@@ -1,26 +1,32 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Table, Select, Input, Button, Tag, Dropdown } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
 import InputWithSearch from "../../components/input/InputWithSearch";
 import { useExams } from "../../hooks/useExam";
 import { debounce } from "lodash";
+import { useNavigate } from "react-router-dom";
 
 function transformExamData(apiResponse) {
   if (!apiResponse || !apiResponse.data || !Array.isArray(apiResponse.data)) {
-    return []; // Return empty array for invalid input
+    return { exam: [], totalRecords: 0 };
   }
 
-  return apiResponse.data.map((exam, index) => ({
-    key: String(exam.id || index + 1), // Use exam.id if available, otherwise index
-    name: exam.nameOfExam || "Unknown Exam", // Provide default values
-    subject: getSubjectName(exam.subjectId), // Implement this function (see below)
-    class: getClassString(exam.classId, exam.division), // Implement this function (see below)
-    curriculum: getCurriculumName(exam.curriculumId), // Implement this function (see below)
+  const exam = apiResponse.data.map((exam, index) => ({
+    key: String(exam.id || index + 1),
+    name: exam.nameOfExam || "Unknown Exam",
+    subject: getSubjectName(exam.subjectId),
+    class: getClassString(exam.classId, exam.division),
+    curriculum: getCurriculumName(exam.curriculumId),
     totalMarks: exam.marks || 0,
-    status: getStatusString(exam.statusId), // Implement this function (see below)
-    author: getAuthorName(exam.examCreatedBy), // Implement this function (see below)
-    lastEdited: formatDate(exam.createdOn), // Implement this function (see below)
+    status: getStatusString(exam.statusId),
+    author: getAuthorName(exam.examCreatedBy),
+    lastEdited: formatDate(exam.createdOn),
   }));
+
+  // Assuming all exam objects have the same totalRecords value
+  const totalRecords = apiResponse.data[0]?.totalRecords || 0;
+
+  return { exam, totalRecords };
 }
 
 // Helper functions (you'll need to implement these based on your data)
@@ -93,6 +99,10 @@ function DashboardTable() {
   const [curriculumId, setCurriculumId] = useState(null);
   const [statusId, setStatusId] = useState(null);
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+  const handleEditClick = (id) => {
+    navigate("/create-question-paper", { state: { id } });
+  };
   const columns = [
     {
       className: "label-14-400",
@@ -171,11 +181,15 @@ function DashboardTable() {
       className: "label-14-400",
       title: <span className="label-16-700-g"></span>,
       key: "action",
-      render: () => (
+      render: (record) => (
         <Dropdown
           menu={{
             items: [
-              { key: "1", label: "Edit" },
+              {
+                key: "1",
+                label: "Edit",
+                onClick: () => handleEditClick(record.key),
+              },
               { key: "2", label: "Delete" },
             ],
           }}
@@ -191,6 +205,7 @@ function DashboardTable() {
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
+    total: 0,
   });
 
   const [sorter, setSorter] = useState({
@@ -216,18 +231,34 @@ function DashboardTable() {
     search,
   });
 
-  console.log("data123", data); // Log the 'data'
-  const exam = data && data ? transformExamData(data) : [];
-  console.log("exam:", exam);
+  // console.log("data123", data); // Log the 'data'
+  const { exam, totalRecords } = data
+    ? transformExamData(data)
+    : { exam: [], totalRecords: 0 };
 
-  // Handle table changes (pagination & sorting)
-  const handleTableChange = (pagination, filters, sorter) => {
-    setPagination({
-      current: pagination.current,
-      pageSize: pagination.pageSize,
-    });
+  useEffect(() => {
+    if (totalRecords !== undefined) {
+      console.log("Total records from API:", totalRecords);
+      setPagination((prev) => ({
+        ...prev,
+        total: totalRecords,
+      }));
+    }
+  }, [totalRecords]);
 
-    setSorter(sorter.order ? sorter : null); // Update sorter or set to null if no sorting
+  useEffect(() => {
+    console.log("Current pagination state:", pagination);
+  }, [pagination]);
+
+  const handleTableChange = (newPagination, filters, sorter) => {
+    console.log("New pagination:", newPagination);
+    setPagination((prev) => ({
+      ...prev,
+      current: newPagination.current,
+      pageSize: newPagination.pageSize,
+    }));
+
+    setSorter(sorter.order ? sorter : null);
 
     refetch();
   };
@@ -322,21 +353,17 @@ function DashboardTable() {
 
       {/* Table */}
       <Table
-        rowSelection={{
-          selectedRowKeys,
-          onChange: setSelectedRowKeys,
-        }}
-        position="bottomCenter"
         columns={columns}
         dataSource={exam}
-        loading={isLoading}
         pagination={{
           current: pagination.current,
           pageSize: pagination.pageSize,
-          total: data?.totalElements,
+          total: pagination.total,
           showSizeChanger: true,
-          showQuickJumper: true,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`,
         }}
+        loading={isLoading}
         onChange={handleTableChange}
       />
     </div>

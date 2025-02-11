@@ -55,7 +55,12 @@ const formatSections = (sections) => {
   }));
 };
 
-export default function ShortType({ examQuestionList, refetch, exam }) {
+export default function ShortType({
+  examQuestionList,
+  refetch,
+  exam,
+  setupdatedQuestion,
+}) {
   const [form] = Form.useForm(); // Move useForm here
   const [activeSection, setActiveSection] = useState(1);
   // const exam = useSelector((state) => state.auth.exam);
@@ -188,7 +193,7 @@ export default function ShortType({ examQuestionList, refetch, exam }) {
               questions: [...section.questions, newQuestion],
             };
           } else if (!latestQuestionId == 0) {
-            console.log("second:", latestQuestionId);
+            // console.log("second:", latestQuestionId);
             const newQuestion = {
               id: section.questions.length + 1,
               text: "",
@@ -231,25 +236,26 @@ export default function ShortType({ examQuestionList, refetch, exam }) {
               };
 
               createQuestion(payload, {
-                onSuccess: () => {
+                onSuccess: (response) => {
                   CustomMessage.success("Question created successfully!");
                   refetch();
 
-                  const newQuestion = {
-                    id: section.questions.length + 1,
-                    text: "",
-                    // type: "Select Type",
-                    // level: "Select Level",
-                    topic: "",
-                    marks: 0,
-                    isChecked: false,
-                    options: [],
-                  };
+                  if (response?.data) {
+                    const newQuestion = {
+                      id: response.data.id, // Use backend ID instead of manual numbering
+                      text: "",
+                      topic: "",
+                      marks: 0,
+                      isChecked: false,
+                      options: [],
+                    };
 
-                  return {
-                    ...section,
-                    questions: [...section.questions, newQuestion],
-                  };
+                    // Assuming you update the section state here
+                    updateSection((prevSection) => ({
+                      ...prevSection,
+                      questions: [...prevSection.questions, newQuestion],
+                    }));
+                  }
                 },
                 onError: (error) => {
                   CustomMessage.error(

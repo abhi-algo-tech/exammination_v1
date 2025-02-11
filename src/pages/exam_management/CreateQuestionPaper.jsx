@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   Input,
@@ -14,11 +14,12 @@ import Select from "react-select";
 import CustomSelect from "../../exam_components/select/CustomSelect";
 import DynamicNumericInput from "../../exam_components/dynamic_numeric_input/DynamicNumericInput";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useCreateExam } from "../../hooks/useExam";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useCreateExam, useExamById, useUpdateExam } from "../../hooks/useExam";
 import { CustomMessage } from "../../utils/CustomMessage";
 import { useDispatch } from "react-redux";
 import { setExam } from "../../store/authSlice";
+import moment from "moment/moment";
 
 // Options for Select and Multi-select
 const examTypeOptions = [
@@ -49,21 +50,29 @@ const curriculumTypeOptions = [
 
 // Assuming you have this convertToPayload function already defined
 const convertToPayload = (values) => {
+  console.log(values);
+  console.log("🚀 Debugging subjectCode:", values?.subjectCode);
+  console.log("Type of subjectCode:", typeof values.subjectCode);
+
   return {
     nameOfExam: values.examName,
-    typeOfExamId: values.examType.value,
-    curriculumId: values.curriculum.value,
-    classId: values.class.value,
-    division: values.division,
-    subjectId: values.subject.value,
-    subjectCode: parseInt(values.subjectCode.join("")), // Example, adjust according to your needs
-    dateOfExam: values.examDate.toISOString().split("T")[0], // Convert to YYYY-MM-DD format
+    typeOfExamId: values.examType?.value,
+    curriculumId: values.curriculum?.value,
+    classId: values.class?.value,
+    division: values?.division,
+    subjectId: values.subject?.value,
+    subjectCode: Array.isArray(values.subjectCode)
+      ? parseInt(values.subjectCode.join("")) // ✅ Ensure it's an array before joining
+      : parseInt(values.subjectCode) || null, // ✅ Convert if it's not an array
+    dateOfExam: values.examDate?.toISOString().split("T")[0], // Convert to YYYY-MM-DD format
     examCreatedBy: 1, // Replace with actual user ID
     examEvaluatedBy: 2, // Replace with actual evaluator ID
-    institution: values.institution,
-    duration: values.duration.toISOString().substr(11, 8), // Convert to HH:MM:SS format
+    institution: values?.institution,
+    duration: values.duration?.toISOString().substr(11, 8), // Convert to HH:MM:SS format
     marks: parseInt(values.totalMarks), // Assuming marks are integers
-    uniquePaperCode: parseInt(values.uniquePaperCode.join("")), // Example, adjust according to your needs
+    uniquePaperCode: Array.isArray(values.uniquePaperCode)
+      ? parseInt(values.uniquePaperCode.join(""))
+      : parseInt(values.uniquePaperCode) || null, // ✅ Fix the same issue for uniquePaperCode
     createdBy: 1, // Replace with actual user ID
     statusId: 1, // Replace with actual status ID
     sections: values.numberSections
@@ -82,31 +91,141 @@ const name = "Abhi.s"; // Example variable for name
 const time = "12:14 - 11.12.24"; // Example variable for time
 
 function CreateQuestionPaper() {
+  const location = useLocation();
+  const id = location.state?.id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [sections, setSections] = useState(0);
 
   const { mutate: createExam, isLoading, isError } = useCreateExam();
+  const {
+    mutate: updateExam,
+    isLoading: isUpdating,
+    isError: isUpdateError,
+  } = useUpdateExam();
+
+  const { data: examData } = useExamById(id);
+  if (examData) {
+    console.log("examData:", examData);
+  }
+  useEffect(() => {
+    if (examData) {
+      const subjectCode = examData.data.subjectCode
+        ? examData.data.subjectCode.toString().split("").map(Number)
+        : Array(n).fill("");
+      console.log("subjectCode:", subjectCode);
+      const formValues = {
+        examName: examData.data.nameOfExam,
+        examType: examTypeOptions.find(
+          (option) => option.value === examData.data.typeOfExamId
+        ),
+        curriculum: curriculumTypeOptions.find(
+          (option) => option.value === examData.data.curriculumId
+        ),
+        class: classTypeOptions.find(
+          (option) => option.value === examData.data.classId
+        ),
+        division: examData.data.division,
+        subject: subjectOptions.find(
+          (option) => option.value === examData.data.subjectId
+        ),
+        subjectCode: examData.data.subjectCode
+          ? examData.data.subjectCode.toString().split("").map(Number)
+          : Array(n).fill(""),
+        examDate: examData.data.dateOfExam
+          ? moment(examData.data.dateOfExam, "YYYY-MM-DD")
+          : null,
+        examBy: examData.data.examCreatedBy,
+        evaluator: examData.data.examEvaluatedBy,
+        institution: examData.data.institution,
+        duration: examData.data.duration
+          ? moment(examData.data.duration, "HH:mm:ss")
+          : null,
+        totalMarks: examData.data.marks,
+        uniquePaperCode: examData.data.uniquePaperCode
+          ? examData.data.uniquePaperCode.toString().split("").map(Number)
+          : Array(n).fill(""),
+        numberSections: examData.data.sections.length || 0,
+      };
+
+      // **Dynamically Add Sections**
+      examData.data.sections.forEach((section, index) => {
+        const sectionLabel = String.fromCharCode(65 + index); // 'A', 'B', 'C', ...
+        formValues[`noOfQuestionSection${sectionLabel}`] =
+          section.questionCount || 0;
+      });
+
+      setSections(examData.data.sections.length);
+
+      // **Set form values**
+      form.setFieldsValue(formValues);
+    }
+  }, [examData, form]);
+
+  // const handleSubmit = (values) => {
+  //   // console.log("values", values);
+  //   const payload = convertToPayload(values);
+
+  //   if (id) {
+  //     updateExam(id, payload, {
+  //       onSuccess: (result) => {
+  //         CustomMessage.success("Exam updated successfully!");
+  //         // Store the exam ID in Redux
+  //         console.log("result:", result);
+  //         dispatch(setExam(result.data));
+  //         navigate("/add-question");
+  //       },
+  //       onError: (error) => {
+  //         CustomMessage.error("Failed to updated exam. Please try again.");
+  //         console.error("Error updating exam:", error);
+  //       },
+  //     });
+  //   } else {
+  //     createExam(payload, {
+  //       onSuccess: (result) => {
+  //         CustomMessage.success("Exam created successfully!");
+  //         // Store the exam ID in Redux
+  //         console.log("result:", result);
+  //         dispatch(setExam(result.data));
+  //         navigate("/add-question");
+  //       },
+  //       onError: (error) => {
+  //         CustomMessage.error("Failed to create exam. Please try again.");
+  //         console.error("Error creating exam:", error);
+  //       },
+  //     });
+  //   }
+  // };
 
   const handleSubmit = (values) => {
     const payload = convertToPayload(values);
+    const examId = id; // Ensure correct exam ID
 
-    // Call the createExam mutation
-    createExam(payload, {
-      onSuccess: (result) => {
-        CustomMessage.success("Exam created successfully!");
-        // Store the exam ID in Redux
-        console.log("result:", result);
-        dispatch(setExam(result.data));
-        navigate("/add-question");
-      },
-      onError: (error) => {
-        CustomMessage.error("Failed to create exam. Please try again.");
-        console.error("Error creating exam:", error);
-      },
-    });
+    const onSuccess = (result) => {
+      CustomMessage.success(
+        examId ? "Exam updated successfully!" : "Exam created successfully!"
+      );
+      dispatch(setExam(result.data)); // Store the exam ID in Redux
+      navigate("/add-question");
+    };
+
+    const onError = (error) => {
+      CustomMessage.error(
+        examId
+          ? "Failed to update exam. Please try again."
+          : "Failed to create exam. Please try again."
+      );
+      console.error(`Error ${examId ? "updating" : "creating"} exam:`, error);
+    };
+
+    if (examId) {
+      updateExam({ id: examId, payload }, { onSuccess, onError }); // ✅ Fix: Pass as a single object
+    } else {
+      createExam(payload, { onSuccess, onError });
+    }
   };
+
   const handleAsignStudent = () => {
     console.log("assign Student");
   };
@@ -121,7 +240,9 @@ function CreateQuestionPaper() {
   // };
   return (
     <div className="mt-2">
-      <h2 className="page-head mb-4">Enter the Exam Details</h2>
+      <h2 className="page-head mb-4">
+        {id ? "Update the Exam Details" : "Enter the Exam Details"}
+      </h2>
 
       <Form
         form={form}
@@ -409,10 +530,10 @@ function CreateQuestionPaper() {
                   label="Total sections"
                   name="numberSections"
                   rules={[
-                    // {
-                    //   required: true,
-                    //   message: "Please enter Total number of sections!",
-                    // },
+                    {
+                      required: true,
+                      message: "Please enter Total number of sections!",
+                    },
                     {
                       pattern: /^[0-9]+$/,
                       message: "Please enter only numeric values!",
@@ -520,7 +641,7 @@ function CreateQuestionPaper() {
                   bgColor="#F9A828"
                   height="40px"
                   width="236px"
-                  label="Create Question Paper"
+                  label={id ? "Update Question Paper" : "Create Question Paper"}
                   htmlType="submit"
                   disabled={isLoading}
                 />

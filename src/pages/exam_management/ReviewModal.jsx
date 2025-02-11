@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 // import "./review-modal.css";
 
 export default function ReviewModal({
+  examQuestionList,
   closeModal,
   //   onReview = () => {},
 }) {
@@ -26,6 +27,8 @@ export default function ReviewModal({
   const handlePublish = () => {
     navigate("/preview-paper");
   };
+
+  console.log("examQuestionList12:", examQuestionList);
 
   return (
     // <Modal

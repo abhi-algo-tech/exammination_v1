@@ -75,6 +75,8 @@ const AddQuestion = () => {
   const navigate = useNavigate();
   const exam = useSelector((state) => state.auth.exam);
   const id = exam?.id;
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+  const [updatedQuestion, setupdatedQuestion] = useState([]);
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
   const [marks, setMarks] = useState(0);
@@ -152,14 +154,35 @@ const AddQuestion = () => {
             examQuestionList={ExamQuestionList}
             refetch={refetch}
             exam={exam}
+            setupdatedQuestion={setupdatedQuestion}
           />
         </Col>
 
         {/* Right Section */}
         <Col xs={24} md={8}>
-          <RightSection sections={sections} onPreview={handlePreview} />
+          <RightSection
+            sections={sections}
+            // onPreview={handlePreview}
+            onPreview={() => setReviewModalOpen(true)}
+          />
         </Col>
       </Row>
+      {isReviewModalOpen && (
+        <CommonModalComponent
+          open={isReviewModalOpen}
+          setOpen={setReviewModalOpen}
+          modalWidthSize={696}
+          modalHeightSize={599}
+          isClosable={true}
+        >
+          <ReviewModal
+            sections={sections}
+            // CardTitle={"Add Student"}
+            // classroomId={null}
+            closeModal={() => setReviewModalOpen(false)}
+          />
+        </CommonModalComponent>
+      )}
     </div>
   );
 };

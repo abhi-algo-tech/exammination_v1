@@ -1,21 +1,47 @@
-import React, { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Form, Input, Row, Col } from "antd";
 
-const DynamicNumericInput = ({ n, name, label, required = false, form }) => {
-  const [inputs, setInputs] = useState(Array(n).fill("")); // Initialize an array with `n` empty values
-  const inputRefs = useRef([]); // Store refs for each input field
+const DynamicNumericInput = ({
+  n = 4,
+  name,
+  label,
+  required = false,
+  form,
+}) => {
+  const inputRefs = useRef([]);
+
+  const [inputs, setInputs] = useState(() => {
+    const initialValues = form.getFieldValue(name);
+    if (Array.isArray(initialValues) && initialValues.length === n) {
+      return initialValues.map(String);
+    } else {
+      return Array(n).fill("");
+    }
+  });
+
+  useEffect(() => {
+    const initialValues = form.getFieldValue(name);
+    if (Array.isArray(initialValues) && initialValues.length === n) {
+      setInputs(initialValues.map(String));
+    }
+  }, [form, name, n]);
+
+  useEffect(() => {
+    form.setFieldsValue({ [name]: inputs });
+  }, [inputs, form, name]);
 
   const handleInputChange = (index, value) => {
+    value = value.replace(/[^0-9]/g, "");
+    if (value.length > 1) return;
+
     const updatedInputs = [...inputs];
-    updatedInputs[index] = value.replace(/[^0-9]/g, ""); // Allow only numbers (0-9)
+    updatedInputs[index] = value;
     setInputs(updatedInputs);
 
-    // Automatically move to the next input if a digit is entered
     if (value.length === 1 && index < n - 1) {
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Update the form value for questionSections
     form.setFieldsValue({ [name]: updatedInputs });
   };
 
@@ -24,41 +50,41 @@ const DynamicNumericInput = ({ n, name, label, required = false, form }) => {
       label={label}
       name={name}
       rules={[
-        // Custom validation rule to check if all sections are filled and numeric
-        required && {
+        {
           validator(_, value) {
             const isValid = inputs.every((input) => input !== "");
-            if (!isValid) {
-              return Promise.reject(new Error("Please fill all sections!"));
-            }
-            return Promise.resolve();
+            return isValid
+              ? Promise.resolve()
+              : Promise.reject(new Error("Please fill all 4 digits!"));
           },
         },
-        required && { required: true },
-      ].filter(Boolean)} // Filter out undefined rule if required is false
+      ]}
     >
-      <Row gutter={8}>
+      <Row gutter={8} justify="center">
         {inputs.map((value, index) => (
-          <Col span={24 / n} key={index}>
+          <Col key={index}>
             <Input
-              ref={(el) => (inputRefs.current[index] = el)} // Assign ref to the current input
+              ref={(el) => (inputRefs.current[index] = el)}
               value={value}
-              placeholder={`0`}
-              maxLength={1} // Restrict to a single digit (0-9)
+              placeholder="0"
+              maxLength={1}
               onChange={(e) => handleInputChange(index, e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Backspace" && !value && index > 0) {
-                  // Move to the previous input on Backspace if empty
                   inputRefs.current[index - 1]?.focus();
                 }
               }}
               className="input-box"
+              style={{
+                width: "40px",
+                textAlign: "center",
+                fontSize: "20px",
+                marginRight: "5px",
+              }}
             />
           </Col>
         ))}
       </Row>
-      {/* Hidden input to store the combined value */}
-      <input type="hidden" name={name} value={JSON.stringify(inputs)} />
     </Form.Item>
   );
 };
