@@ -5,6 +5,23 @@ import { authKeys } from "../utils/queryKeys";
 import AuthService from "../services/authService";
 import { CustomMessage } from "../utils/CustomMessage";
 
+// User signup hook
+export const useUserSignUp = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload) => AuthService.authUserSignUp(payload),
+    onSuccess: (data) => {
+      // Store token and user info in Redux
+
+      CustomMessage.success("User created successfull!");
+      queryClient.invalidateQueries(authKeys.signup); // Refetch any related queries if needed
+    },
+    onError: (error) => {
+      console.error("User signup failed:", error);
+    },
+  });
+};
 // User login hook
 export const useUserLogin = () => {
   const queryClient = useQueryClient();

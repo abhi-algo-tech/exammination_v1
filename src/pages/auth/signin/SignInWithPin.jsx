@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Form, Input, Button, Checkbox, Divider } from "antd";
 import { useUserLogin } from "../../../hooks/useAuth";
 import { CustomMessage } from "../../../utils/CustomMessage";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignInWithPin = ({ setSignInWith }) => {
   const navigate = useNavigate();
@@ -131,13 +131,14 @@ const SignInWithPin = ({ setSignInWith }) => {
 
       <div className="d-flex justify-content-center ">
         <span style={{ color: "#6c757d" }}>Don’t have an account?</span>
-        <a
-          href="#"
-          className="ms-2 lable-18-600-U"
-          style={{ fontWeight: "bold", textDecoration: "underline" }}
-        >
-          Sign Up
-        </a>
+        <Link to="/SignUp">
+          <div
+            className="ms-2 lable-18-600-U"
+            style={{ fontWeight: "bold", textDecoration: "underline" }}
+          >
+            Sign Up
+          </div>
+        </Link>
       </div>
       {/* Divider */}
       <Divider>or sign in with</Divider>

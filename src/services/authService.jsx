@@ -14,6 +14,19 @@ const AuthService = {
       throw error;
     }
   },
+
+  authUserSignUp: async (payload) => {
+    try {
+      const response = await axiosInstance.post(
+        API_ENDPOINTS.AUTH.SIGNUP,
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error while creating user:", error);
+      throw error;
+    }
+  },
 };
 
 export default AuthService;

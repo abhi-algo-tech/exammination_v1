@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Form, Input, Button } from "antd";
 import InputOtp from "../../../components/input/InputOtp";
+import { Link } from "react-router-dom";
 
 const SignInWithOTP = ({ setSignInWith }) => {
   const [form] = Form.useForm();
@@ -166,13 +167,14 @@ const SignInWithOTP = ({ setSignInWith }) => {
 
       <div className="d-flex justify-content-center">
         <span style={{ color: "#6c757d" }}>Don’t have an account?</span>
-        <a
-          href="#"
-          className="ms-2 lable-18-600-U"
-          style={{ fontWeight: "bold", textDecoration: "underline" }}
-        >
-          Sign Up
-        </a>
+        <Link to="/SignUp">
+          <div
+            className="ms-2 lable-18-600-U"
+            style={{ fontWeight: "bold", textDecoration: "underline" }}
+          >
+            Sign Up
+          </div>
+        </Link>
       </div>
     </div>
   );

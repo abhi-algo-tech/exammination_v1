@@ -696,3 +696,10 @@
 .filters .ant-select-single {
   height: 40px;
 }
+.dropdown .ant-select .ant-select-selector {
+  border-radius: 8px;
+  height: 56px;
+}
+.dropdown .ant-select-single {
+  height: 56px;
+}

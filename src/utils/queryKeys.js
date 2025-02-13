@@ -1,5 +1,6 @@
 export const authKeys = {
   login: "login",
+  signup: "signup",
 };
 export const examKeys = {
   exam: "exam",

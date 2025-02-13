@@ -12,12 +12,6 @@ import {
   Space,
 } from "antd";
 
-import {
-  MailOutlined,
-  LockOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-} from "@ant-design/icons";
 import { image_path } from "./Login";
 import { useNavigate } from "react-router-dom";
 

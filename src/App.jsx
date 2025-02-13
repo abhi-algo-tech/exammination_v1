@@ -27,6 +27,8 @@ import StudentPaper from "./pages/paper/StudentPaper";
 import ComingSoon from "./pages/ComingSoon";
 import Theme1 from "./pages/paper_format/Theme1";
 import Theme2 from "./pages/paper_format/Theme2";
+import ImageReader from "./components/reader/ImageReader";
+import PDFTextExtractor from "./components/reader/PDFTextExtractor";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -75,6 +77,8 @@ function App() {
             <Route path="/coming-soon" element={<ComingSoon />} />
             <Route path="/question-bank/theme1" element={<Theme1 />} />
             <Route path="/question-bank/theme2" element={<Theme2 />} />
+            <Route path="/image-reader" element={<ImageReader />} />
+            <Route path="/pdf-text-reader" element={<PDFTextExtractor />} />
             {/* Redirect to default dashboard route */}
             <Route path="/*" element={<Navigate to="/coming-soon" />} />
             <Route path="/" element={<Navigate to="/dashboard" />} />

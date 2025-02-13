@@ -5,8 +5,9 @@ import {
   MdOutlineCollectionsBookmark,
   MdOutlineDashboard,
   MdOutlineLibraryBooks,
+  MdOutlinePictureAsPdf,
 } from "react-icons/md";
-import { TbEyeCheck } from "react-icons/tb";
+import { TbEyeCheck, TbPhotoScan } from "react-icons/tb";
 import "./MainMenu.css";
 
 const { Sider } = Layout;
@@ -40,6 +41,19 @@ const menuItems = [
     label: "Exam Management",
     link: "/exam-management",
   },
+  {
+    key: "image-reader",
+    icon: <TbPhotoScan style={{ width: 25, height: 25 }} />,
+    label: "Image Reader",
+    link: "/image-reader",
+  },
+  {
+    key: "pdf-text-reader",
+    icon: <MdOutlinePictureAsPdf style={{ width: 25, height: 25 }} />,
+    label: "PDF Reader",
+    link: "/pdf-text-reader",
+  },
+
   {
     key: "question-bank",
     icon: <MdOutlineCollectionsBookmark style={{ width: 25, height: 25 }} />,

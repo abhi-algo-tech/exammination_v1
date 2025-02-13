@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Steps, Select, Row, Col } from "antd";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { login } from "../../../store/authSlice";
+import { useUserSignUp } from "../../../hooks/useAuth";
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -16,8 +19,29 @@ const StyledStep = styled.div`
 
 const SignUpStepForm = () => {
   const [current, setCurrent] = useState(0);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [form] = Form.useForm();
+  const [finalFormData, setFinalFormData] = useState({});
+  const userSignUpMutation = useUserSignUp();
 
+  useEffect(() => {
+    if (current === 1) {
+      setIsButtonDisabled(true);
+    }
+  }, [current]);
+  const handleFieldsChange = (_, allFields) => {
+    // debugger;
+    if (current === 0 || current === 1 || current === 2) {
+      // Check if all required fields are filled and have no errors
+      const allFieldsFilled = allFields.every(
+        (field) => field.value !== undefined && field.value !== ""
+      );
+      const hasErrors = allFields.some((field) => field.errors.length > 0);
+
+      setIsButtonDisabled(!allFieldsFilled || hasErrors);
+    }
+  };
+  // console.log("form", form);
   const UIData = [
     {
       key: 1,
@@ -45,6 +69,7 @@ const SignUpStepForm = () => {
           layout="vertical"
           name="step1"
           initialValues={{ remember: true }}
+          onFieldsChange={handleFieldsChange}
         >
           <Row gutter={16}>
             {" "}
@@ -71,16 +96,16 @@ const SignUpStepForm = () => {
               {/* Second column */}
               <div>
                 <span className="lable-18-400-b">
-                  Second Name <span className="text-danger"> *</span>
+                  Last Name <span className="text-danger"> *</span>
                 </span>
               </div>
               <Form.Item
-                name="secondName"
+                name="lastName"
                 rules={[
-                  { required: true, message: "Please enter your second name!" },
+                  { required: true, message: "Please enter your last name!" },
                 ]}
               >
-                <Input className="auth-input" placeholder="Second name" />
+                <Input className="auth-input" placeholder="Last name" />
               </Form.Item>
             </Col>
           </Row>
@@ -98,11 +123,11 @@ const SignUpStepForm = () => {
           </Form.Item>
           <div>
             <span className="lable-18-400-b">
-              Phone Number / Email ID <span className="text-danger"> *</span>
+              Phone Number <span className="text-danger"> *</span>
             </span>
           </div>
           <Form.Item
-            name="contact"
+            name="phone"
             rules={[
               {
                 required: true,
@@ -110,27 +135,42 @@ const SignUpStepForm = () => {
               },
             ]}
           >
-            <Input
-              className="auth-input"
-              placeholder="Enter your phone no. / email ID"
-            />
+            <Input className="auth-input" placeholder="Enter your phone no." />
           </Form.Item>
           <div>
             <span className="lable-18-400-b">
-              Choose Your Institution <span className="text-danger"> *</span>
+              Email ID <span className="text-danger"> *</span>
+            </span>
+          </div>
+          <Form.Item
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: "Please enter your phone number or email ID!",
+              },
+            ]}
+          >
+            <Input className="auth-input" placeholder="Enter your email ID" />
+          </Form.Item>
+          {/* <div>
+            <span className="lable-18-400-b">
+              Educational Institution <span className="text-danger"> *</span>
             </span>
           </div>
           <Form.Item
             name="institution"
+            className="dropdown"
             rules={[
               { required: true, message: "Please choose an institution!" },
             ]}
           >
-            <Select placeholder="Select your institution">
-              <Option value="institution1">Institution 1</Option>
-              <Option value="institution2">Institution 2</Option>
+            <Select className="mr14 alignCenter" placeholder="Subject">
+              <Option value={1}>Chemistry</Option>
+              <Option value={2}>Physics</Option>
+              <Option value={3}>Maths</Option>
             </Select>
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       ),
     },
@@ -142,6 +182,7 @@ const SignUpStepForm = () => {
           layout="vertical"
           name="step2"
           initialValues={{ remember: true }}
+          onFieldsChange={handleFieldsChange}
         >
           <div>
             <span className="lable-18-400-b">
@@ -193,6 +234,7 @@ const SignUpStepForm = () => {
           layout="vertical"
           name="step3"
           initialValues={{ remember: true }}
+          onFieldsChange={handleFieldsChange}
         >
           <div>
             <span className="lable-18-400-b">
@@ -200,6 +242,7 @@ const SignUpStepForm = () => {
             </span>
           </div>
           <Form.Item
+            className="dropdown"
             name="role"
             rules={[{ required: true, message: "Please choose your role!" }]}
           >
@@ -256,11 +299,11 @@ const SignUpStepForm = () => {
     return activeStep ? activeStep : null;
   };
 
-  console.log("formLable", formLable(current + 1));
-
   const next = () => {
-    form.validateFields().then(() => {
+    form.validateFields().then((values) => {
+      setFinalFormData((prevData) => ({ ...prevData, ...values }));
       setCurrent(current + 1);
+      setIsButtonDisabled(true);
     });
   };
 
@@ -270,7 +313,19 @@ const SignUpStepForm = () => {
 
   const handleFinish = () => {
     form.validateFields().then((values) => {
-      console.log("Form Values:", values);
+      const finalData = { ...finalFormData, ...values };
+      // console.log("Final Form Data:", finalData);
+      const payload = finalData;
+      userSignUpMutation.mutate(payload, {
+        onSuccess: () => {
+          CustomMessage.success("Login successfully!");
+          navigate("/dashboard");
+        },
+        onError: (error) => {
+          CustomMessage.error(`Failed to login: ${error.message}`);
+        },
+      });
+      // Submit the finalData to API or state management
     });
   };
 
@@ -297,22 +352,86 @@ const SignUpStepForm = () => {
           ))}
         </Steps>
         <StyledStep>{steps[current].content}</StyledStep>
-        <div style={{ marginTop: 24 }}>
-          {current > 0 && (
-            <Button style={{ marginRight: 8 }} onClick={() => prev()}>
-              Previous
-            </Button>
-          )}
-          {current < steps.length - 1 && (
-            <Button type="primary" onClick={() => next()}>
-              Next
-            </Button>
-          )}
+        <div className="d-flex justify-content-between mt-3">
+          <div>
+            {current > 0 && (
+              <Button
+                onClick={() => prev()}
+                htmlType="submit"
+                block
+                className="auth-btn"
+                style={{
+                  backgroundColor: isButtonDisabled ? "#BDBDC2" : "#215988",
+                  borderColor: isButtonDisabled ? "#BDBDC2" : "#215988",
+                  color: "#fff",
+                }}
+              >
+                Previous
+              </Button>
+            )}
+          </div>
+
+          <div>
+            {" "}
+            {current < steps.length - 1 && (
+              <Button
+                onClick={() => next()}
+                type="primary"
+                htmlType="submit"
+                block
+                className="auth-btn w-100"
+                disabled={isButtonDisabled}
+                style={{
+                  backgroundColor: isButtonDisabled ? "#BDBDC2" : "#215988",
+                  borderColor: isButtonDisabled ? "#BDBDC2" : "#215988",
+                  color: "#fff",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isButtonDisabled)
+                    e.target.style.backgroundColor = "#215988";
+                }}
+                onMouseLeave={(e) => {
+                  if (!isButtonDisabled)
+                    e.target.style.backgroundColor = "#215988";
+                }}
+              >
+                Next
+              </Button>
+            )}
+          </div>
           {current === steps.length - 1 && (
-            <Button type="primary" onClick={handleFinish}>
+            <Button
+              onClick={handleFinish}
+              className="auth-btn"
+              disabled={isButtonDisabled}
+              style={{
+                backgroundColor: isButtonDisabled ? "#BDBDC2" : "#215988",
+                borderColor: isButtonDisabled ? "#BDBDC2" : "#215988",
+                color: "#fff",
+              }}
+              onMouseEnter={(e) => {
+                if (!isButtonDisabled)
+                  e.target.style.backgroundColor = "#215988";
+              }}
+              onMouseLeave={(e) => {
+                if (!isButtonDisabled)
+                  e.target.style.backgroundColor = "#215988";
+              }}
+            >
               Submit
             </Button>
           )}
+        </div>
+        <div className="d-flex justify-content-start mt-3 ">
+          <span style={{ color: "#6c757d" }}>All ready have an account?</span>
+          <Link to="/Signin">
+            <div
+              className="ms-2 lable-18-600-U"
+              style={{ fontWeight: "bold", textDecoration: "underline" }}
+            >
+              Sign In
+            </div>
+          </Link>
         </div>
       </FormContainer>
     </div>
