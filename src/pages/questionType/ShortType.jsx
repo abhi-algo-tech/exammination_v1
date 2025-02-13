@@ -79,8 +79,9 @@ export default function ShortType({
           .filter((q) => q.section === section.name) // Match section names
           .map((q, index) => ({
             questionId: q.question.id,
+            examQuestionId: q.id,
             id: index + 1,
-            isChecked: false,
+            isChecked: q.isPublished,
             level: q.question.levelId.toString(),
             marks: q.question.marks,
             options: q.question.options ? q.question.options.split(", ") : [],
@@ -91,7 +92,7 @@ export default function ShortType({
 
         return { ...section, questions };
       });
-
+      setupdatedQuestion(updatedSections);
       setSectionsData(updatedSections);
     }
   }, [examQuestionList]); // Dependency array to trigger effect when examQuestionList updates
@@ -122,6 +123,7 @@ export default function ShortType({
           });
         }
       });
+      setupdatedQuestion(updatedSections);
       return updatedSections;
     });
   };
@@ -359,6 +361,7 @@ export default function ShortType({
                     >
                       <Checkbox
                         checked={question.isChecked}
+                        value={question.isChecked}
                         onChange={(e) =>
                           handleQuestionChange(
                             section.key,

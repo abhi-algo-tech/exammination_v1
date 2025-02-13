@@ -51,7 +51,6 @@ const ExamService = {
   // Get an exam by ID (using BASE instead of BY_ID)
   getExamById: async (id) => {
     try {
-      console.log("Fetching exam for ID:", id);
       const token = getAuthToken();
       const url = `${API_ENDPOINTS.exam.BASE}/${id}`;
       const response = await axiosInstance.get(url, {

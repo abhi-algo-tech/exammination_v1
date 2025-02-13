@@ -10,19 +10,19 @@ const DynamicNumericInput = ({
 }) => {
   const inputRefs = useRef([]);
 
-  const [inputs, setInputs] = useState(() => {
-    const initialValues = form.getFieldValue(name);
-    if (Array.isArray(initialValues) && initialValues.length === n) {
-      return initialValues.map(String);
-    } else {
-      return Array(n).fill("");
-    }
-  });
+  // Fetch initial values and ensure it's an array of length `n`
+  const initialValues = form.getFieldValue(name) || Array(n).fill("");
+
+  const [inputs, setInputs] = useState(() =>
+    Array.isArray(initialValues) && initialValues.length === n
+      ? initialValues.map(String)
+      : Array(n).fill("")
+  );
 
   useEffect(() => {
-    const initialValues = form.getFieldValue(name);
-    if (Array.isArray(initialValues) && initialValues.length === n) {
-      setInputs(initialValues.map(String));
+    const formValues = form.getFieldValue(name);
+    if (Array.isArray(formValues) && formValues.length === n) {
+      setInputs(formValues.map(String));
     }
   }, [form, name, n]);
 
@@ -49,18 +49,22 @@ const DynamicNumericInput = ({
     <Form.Item
       label={label}
       name={name}
+      initialValue={form.getFieldValue(name)}
       rules={[
+        ...(required
+          ? [{ required: true, message: `Please enter all ${n} digits!` }]
+          : []),
         {
           validator(_, value) {
-            const isValid = inputs.every((input) => input !== "");
-            return isValid
+            if (!required) return Promise.resolve();
+            return inputs.every((input) => input !== "")
               ? Promise.resolve()
-              : Promise.reject(new Error("Please fill all 4 digits!"));
+              : Promise.reject(new Error(`Please fill all ${n} digits!`));
           },
         },
       ]}
     >
-      <Row gutter={8} justify="center">
+      <Row gutter={8}>
         {inputs.map((value, index) => (
           <Col key={index}>
             <Input

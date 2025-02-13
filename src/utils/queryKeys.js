@@ -19,3 +19,6 @@ export const staffKeys = {
 export const questionKeys = {
   question: "question",
 };
+export const examQuestionKeys = {
+  examQuestion: "examQuestion",
+};

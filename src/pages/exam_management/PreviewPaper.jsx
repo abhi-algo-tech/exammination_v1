@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, Select, Button, Input, Row, Col, Space, Checkbox } from "antd";
 import { PlusOutlined, UploadOutlined, BankOutlined } from "@ant-design/icons";
 import styled from "styled-components";
@@ -9,6 +9,8 @@ import ButtonComponent from "../../exam_components/button_component/ButtonCompon
 import CommonModalComponent from "../../components/CommonModalComponent";
 import ReviewModal from "./ReviewModal";
 import PaperList from "./PaperList";
+import { useSelector } from "react-redux";
+import { useExamById } from "../../hooks/useExam";
 
 const { TabPane } = Tabs;
 
@@ -37,12 +39,12 @@ const QuestionBox = styled.div`
   }
 `;
 
-const sections = [
-  { key: 1, name: "SECTION - A", marks: 15, questions: 11 },
-  { key: 2, name: "SECTION - B", marks: 15, questions: 19 },
-  { key: 3, name: "SECTION - C", marks: 15, questions: 9 },
-  { key: 4, name: "SECTION - D", marks: 15, questions: 6 },
-];
+// const sections = [
+//   { key: 1, name: "SECTION - A", marks: 15, questions: 11 },
+//   { key: 2, name: "SECTION - B", marks: 15, questions: 19 },
+//   { key: 3, name: "SECTION - C", marks: 15, questions: 9 },
+//   { key: 4, name: "SECTION - D", marks: 15, questions: 6 },
+// ];
 
 const questionTypes = [
   "Short Answer Type",
@@ -51,11 +53,73 @@ const questionTypes = [
   "True/False",
 ];
 
+const formatSections = (sections, lists) => {
+  return sections.map((section, index) => {
+    // Filter all matching lists for this section
+    const matchingLists = lists?.filter(
+      (list) =>
+        list.section === `SECTION - ${section.sectionName.toUpperCase()}`
+    );
+
+    // Merge all questions from matching lists
+    const allQuestions = matchingLists
+      ?.flatMap((list) => list)
+      .filter((question) => question.isPublished === true);
+
+    return {
+      key: index + 1, // Unique key
+      name: `SECTION - ${section.sectionName.toUpperCase()}`, // Formatted section name
+      marks: 0, // Default marks
+      questions: section.questionCount, // Number of questions
+      questionList: allQuestions, // Assign all matching questions
+    };
+  });
+};
+
 const PreviewPaper = () => {
   const navigate = useNavigate();
+  const exam = useSelector((state) => state.auth.exam);
+  const id = exam?.id;
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
   const [marks, setMarks] = useState(0);
+  const [questionList, setQuestionList] = useState([]);
+
+  const { data: ExamQuestionList, refetch } = useExamById(id);
+  // console.log("ExamQuestionList:", ExamQuestionList);
+
+  const sections = formatSections(
+    exam.sections,
+    ExamQuestionList?.data?.examQuestions
+  );
+
+  console.log("sections:", sections);
+
+  useEffect(() => {
+    if (ExamQuestionList?.data?.examQuestions) {
+      console.log("first:", ExamQuestionList?.data?.examQuestions);
+      const transformedQuestions = ExamQuestionList.data.examQuestions
+        .filter((q) => q.isPublished === true) // ✅ Filter only published questions
+        .map((q) => ({
+          id: q.questionNumber,
+          level: q.question.level,
+          topic: q.question.topic,
+          questionName: q.question.name,
+          subject: q.question.subject,
+          class: q.question.class,
+          curriculum: q.question.curriculum,
+          marks: q.question.marks,
+          // questionType: q.question.type,
+          questionType: "Short Answer Type",
+          options: q.question.options ? q.question.options.split(", ") : [],
+          author: q.question.author,
+          datePublished: q.question.datePublished,
+          section: q.section,
+        }));
+      console.log("transformedQuestions:", transformedQuestions);
+      setQuestionList(transformedQuestions);
+    }
+  }, [ExamQuestionList]);
 
   const handleAddQuestionThroughBank = () => {
     navigate("/add-question-by-bank");
@@ -84,19 +148,47 @@ const PreviewPaper = () => {
 
   const handleTabChange = (key) => setActiveSection(Number(key));
 
-  const renderQuestionGrid = (section) => (
-    <div key={section.key} style={{ marginBottom: "24px" }}>
-      <div className="d-flex justify-content-between mb12">
-        <div className="label-20-500-b">{section.name}</div>
-        <div className="label-14-500-g">{section.marks} marks</div>
+  // Map sections to get the questions to be highlighted
+  const sectionQuestionMap = sections.reduce((acc, section) => {
+    acc[section.name] = new Set(
+      section.questionList?.map((q) => q.questionNumber) || []
+    );
+    return acc;
+  }, {});
+
+  const renderQuestionGrid = (section) => {
+    const highlightedQuestions = sectionQuestionMap[section.name] || new Set();
+
+    return (
+      <div key={section.key} style={{ marginBottom: "24px" }}>
+        <div className="d-flex justify-content-between mb12">
+          <div className="label-20-500-b">{section.name}</div>
+          <div className="label-14-500-g">{section.marks} marks</div>
+        </div>
+        <QuestionGrid>
+          {Array.from({ length: section.questions }, (_, i) => {
+            const questionIndex = i + 1;
+            const isHighlighted = highlightedQuestions.has(questionIndex);
+
+            return (
+              <QuestionBox
+                key={i}
+                style={{
+                  backgroundColor: isHighlighted ? "green" : "white",
+                  color: isHighlighted ? "white" : "black",
+                  border: isHighlighted
+                    ? "2px solid darkgreen"
+                    : "1px solid gray",
+                }}
+              >
+                {questionIndex}
+              </QuestionBox>
+            );
+          })}
+        </QuestionGrid>
       </div>
-      <QuestionGrid>
-        {Array.from({ length: section.questions }, (_, i) => (
-          <QuestionBox key={i}>{i + 1}</QuestionBox>
-        ))}
-      </QuestionGrid>
-    </div>
-  );
+    );
+  };
 
   return (
     <div>
@@ -112,30 +204,31 @@ const PreviewPaper = () => {
           <Tabs
             activeKey={String(activeSection)} // Ensure this is a string matching the `key`
             onChange={(key) => setActiveSection(Number(key))}
-            items={sections.map((section) => ({
-              key: String(section.key), // Ensure key is a string
-              label: (
-                <span
-                  className={
-                    activeSection === section.key
-                      ? "label-20-600"
-                      : "label-20-500"
-                  }
-                  style={{
-                    color:
-                      activeSection === section.key ? "#4B4B4B" : "#797979",
-                  }}
-                >
-                  {section.name}
-                </span>
-              ),
-              children: (
-                <>
-                  {/* <QuestionList /> */}
-                  <PaperList />
-                </>
-              ),
-            }))}
+            items={sections.map((section) => {
+              const filteredQuestions = questionList.filter(
+                (question) => question.section === section.name
+              ); // ✅ Filter questions for the selected section
+
+              return {
+                key: String(section.key), // Ensure key is a string
+                label: (
+                  <span
+                    className={
+                      activeSection === section.key
+                        ? "label-20-600"
+                        : "label-20-500"
+                    }
+                    style={{
+                      color:
+                        activeSection === section.key ? "#4B4B4B" : "#797979",
+                    }}
+                  >
+                    {section.name}
+                  </span>
+                ),
+                children: <PaperList data={filteredQuestions} />, // ✅ Pass filtered data
+              };
+            })}
           />
         </Col>
 

@@ -18,4 +18,7 @@ export const API_ENDPOINTS = {
     BASE: "/questions",
     BY_ID: "/questions/{id}",
   },
+  EXAMQUESTION: {
+    BASE: "/exam-questions",
+  },
 };

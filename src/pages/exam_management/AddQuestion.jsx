@@ -10,6 +10,7 @@ import ButtonComponent from "../../exam_components/button_component/ButtonCompon
 import ReviewModal from "./ReviewModal";
 import { useSelector } from "react-redux";
 import { useExamById } from "../../hooks/useExam";
+import { CustomMessage } from "../../utils/CustomMessage";
 
 const QuestionGrid = styled.div`
   display: grid;
@@ -82,7 +83,7 @@ const AddQuestion = () => {
   const [marks, setMarks] = useState(0);
 
   const { data: ExamQuestionList, refetch } = useExamById(id);
-  console.log("ExamQuestionList:", ExamQuestionList);
+  // console.log("updatedQuestion:", updatedQuestion);
   // const [isReviewModalOpen, setReviewModalOpen] = useState(false);
 
   // const handleAddQuestionThroughBank = () => {
@@ -97,8 +98,25 @@ const AddQuestion = () => {
     ExamQuestionList?.data?.examQuestions
   );
 
+  // const handlePreview = () => {
+  //   navigate("/preview-questions");
+  // };
+
+  const checkedQuestionCount = updatedQuestion.reduce(
+    (count, section) =>
+      count +
+      section.questions.filter((question) => question.isChecked === true)
+        .length,
+    0
+  );
+
   const handlePreview = () => {
-    navigate("/preview-questions");
+    console.log("checkedQuestionCount:", checkedQuestionCount);
+    if (checkedQuestionCount === 0) {
+      CustomMessage.error("Please select at least one question.");
+      return;
+    }
+    setReviewModalOpen(true);
   };
 
   // const handleMarksChange = (e) => {
@@ -160,11 +178,7 @@ const AddQuestion = () => {
 
         {/* Right Section */}
         <Col xs={24} md={8}>
-          <RightSection
-            sections={sections}
-            // onPreview={handlePreview}
-            onPreview={() => setReviewModalOpen(true)}
-          />
+          <RightSection sections={sections} onPreview={handlePreview} />;
         </Col>
       </Row>
       {isReviewModalOpen && (
@@ -176,7 +190,7 @@ const AddQuestion = () => {
           isClosable={true}
         >
           <ReviewModal
-            sections={sections}
+            updatedQuestion={updatedQuestion}
             // CardTitle={"Add Student"}
             // classroomId={null}
             closeModal={() => setReviewModalOpen(false)}

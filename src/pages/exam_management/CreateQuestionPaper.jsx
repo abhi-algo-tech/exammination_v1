@@ -18,7 +18,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useCreateExam, useExamById, useUpdateExam } from "../../hooks/useExam";
 import { CustomMessage } from "../../utils/CustomMessage";
 import { useDispatch } from "react-redux";
-import { setExam } from "../../store/authSlice";
+import { setExam, setExamForm } from "../../store/authSlice";
 import moment from "moment/moment";
 
 // Options for Select and Multi-select
@@ -48,11 +48,28 @@ const curriculumTypeOptions = [
   { value: 4, label: "IB" },
 ];
 
+const formatDuration = (durationInput) => {
+  const duration = moment.duration(durationInput); // Ensure it's a proper duration
+
+  const hours = Math.floor(duration.asHours()); // Get total hours
+  const minutes = duration.minutes(); // Get minutes
+  const seconds = duration.seconds(); // Get seconds
+
+  return [hours, minutes, seconds]
+    .map((unit) => String(unit).padStart(2, "0")) // Ensure two-digit format
+    .join(":");
+};
+
 // Assuming you have this convertToPayload function already defined
 const convertToPayload = (values) => {
-  console.log(values);
-  console.log("🚀 Debugging subjectCode:", values?.subjectCode);
-  console.log("Type of subjectCode:", typeof values.subjectCode);
+  // console.log(values);
+  // console.log("🚀 Debugging subjectCode:", values?.subjectCode);
+  // console.log("Type of subjectCode:", typeof values.subjectCode);
+  // console.log("duration", formatDuration(values.duration), values.duration);
+  const durationString = moment(values.duration).format("HH:mm:ss"); // Ensure it's in "HH:mm:ss" format
+  const [hours, minutes, seconds] = durationString.split(":").map(Number);
+  const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+  const formattedDuration = formatDuration(totalSeconds * 1000);
 
   return {
     nameOfExam: values.examName,
@@ -68,7 +85,7 @@ const convertToPayload = (values) => {
     examCreatedBy: 1, // Replace with actual user ID
     examEvaluatedBy: 2, // Replace with actual evaluator ID
     institution: values?.institution,
-    duration: values.duration?.toISOString().substr(11, 8), // Convert to HH:MM:SS format
+    duration: formattedDuration, // Convert to HH:MM:SS format
     marks: parseInt(values.totalMarks), // Assuming marks are integers
     uniquePaperCode: Array.isArray(values.uniquePaperCode)
       ? parseInt(values.uniquePaperCode.join(""))
@@ -106,14 +123,12 @@ function CreateQuestionPaper() {
   } = useUpdateExam();
 
   const { data: examData } = useExamById(id);
-  if (examData) {
-    console.log("examData:", examData);
-  }
+
   useEffect(() => {
     if (examData) {
       const subjectCode = examData.data.subjectCode
         ? examData.data.subjectCode.toString().split("").map(Number)
-        : Array(n).fill("");
+        : [];
       console.log("subjectCode:", subjectCode);
       const formValues = {
         examName: examData.data.nameOfExam,
@@ -132,7 +147,7 @@ function CreateQuestionPaper() {
         ),
         subjectCode: examData.data.subjectCode
           ? examData.data.subjectCode.toString().split("").map(Number)
-          : Array(n).fill(""),
+          : [],
         examDate: examData.data.dateOfExam
           ? moment(examData.data.dateOfExam, "YYYY-MM-DD")
           : null,
@@ -157,6 +172,17 @@ function CreateQuestionPaper() {
       });
 
       setSections(examData.data.sections.length);
+      const data = {
+        ...formValues,
+        examDate: formValues.examDate
+          ? formValues.examDate.format("YYYY-MM-DD")
+          : null, // 🔹 Convert here
+        duration: formValues.duration
+          ? formValues.duration.format("HH:mm:ss")
+          : null, // 🔹 Convert here
+      };
+
+      dispatch(setExamForm(data));
 
       // **Set form values**
       form.setFieldsValue(formValues);
@@ -386,7 +412,7 @@ function CreateQuestionPaper() {
                 <span>-</span>
               </Col>
 
-              <Col md={9} lg={11}>
+              <Col md={9} lg={10}>
                 <DynamicNumericInput
                   n={4}
                   name="subjectCode"
@@ -501,7 +527,7 @@ function CreateQuestionPaper() {
             </Col>
 
             {/* Input Group with 4 Boxes */}
-            <Col md={6}>
+            <Col md={5}>
               <DynamicNumericInput
                 n={4}
                 name="uniquePaperCode"
