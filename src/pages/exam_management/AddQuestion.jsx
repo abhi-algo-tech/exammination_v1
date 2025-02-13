@@ -10,6 +10,7 @@ import ButtonComponent from "../../exam_components/button_component/ButtonCompon
 import ReviewModal from "./ReviewModal";
 import { useSelector } from "react-redux";
 import { useExamById } from "../../hooks/useExam";
+import { CustomMessage } from "../../utils/CustomMessage";
 
 const QuestionGrid = styled.div`
   display: grid;
@@ -75,12 +76,14 @@ const AddQuestion = () => {
   const navigate = useNavigate();
   const exam = useSelector((state) => state.auth.exam);
   const id = exam?.id;
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+  const [updatedQuestion, setupdatedQuestion] = useState([]);
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
   const [marks, setMarks] = useState(0);
 
   const { data: ExamQuestionList, refetch } = useExamById(id);
-  console.log("ExamQuestionList:", ExamQuestionList);
+  // console.log("updatedQuestion:", updatedQuestion);
   // const [isReviewModalOpen, setReviewModalOpen] = useState(false);
 
   // const handleAddQuestionThroughBank = () => {
@@ -95,8 +98,25 @@ const AddQuestion = () => {
     ExamQuestionList?.data?.examQuestions
   );
 
+  // const handlePreview = () => {
+  //   navigate("/preview-questions");
+  // };
+
+  const checkedQuestionCount = updatedQuestion.reduce(
+    (count, section) =>
+      count +
+      section.questions.filter((question) => question.isChecked === true)
+        .length,
+    0
+  );
+
   const handlePreview = () => {
-    navigate("/preview-questions");
+    console.log("checkedQuestionCount:", checkedQuestionCount);
+    if (checkedQuestionCount === 0) {
+      CustomMessage.error("Please select at least one question.");
+      return;
+    }
+    setReviewModalOpen(true);
   };
 
   // const handleMarksChange = (e) => {
@@ -152,14 +172,31 @@ const AddQuestion = () => {
             examQuestionList={ExamQuestionList}
             refetch={refetch}
             exam={exam}
+            setupdatedQuestion={setupdatedQuestion}
           />
         </Col>
 
         {/* Right Section */}
         <Col xs={24} md={8}>
-          <RightSection sections={sections} onPreview={handlePreview} />
+          <RightSection sections={sections} onPreview={handlePreview} />;
         </Col>
       </Row>
+      {isReviewModalOpen && (
+        <CommonModalComponent
+          open={isReviewModalOpen}
+          setOpen={setReviewModalOpen}
+          modalWidthSize={696}
+          modalHeightSize={599}
+          isClosable={true}
+        >
+          <ReviewModal
+            updatedQuestion={updatedQuestion}
+            // CardTitle={"Add Student"}
+            // classroomId={null}
+            closeModal={() => setReviewModalOpen(false)}
+          />
+        </CommonModalComponent>
+      )}
     </div>
   );
 };

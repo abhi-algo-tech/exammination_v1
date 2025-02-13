@@ -56,8 +56,11 @@ export const useExams = ({
 export const useExamById = (id) => {
   return useQuery({
     queryKey: [examKeys.exam, id],
-    queryFn: () => ExamService.getExamById(id),
-    enabled: !!id, // Prevents query execution if id is falsy
+    queryFn: async () => {
+      const response = await ExamService.getExamById(id);
+      return response; // ✅ Extract only 'data'
+    },
+    enabled: !!id,
     onError: (error) => {
       console.error("Error fetching exam by ID:", error);
     },
@@ -85,11 +88,15 @@ export const useUpdateExam = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data) => ExamService.updateExam(data.id, data.payload),
+    mutationFn: ({ id, payload }) => {
+      if (!id || !payload) {
+        throw new Error("Invalid input: ID or payload is missing.");
+      }
+      return ExamService.updateExam(id, payload);
+    },
     onSuccess: (data) => {
-      // Invalidate the exams list and the specific exam cache
       queryClient.invalidateQueries(examKeys.exam);
-      queryClient.invalidateQueries([examKeys.exam, data.id]);
+      queryClient.invalidateQueries([examKeys.exam, data?.id]);
     },
     onError: (error) => {
       console.error("Error updating exam:", error);

@@ -17,25 +17,33 @@ import ButtonComponent from "../../exam_components/button_component/ButtonCompon
 import { Navigate, useNavigate } from "react-router-dom";
 import CommonModal from "../../exam_components/model_window/CommonModal";
 import PublishView from "./PublishView";
+import { useSelector } from "react-redux";
 
 // Options for Select and Multi-select
 const examTypeOptions = [
-  { value: "midterm", label: "Midterm" },
-  { value: "final", label: "Final" },
-  { value: "quiz", label: "Quiz" },
+  { value: 1, label: "Midterm" },
+  { value: 2, label: "Final" },
+  { value: 3, label: "Quiz" },
 ];
 
 const classTypeOptions = [
-  { value: "class 8", label: "Class 8" },
-  { value: "class 9", label: "Class 9" },
-  { value: "class 10", label: "Class 10" },
+  { value: 1, label: "Class 8" },
+  { value: 2, label: "Class 9" },
+  { value: 3, label: "Class 10" },
 ];
 
 const subjectOptions = [
-  { value: "math", label: "Math" },
-  { value: "science", label: "Science" },
-  { value: "history", label: "History" },
-  { value: "geography", label: "Geography" },
+  { value: 1, label: "Math" },
+  { value: 2, label: "Science" },
+  { value: 3, label: "History" },
+  { value: 4, label: "Geography" },
+];
+
+const curriculumTypeOptions = [
+  { value: 1, label: "CBSC" },
+  { value: 2, label: "ICSE" },
+  { value: 3, label: "SB" },
+  { value: 4, label: "IB" },
 ];
 
 const name = "Abhi.s"; // Example variable for name
@@ -46,6 +54,18 @@ function PublishForm() {
   const [form] = Form.useForm();
   const [sections, setSections] = useState(0);
   const [isModal, setIsModal] = useState(false);
+  const formvalue = {
+    examName: useSelector((state) => state.auth.examName),
+    examType: useSelector((state) => state.auth.examType),
+    curriculum: useSelector((state) => state.auth.curriculum),
+    class: useSelector((state) => state.auth.class),
+    division: useSelector((state) => state.auth.division),
+    subject: useSelector((state) => state.auth.subject),
+    subjectCode: useSelector((state) => state.auth.subjectCode),
+    examDate: useSelector((state) => state.auth.examDate),
+  };
+
+  form.setFieldsValue(formvalue);
 
   const handleSubmit = (values) => {
     console.log("Form values:", values);
@@ -127,12 +147,13 @@ function PublishForm() {
                 label="Curriculum"
                 name="curriculum"
                 // rules={[
-                //   { required: true, message: "Please enter the curriculum!" },
+                //   { required: true, message: "Please select an exam type!" },
                 // ]}
               >
-                <Input
-                  placeholder="Enter the curriculum"
-                  className="input-box"
+                <CustomSelect
+                  options={curriculumTypeOptions}
+                  placeholder="Select"
+                  isSearchable
                 />
               </Form.Item>
             </Col>

@@ -51,12 +51,10 @@ const ExamService = {
   // Get an exam by ID (using BASE instead of BY_ID)
   getExamById: async (id) => {
     try {
-      const token = getAuthToken(); // Retrieve token from Redux state
+      const token = getAuthToken();
       const url = `${API_ENDPOINTS.exam.BASE}/${id}`;
       const response = await axiosInstance.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error) {

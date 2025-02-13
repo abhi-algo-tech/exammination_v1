@@ -55,7 +55,12 @@ const formatSections = (sections) => {
   }));
 };
 
-export default function ShortType({ examQuestionList, refetch, exam }) {
+export default function ShortType({
+  examQuestionList,
+  refetch,
+  exam,
+  setupdatedQuestion,
+}) {
   const [form] = Form.useForm(); // Move useForm here
   const [activeSection, setActiveSection] = useState(1);
   // const exam = useSelector((state) => state.auth.exam);
@@ -74,8 +79,9 @@ export default function ShortType({ examQuestionList, refetch, exam }) {
           .filter((q) => q.section === section.name) // Match section names
           .map((q, index) => ({
             questionId: q.question.id,
+            examQuestionId: q.id,
             id: index + 1,
-            isChecked: false,
+            isChecked: q.isPublished,
             level: q.question.levelId.toString(),
             marks: q.question.marks,
             options: q.question.options ? q.question.options.split(", ") : [],
@@ -86,7 +92,7 @@ export default function ShortType({ examQuestionList, refetch, exam }) {
 
         return { ...section, questions };
       });
-
+      setupdatedQuestion(updatedSections);
       setSectionsData(updatedSections);
     }
   }, [examQuestionList]); // Dependency array to trigger effect when examQuestionList updates
@@ -117,6 +123,7 @@ export default function ShortType({ examQuestionList, refetch, exam }) {
           });
         }
       });
+      setupdatedQuestion(updatedSections);
       return updatedSections;
     });
   };
@@ -188,7 +195,7 @@ export default function ShortType({ examQuestionList, refetch, exam }) {
               questions: [...section.questions, newQuestion],
             };
           } else if (!latestQuestionId == 0) {
-            console.log("second:", latestQuestionId);
+            // console.log("second:", latestQuestionId);
             const newQuestion = {
               id: section.questions.length + 1,
               text: "",
@@ -231,25 +238,26 @@ export default function ShortType({ examQuestionList, refetch, exam }) {
               };
 
               createQuestion(payload, {
-                onSuccess: () => {
+                onSuccess: (response) => {
                   CustomMessage.success("Question created successfully!");
                   refetch();
 
-                  const newQuestion = {
-                    id: section.questions.length + 1,
-                    text: "",
-                    // type: "Select Type",
-                    // level: "Select Level",
-                    topic: "",
-                    marks: 0,
-                    isChecked: false,
-                    options: [],
-                  };
+                  if (response?.data) {
+                    const newQuestion = {
+                      id: response.data.id, // Use backend ID instead of manual numbering
+                      text: "",
+                      topic: "",
+                      marks: 0,
+                      isChecked: false,
+                      options: [],
+                    };
 
-                  return {
-                    ...section,
-                    questions: [...section.questions, newQuestion],
-                  };
+                    // Assuming you update the section state here
+                    updateSection((prevSection) => ({
+                      ...prevSection,
+                      questions: [...prevSection.questions, newQuestion],
+                    }));
+                  }
                 },
                 onError: (error) => {
                   CustomMessage.error(
@@ -353,6 +361,7 @@ export default function ShortType({ examQuestionList, refetch, exam }) {
                     >
                       <Checkbox
                         checked={question.isChecked}
+                        value={question.isChecked}
                         onChange={(e) =>
                           handleQuestionChange(
                             section.key,

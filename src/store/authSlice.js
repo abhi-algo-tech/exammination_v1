@@ -5,6 +5,15 @@ const initialState = {
   token: null,
   user: null,
   exam: [],
+  examName: null,
+  examType: null,
+  curriculum: null,
+  class: null,
+  division: null,
+  subject: null,
+  subjectCode: null,
+  examDate: null,
+  uniquePaperCode: null,
 };
 
 const authSlice = createSlice({
@@ -25,8 +34,30 @@ const authSlice = createSlice({
     setExam: (state, action) => {
       state.exam = action.payload;
     },
+    setExamForm: (state, action) => {
+      const {
+        examName,
+        examType,
+        curriculum,
+        class: classType,
+        division,
+        subject,
+        subjectCode,
+        examDate,
+        uniquePaperCode,
+      } = action.payload;
+      state.examName = examName;
+      state.examType = examType;
+      state.curriculum = curriculum;
+      state.class = classType;
+      state.division = division;
+      state.subject = subject;
+      state.subjectCode = subjectCode;
+      state.examDate = examDate;
+      state.uniquePaperCode = uniquePaperCode;
+    },
   },
 });
 
-export const { login, logout, setExam } = authSlice.actions;
+export const { login, logout, setExam, setExamForm } = authSlice.actions;
 export default authSlice.reducer;
