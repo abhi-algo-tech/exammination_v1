@@ -58,6 +58,55 @@ const QuestionService = {
       throw error;
     }
   },
+  // Download question template
+  downloadTemplate: async () => {
+    try {
+      const token = getAuthToken();
+      const url = API_ENDPOINTS.QUESTION.DOWNLOAD_TEMPLATE;
+      const response = await axiosInstance.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob", // Ensures the file is downloaded
+      });
+
+      // Create a link to download the file
+      const urlObject = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = urlObject;
+      link.setAttribute("download", "question_template.xlsx"); // Set the file name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error while downloading template:", error);
+      throw error;
+    }
+  },
+
+  // Upload questions from a file
+  uploadQuestions: async (file) => {
+    try {
+      const token = getAuthToken();
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axiosInstance.post(
+        API_ENDPOINTS.QUESTION.UPLOAD,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error while uploading questions:", error);
+      throw error;
+    }
+  },
 };
 
 export default QuestionService;

@@ -18,6 +18,8 @@ export const API_ENDPOINTS = {
   QUESTION: {
     BASE: "/questions",
     BY_ID: "/questions/{id}",
+    DOWNLOAD_TEMPLATE: "/questions/download-template",
+    UPLOAD: "/questions/upload",
   },
   EXAMQUESTION: {
     BASE: "/exam-questions",
