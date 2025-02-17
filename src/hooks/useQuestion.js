@@ -45,3 +45,29 @@ export const useUpdateQuestion = () => {
     },
   });
 };
+
+// Hook to download question template
+export const useDownloadTemplate = () => {
+  return useMutation({
+    mutationFn: () => QuestionService.downloadTemplate(),
+    onError: (error) => {
+      console.error("Error downloading template:", error);
+    },
+  });
+};
+
+// Hook to upload questions from a file
+export const useUploadQuestions = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file) => QuestionService.uploadQuestions(file),
+    onSuccess: () => {
+      // Invalidate the questions list query after upload
+      queryClient.invalidateQueries(questionKeys.question);
+    },
+    onError: (error) => {
+      console.error("Error uploading questions:", error);
+    },
+  });
+};

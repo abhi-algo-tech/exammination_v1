@@ -1,40 +1,15 @@
-import React, { useState } from "react";
-import { Tabs, Select, Button, Input, Row, Col, Space, Checkbox } from "antd";
-import { PlusOutlined, UploadOutlined, BankOutlined } from "@ant-design/icons";
-import styled from "styled-components";
-import ShortType from "../questionType/ShortType";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Button, Row, Col, Table, Tooltip } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import * as XLSX from "xlsx";
 import CommonUploads from "../../exam_components/upload/CommonUploads";
-import CommonModalComponent from "../../components/CommonModalComponent";
-import ReviewModal from "./ReviewModal";
 import RightSection from "./RightSection";
-
-const { TabPane } = Tabs;
-
-const QuestionGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
-`;
-
-const QuestionBox = styled.div`
-  background: #fff;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  width: 35px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s;
-
-  &:hover {
-    border-color: #6366f1;
-    color: #6366f1;
-  }
-`;
+import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
+import {
+  useDownloadTemplate,
+  useUploadQuestions,
+} from "../../hooks/useQuestion";
+import { CustomMessage } from "../../utils/CustomMessage";
 
 const sections = [
   { key: 1, name: "SECTION - A", marks: 15, questions: 11 },
@@ -43,56 +18,85 @@ const sections = [
   { key: 4, name: "SECTION - D", marks: 15, questions: 6 },
 ];
 
-const questionTypes = [
-  "Short Answer Type",
-  "Long Answer Type",
-  "Multiple Choice",
-  "True/False",
-];
-
 const UploadQuestion = () => {
-  const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState(1);
-  const [questionType, setQuestionType] = useState("Short Answer Type");
-  const [marks, setMarks] = useState(0);
+  const [fileList, setFileList] = useState([]);
+  const [file, setFile] = useState([]);
+  const [excelData, setExcelData] = useState([]);
+  const [columns, setColumns] = useState([]);
+  const [isUploading, setIsUploading] = useState(false); // Local loading state
+  const { mutate: downloadTemplate } = useDownloadTemplate();
+  const { mutate: uploadQuestions } = useUploadQuestions();
 
-  const handlePreview = () => {
-    navigate("/preview-questions");
-  };
+  const handleUploadChange = (newFileList, files) => {
+    setFileList(newFileList);
 
-  const handleAddQuestionThroughBank = () => {
-    navigate("/add-question-by-bank");
-  };
+    if (files && files.length > 0) {
+      const file = files[0];
+      setFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const arrayBuffer = e.target.result;
+        const workbook = XLSX.read(new Uint8Array(arrayBuffer), {
+          type: "array",
+        });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-  const handleMarksChange = (e) => {
-    const value = e.target.value; // Get the input value as a string
+        if (jsonData.length > 0) {
+          const newColumns = jsonData[0].map((col, index) => ({
+            title: col,
+            dataIndex: index.toString(),
+            key: index.toString(),
+          }));
+          setColumns(newColumns);
 
-    // Allow empty input (for backspace) and numbers within the range
-    if (
-      value === "" ||
-      (/^\d+$/.test(value) &&
-        parseInt(value, 10) >= 0 &&
-        parseInt(value, 10) <= 20)
-    ) {
-      setMarks(value === "" ? "" : parseInt(value, 10)); // Allow empty or valid number
+          const newExcelData = jsonData.slice(1).map((row, rowIndex) =>
+            row.reduce(
+              (acc, value, colIndex) => {
+                acc[colIndex.toString()] = value;
+                return acc;
+              },
+              { key: rowIndex.toString() }
+            )
+          );
+          setExcelData(newExcelData);
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    } else {
+      setExcelData([]);
+      setColumns([]);
     }
   };
 
-  const handleTabChange = (key) => setActiveSection(Number(key));
+  const handleDownloadClick = () => {
+    downloadTemplate();
+  };
 
-  const renderQuestionGrid = (section) => (
-    <div key={section.key} style={{ marginBottom: "24px" }}>
-      <div className="d-flex justify-content-between mb12">
-        <div className="label-20-500-b">{section.name}</div>
-        <div className="label-14-500-g">{section.marks} marks</div>
-      </div>
-      <QuestionGrid>
-        {Array.from({ length: section.questions }, (_, i) => (
-          <QuestionBox key={i}>{i + 1}</QuestionBox>
-        ))}
-      </QuestionGrid>
-    </div>
-  );
+  const handleUploadClick = async () => {
+    if (fileList.length === 0) {
+      CustomMessage.error("No file selected for upload.");
+      return;
+    }
+
+    const file = fileList[0].originFileObj;
+
+    try {
+      setIsUploading(true); // Start loading
+      await uploadQuestions(file); // Wait for upload to finish
+      CustomMessage.success("File successfully uploaded!");
+
+      setFileList([]); // Clear file list after success
+      setExcelData([]); // Clear preview data
+      setColumns([]); // Clear table columns
+    } catch (error) {
+      CustomMessage.error(`Upload failed: ${error.message}`);
+    } finally {
+      setIsUploading(false); // Stop loading
+    }
+  };
 
   return (
     <div>
@@ -101,15 +105,51 @@ const UploadQuestion = () => {
         <div className="label-14-600-blue">View Examination Details</div>
       </div>
       <Row gutter={[24, 24]}>
-        {/* Left Section */}
         <Col xs={24} md={16}>
-          <div>Upload your Question Paper here.</div>
-          <CommonUploads containerHeight="171px" />
+          <div className="d-flex align-items-center gap-2">
+            <div>Upload your Question Paper here.</div>
+            <Tooltip title="Download Template">
+              <Button
+                icon={<DownloadOutlined />}
+                onClick={handleDownloadClick}
+              />
+            </Tooltip>
+          </div>
+          <div className="mt-4">
+            <CommonUploads
+              onChange={handleUploadChange}
+              accept=".xlsx, .xls"
+              fileList={fileList}
+            />
+          </div>
+          {excelData.length > 0 && (
+            <div style={{ marginTop: 20 }}>
+              <div className="d-flex justify-content-between align-items-center">
+                <h3>Preview Excel Data</h3>
+                <ButtonComponent
+                  bgColor="#215988"
+                  height="40px"
+                  width="236px"
+                  label={isUploading ? "Uploading..." : "Upload"}
+                  labelColor="#ffff"
+                  fontWeight="700"
+                  onClick={handleUploadClick}
+                  disabled={isUploading}
+                />
+              </div>
+              <div className="mt-4">
+                <Table
+                  dataSource={excelData}
+                  columns={columns}
+                  pagination={false}
+                  scroll={{ x: true }}
+                />
+              </div>
+            </div>
+          )}
         </Col>
-
-        {/* Right Section */}
         <Col xs={24} md={8}>
-          <RightSection sections={sections} onPreview={handlePreview} />
+          <RightSection sections={sections} />
         </Col>
       </Row>
     </div>
