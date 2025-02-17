@@ -4,6 +4,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
 import DashboardCard from "./DashboardCard";
 import DashboardTable from "./DashboardTable";
+import SignatureModal from "../../exam_components/modal/SignatureModal";
 
 function Dashboard() {
   const assessmentCards = [
@@ -36,6 +37,7 @@ function Dashboard() {
   ];
   return (
     <div className="mt-2">
+      {/* <SignatureModal isVisible={true} /> */}
       <div className="d-flex justify-content-between">
         <div className="d-flex mt-2">
           <div style={{ paddingRight: "20px" }}>

@@ -1,20 +1,9 @@
 import React, { useState } from "react";
-import {
-  Form,
-  Input,
-  InputNumber,
-  Button,
-  Row,
-  Col,
-  DatePicker,
-  Card,
-  TimePicker,
-} from "antd";
-import Select from "react-select";
+import { Form, Input, Row, Col, DatePicker, Card, TimePicker } from "antd";
 import CustomSelect from "../../exam_components/select/CustomSelect";
 import DynamicNumericInput from "../../exam_components/dynamic_numeric_input/DynamicNumericInput";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CommonModal from "../../exam_components/model_window/CommonModal";
 import PublishView from "./PublishView";
 import { useSelector } from "react-redux";
@@ -338,12 +327,14 @@ function PublishForm() {
             </div>
             <div>
               <Form.Item>
-                <ButtonComponent
-                  bgColor="#215988"
-                  height="40px"
-                  width="288px"
-                  label="Download Question Paper"
-                />
+                <Link to={"/question-bank/theme1"}>
+                  <ButtonComponent
+                    bgColor="#215988"
+                    height="40px"
+                    width="288px"
+                    label="View PDF Paper"
+                  />
+                </Link>
               </Form.Item>
             </div>
           </div>
