@@ -30,3 +30,8 @@
 .table td {
   padding: 0.5rem;
 }
+
+.question-block {
+  page-break-inside: avoid;
+  break-inside: avoid; /* For modern browsers */
+}

@@ -1,8 +1,420 @@
 import React from "react";
 import html2pdf from "html2pdf.js";
 import "./Theme1.css";
+import { useExamById } from "../../hooks/useExam";
+import { useSelector } from "react-redux";
+import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
+import ExamTemplate from "./ExamTemplate";
 
+// const paperData = {
+//   message: "Exam retrieved successfully",
+//   httpStatus: 200,
+//   flag: true,
+//   data: {
+//     id: 2,
+//     nameOfExam: "SEM-1",
+//     typeOfExamId: 1,
+//     curriculumId: 1,
+//     classId: 3,
+//     division: "A,C",
+//     subjectId: 2,
+//     subjectCode: 1028,
+//     dateOfExam: "2025-02-14",
+//     examCreatedBy: 1,
+//     examEvaluatedBy: 2,
+//     institution: "WOW",
+//     duration: "00:00:00",
+//     marks: 80,
+//     uniquePaperCode: 1122,
+//     createdBy: 18,
+//     createdOn: "2025-02-14T05:40:18.000+00:00",
+//     updatedBy: null,
+//     updatedOn: null,
+//     isDeleted: false,
+//     statusId: 1,
+//     sections: [
+//       {
+//         id: 82,
+//         sectionName: "A",
+//         questionCount: 4,
+//         examId: null,
+//         createdBy: null,
+//         createdOn: "2025-02-14T05:40:18.000+00:00",
+//         updatedBy: null,
+//         updatedOn: null,
+//         isDeleted: false,
+//       },
+//       {
+//         id: 83,
+//         sectionName: "B",
+//         questionCount: 4,
+//         examId: null,
+//         createdBy: null,
+//         createdOn: "2025-02-14T05:40:18.000+00:00",
+//         updatedBy: null,
+//         updatedOn: null,
+//         isDeleted: false,
+//       },
+//       {
+//         id: 84,
+//         sectionName: "C",
+//         questionCount: 4,
+//         examId: null,
+//         createdBy: null,
+//         createdOn: "2025-02-14T05:40:18.000+00:00",
+//         updatedBy: null,
+//         updatedOn: null,
+//         isDeleted: false,
+//       },
+//     ],
+//     examQuestions: [
+//       {
+//         id: 5,
+//         exam: 2,
+//         question: {
+//           id: 55,
+//           name: "What is JAVA",
+//           options: "C, C++, Pyhon, PHP",
+//           optionLength: 4,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 3,
+//           subTypeId: null,
+//           levelId: 3,
+//           topic: "IT",
+//           marks: 1,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:19:51.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 1,
+//         section: "SECTION - A",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 6,
+//         exam: 2,
+//         question: {
+//           id: 56,
+//           name: "Select Laptop",
+//           options: "Intel, HP, Mac, Linux",
+//           optionLength: 4,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 3,
+//           subTypeId: null,
+//           levelId: 1,
+//           topic: "IT",
+//           marks: 1,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:22:02.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 2,
+//         section: "SECTION - A",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 7,
+//         exam: 2,
+//         question: {
+//           id: 57,
+//           name: "Who discover gravity",
+//           options: "Newton, Chandan, Abhi, Riken",
+//           optionLength: 4,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 3,
+//           subTypeId: null,
+//           levelId: 1,
+//           topic: "gravity",
+//           marks: 1,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:23:48.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 3,
+//         section: "SECTION - A",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 8,
+//         exam: 2,
+//         question: {
+//           id: 58,
+//           name: "What is boiling point of water",
+//           options: "50, 55, 100, 102",
+//           optionLength: 4,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 3,
+//           subTypeId: null,
+//           levelId: 3,
+//           topic: "thermo",
+//           marks: 1,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:25:16.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 4,
+//         section: "SECTION - A",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 9,
+//         exam: 2,
+//         question: {
+//           id: 59,
+//           name: "Luckhnow is capital of Uttar pradesh ",
+//           options: "",
+//           optionLength: 0,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 4,
+//           subTypeId: null,
+//           levelId: 1,
+//           topic: "Gk",
+//           marks: 1,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:27:47.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 1,
+//         section: "SECTION - B",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 10,
+//         exam: 2,
+//         question: {
+//           id: 60,
+//           name: "Bike has four wheel ",
+//           options: "",
+//           optionLength: 0,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 4,
+//           subTypeId: null,
+//           levelId: 1,
+//           topic: "automobile",
+//           marks: 1,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:28:35.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 2,
+//         section: "SECTION - B",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 11,
+//         exam: 2,
+//         question: {
+//           id: 61,
+//           name: "Tree consume oxygen",
+//           options: "",
+//           optionLength: 0,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 4,
+//           subTypeId: null,
+//           levelId: 2,
+//           topic: "science",
+//           marks: 1,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:29:54.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 3,
+//         section: "SECTION - B",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 12,
+//         exam: 2,
+//         question: {
+//           id: 62,
+//           name: "Molecular formula of water is H3O ",
+//           options: "",
+//           optionLength: 0,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 4,
+//           subTypeId: null,
+//           levelId: 2,
+//           topic: "science",
+//           marks: 1,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:31:26.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 4,
+//         section: "SECTION - B",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 13,
+//         exam: 2,
+//         question: {
+//           id: 63,
+//           name: "Explain JAVA",
+//           options: "",
+//           optionLength: 0,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 1,
+//           subTypeId: null,
+//           levelId: 1,
+//           topic: "IT",
+//           marks: 2,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:32:09.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 1,
+//         section: "SECTION - C",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 14,
+//         exam: 2,
+//         question: {
+//           id: 64,
+//           name: "Expain Photosynthesis",
+//           options: "",
+//           optionLength: 0,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 1,
+//           subTypeId: null,
+//           levelId: 2,
+//           topic: "Science",
+//           marks: 2,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:32:51.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 2,
+//         section: "SECTION - C",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 15,
+//         exam: 2,
+//         question: {
+//           id: 65,
+//           name: "What is force",
+//           options: "",
+//           optionLength: 0,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 1,
+//           subTypeId: null,
+//           levelId: 2,
+//           topic: "science",
+//           marks: 2,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:33:41.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 3,
+//         section: "SECTION - C",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//       {
+//         id: 16,
+//         exam: 2,
+//         question: {
+//           id: 66,
+//           name: "Explain Gravity",
+//           options: "",
+//           optionLength: 0,
+//           answer: null,
+//           imageUrl: null,
+//           typeId: 1,
+//           subTypeId: null,
+//           levelId: 2,
+//           topic: "Science",
+//           marks: 2,
+//           isDeleted: false,
+//           createdOn: "2025-02-14T05:34:22.000+00:00",
+//           createdBy: null,
+//           modifiedBy: null,
+//           modifiedOn: null,
+//           examQuestion: null,
+//         },
+//         questionNumber: 4,
+//         section: "SECTION - C",
+//         isPublished: true,
+//         createdBy: null,
+//         modifiedBy: 18,
+//       },
+//     ],
+//     totalRecords: 0,
+//   },
+// };
 const Theme1 = () => {
+  const exam = useSelector((state) => state.auth.exam);
+  // console.log("exam", exam);
+
+  const { data: paperData, refetch } = useExamById(exam?.id);
+
+  let sequenceNumber = 1;
   const handleDownloadPdf = () => {
     const element = document.getElementById("exam-template");
     const opt = {
@@ -15,144 +427,54 @@ const Theme1 = () => {
 
     html2pdf().set(opt).from(element).save();
   };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+  const questionTypes = {
+    1: "Short Answer Questions", //"Short Answer Questions",
+    2: "Long Answer Questions", //"Long Answer Questions",
+    3: "Choose the correct option from the following", //"Multiple Choice Questions",
+    4: "State whether the following statements are True or False", //"True/False Questions",
+  };
 
+  const groupByTypeId = (questions) => {
+    if (!Array.isArray(questions) || questions.length === 0) {
+      return {}; // Return empty object if no questions
+    }
+
+    const order = [4, 3, 1, 2];
+    const grouped = questions.reduce((acc, question) => {
+      const typeId = question?.question?.typeId;
+      if (!typeId) return acc; // Skip invalid questions
+
+      if (!acc[typeId]) {
+        acc[typeId] = [];
+      }
+      acc[typeId].push(question);
+      return acc;
+    }, {});
+
+    return Object.fromEntries(
+      order
+        .map((type) => [type, grouped[type] || []])
+        .filter(([_, q]) => q && q.length > 0)
+    );
+  };
+
+  const groupedQuestions = groupByTypeId(paperData?.data?.examQuestions);
+  // console.log("groupedQuestions", groupedQuestions);
   return (
-    <div className="container-fluid p-4">
-      <button className="btn btn-primary mb-3" onClick={handleDownloadPdf}>
-        Download Paper PDF
-      </button>
-      <div id="exam-template" className="border border-dark">
-        {/* Header Section */}
-        <div className="text-center p-2">
-          <h4 className="mb-1">M.L.DAHANUKAR COLLEGE COMMERCE</h4>
-          <div className="mb-1">
-            SEMESTER END EXAMINATION - October/November 2025
-          </div>
-          <div className="bg-warning d-inline-block px-2">
-            Class & Semester : FYBBI - Semester-1
-          </div>
-          <div className="mt-1">Subject: Quantitative Methods - 1</div>
-          <div className="d-flex justify-content-between px-4 mt-2">
-            <div>Date: _____________</div>
-            <div>Time: _____________</div>
-            <div>Marks: 75</div>
-          </div>
-        </div>
-
-        {/* Multiple Choice Questions */}
-        <div className="p-3 border-top border-dark">
-          <div className="mb-2">
-            Q.1A) Choose the correct option from the following: ( any 8 out of
-            10) 8 marks
-          </div>
-          <div className="ps-4">
-            {[...Array(10)].map((_, index) => (
-              <div key={index} className="mb-3">
-                {index + 1}. {getQuestion(index)}
-                <div className="ms-3">
-                  {["a)", "b)", "c)", "d)"].map((option, optIndex) => (
-                    <div key={optIndex} className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name={`question${index + 1}`}
-                        id={`q${index + 1}${option}`}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor={`q${index + 1}${option}`}
-                      >
-                        {getOption(index, optIndex)}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* True/False Questions */}
-        <div className="p-3 border-top border-dark">
-          <div className="mb-2">
-            Q.1B) State whether the following statements are True or False: (any
-            7 out of 10) 7 marks
-          </div>
-          <div className="ps-4">
-            {[...Array(10)].map((_, index) => (
-              <div key={index} className="mb-3">
-                {index + 1}. {getTrueFalseStatement(index)}
-                <div className="ms-3">
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name={`tf${index + 1}`}
-                      id={`tf${index + 1}true`}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor={`tf${index + 1}true`}
-                    >
-                      True
-                    </label>
-                  </div>
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input"
-                      type="radio"
-                      name={`tf${index + 1}`}
-                      id={`tf${index + 1}false`}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor={`tf${index + 1}false`}
-                    >
-                      False
-                    </label>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Histogram Question */}
-        <div className="p-3 border-top border-dark">
-          <div className="mb-2">
-            Q.2A) Draw Histogram and locate mode graphically on it 7 Marks
-          </div>
-          <table className="table table-bordered w-auto">
-            <thead>
-              <tr>
-                <th>Class Interval</th>
-                <th>30-40</th>
-                <th>40-50</th>
-                <th>50-60</th>
-                <th>60-70</th>
-                <th>70-80</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Frequency</td>
-                <td>10</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="mt-3 border p-3" style={{ minHeight: "300px" }}>
-            {/* Space for drawing histogram */}
-            <div className="text-center text-muted">
-              Space for drawing histogram
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <ExamTemplate
+        paperData={paperData}
+        groupedQuestions={groupedQuestions}
+        questionTypes={questionTypes}
+      />
+    </>
   );
 };
 

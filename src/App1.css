@@ -703,3 +703,15 @@
 .dropdown .ant-select-single {
   height: 56px;
 }
+
+/* Blur background when modal is open */
+.modal-blur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2); /* Light dark overlay */
+  backdrop-filter: blur(8px); /* Apply blur effect */
+  z-index: 999; /* Make sure it covers everything */
+}

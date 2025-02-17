@@ -88,6 +88,7 @@ function MainLayout() {
               margin: 0,
               overflowY: "auto", // Allow content to scroll if it's long\
               background: "#F5F7FA",
+              scrollbarWidth: "thin",
             }}
           >
             <Outlet />

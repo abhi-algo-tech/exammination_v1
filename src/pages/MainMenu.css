@@ -14,16 +14,9 @@
   text-align: center;
 }
 
-.sidebar-logo img {
-  transition: width 0.3s, height 0.3s;
-}
-
-.sidebar-title {
-  color: #797979;
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 2px;
-}
+/* .sidebar-logo img {
+  transition: width 0.3s, height 0.3s !important;
+} */
 
 /* Sider Styling */
 .ant-layout-sider {
@@ -33,17 +26,7 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid #d9d9d9;
-  transition: margin-left 0.1s ease;
-}
-
-/* Collapse Button */
-.sider-collapse-button {
-  text-align: center;
-  margin: 10px 0;
-}
-
-.sider-collapse-button img {
-  transition: transform 0.3s ease;
+  /* transition: margin-left 0.1s ease !important; */
 }
 
 /* Scrollable Menu Container */
@@ -61,25 +44,31 @@
 .custom-menu {
   background: transparent;
 }
+
+.custom-menu .ant-menu-item-selected .ant-menu-item-icon {
+  display: inline;
+  text-align: center !important;
+}
+
 .custom-menu li {
-  /* display: flex !important; */
   align-items: center;
 }
 
 .custom-menu .ant-menu-item {
   height: 48px;
-  min-width: 10px;
   background-color: transparent;
-  border-radius: 8px;
-  transition: all 0.3s ease-in-out;
-}
-.custom-menu .ant-menu-inline-collapsed > .ant-menu-item {
-  justify-content: center; /* Center icon for collapsed menu */
-  padding: 0; /* Adjust padding to match layout */
+  /* transition: all 0.3s ease-in-out !important; */
 }
 
-.custom-menu .ant-menu-inline-collapsed .ant-menu-item .ant-menu-title-content {
-  display: none; /* Hide text in collapsed mode */
+.custom-menu .ant-menu-item span {
+  font-size: 14px;
+  white-space: nowrap;
+  /* transition: opacity 0.3s ease-in-out; */
+}
+
+.custom-menu.collapsed .ant-menu-item span {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .custom-menu .ant-menu-item:hover {
@@ -92,7 +81,6 @@
 }
 
 .custom-menu .ant-menu-item span {
-  margin-left: 10px;
   font-size: 14px;
   white-space: nowrap;
   transition: opacity 0.3s ease-in-out;
@@ -111,27 +99,19 @@
   font-size: 22px;
 }
 
-/* Tooltip for Collapsed Sidebar */
-/* .custom-menu .ant-menu-item a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-} */
-
 .custom-menu .ant-menu-item a:hover {
   text-decoration: none;
 }
 
 /* Submenu Styling */
 .custom-menu .ant-menu-submenu-title {
-  display: flex;
   align-items: center;
-  padding: 8px 16px;
-  color: #ffffff;
 }
-
+.custom-menu .ant-menu-submenu a {
+  color: var(--text-color) !important;
+}
 .custom-menu .ant-menu-submenu-arrow {
-  color: #ffffff;
+  color: var(--text-color);
 }
 
 .custom-menu .ant-menu-sub .ant-menu-item {
@@ -144,6 +124,7 @@
 
 /* Active and Hover States */
 .custom-menu .ant-menu-item:hover,
+.custom-menu .ant-menu-submenu > .ant-menu-submenu-title:hover,
 .custom-menu .ant-menu-item-active {
   background-color: #215988 !important;
 }
@@ -167,4 +148,41 @@
   .sidebar-title {
     font-size: 16px;
   }
+}
+/* Hide scrollbar when collapsed but keep content visible */
+.custom-menu.collapsed {
+  overflow-y: hidden; /* Hide scrollbar */
+  white-space: nowrap; /* Prevent text from breaking */
+}
+
+/* Show scrollbar when expanded */
+.custom-menu.expanded {
+  overflow-y: auto;
+}
+
+.custom-menu.expanded::-webkit-scrollbar-thumb {
+  background-color: #f9a828; /*  color */
+  border-radius: 8px; /* Rounded edges */
+}
+
+.custom-menu.expanded::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+/* Hide scrollbar completely */
+.custom-menu {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+.custom-menu::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  display: none;
+}
+
+/* Firefox */
+.custom-menu.expanded {
+  scrollbar-width: thin;
+  scrollbar-color: #f9a828 transparent;
 }

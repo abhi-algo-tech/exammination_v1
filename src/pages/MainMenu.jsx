@@ -223,10 +223,12 @@ function MainMenu({ collapsed, setCollapsed }) {
               }))
             : undefined, // Ensures `children` is only added when present
         }))}
-        className="custom-menu"
+        className={`custom-menu ${collapsed ? "" : "expanded"}`}
         style={{
           background: "transparent",
           border: "none",
+          overflowY: "auto", // Ensure scrolling
+          maxHeight: "calc(100vh - 150px)", // Prevent menu from exceeding viewport height
         }}
       />
     </Sider>

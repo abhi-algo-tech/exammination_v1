@@ -247,9 +247,9 @@ const SignUpStepForm = () => {
             rules={[{ required: true, message: "Please choose your role!" }]}
           >
             <Select placeholder="Select your role">
-              <Option value="student">Student</Option>
-              <Option value="teacher">Teacher</Option>
-              <Option value="admin">Admin</Option>
+              <Option value="1">Admin</Option>
+              <Option value="2">Teacher</Option>
+              <Option value="3">Student</Option>
             </Select>
           </Form.Item>
         </Form>
@@ -301,7 +301,10 @@ const SignUpStepForm = () => {
 
   const next = () => {
     form.validateFields().then((values) => {
-      setFinalFormData((prevData) => ({ ...prevData, ...values }));
+      setFinalFormData((prevData) => ({
+        ...prevData,
+        ...values,
+      }));
       setCurrent(current + 1);
       setIsButtonDisabled(true);
     });
@@ -313,8 +316,12 @@ const SignUpStepForm = () => {
 
   const handleFinish = () => {
     form.validateFields().then((values) => {
-      const finalData = { ...finalFormData, ...values };
-      // console.log("Final Form Data:", finalData);
+      const finalData = {
+        ...finalFormData,
+        ...values,
+        role: Number(values.role),
+      };
+      console.log("Final Form Data:", finalData);
       const payload = finalData;
       userSignUpMutation.mutate(payload, {
         onSuccess: () => {
