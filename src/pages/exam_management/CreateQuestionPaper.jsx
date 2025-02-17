@@ -25,33 +25,6 @@ import { useGetAllClasses } from "../../hooks/useClass";
 import { useGetAllSubjects } from "../../hooks/useSubject";
 import { useGetAllCurriculums } from "../../hooks/useCurriculum";
 
-// Options for Select and Multi-select
-// const examTypeOptions = [
-//   { value: 1, label: "Midterm" },
-//   { value: 2, label: "Final" },
-//   { value: 3, label: "Quiz" },
-// ];
-
-// const classTypeOptions = [
-//   { value: 1, label: "Class 8" },
-//   { value: 2, label: "Class 9" },
-//   { value: 3, label: "Class 10" },
-// ];
-
-// const subjectOptions = [
-//   { value: 1, label: "Math" },
-//   { value: 2, label: "Science" },
-//   { value: 3, label: "History" },
-//   { value: 4, label: "Geography" },
-// ];
-
-// const curriculumTypeOptions = [
-//   { value: 1, label: "CBSC" },
-//   { value: 2, label: "ICSE" },
-//   { value: 3, label: "SB" },
-//   { value: 4, label: "IB" },
-// ];
-
 const formatDuration = (durationInput) => {
   const duration = moment.duration(durationInput); // Ensure it's a proper duration
 
@@ -66,10 +39,6 @@ const formatDuration = (durationInput) => {
 
 // Assuming you have this convertToPayload function already defined
 const convertToPayload = (values) => {
-  // console.log(values);
-  // console.log("🚀 Debugging subjectCode:", values?.subjectCode);
-  // console.log("Type of subjectCode:", typeof values.subjectCode);
-  // console.log("duration", formatDuration(values.duration), values.duration);
   const durationString = moment(values.duration).format("HH:mm:ss"); // Ensure it's in "HH:mm:ss" format
   const [hours, minutes, seconds] = durationString.split(":").map(Number);
   const totalSeconds = hours * 3600 + minutes * 60 + seconds;
@@ -131,6 +100,7 @@ function CreateQuestionPaper() {
   const { data: classTypelist } = useGetAllClasses();
   const { data: subjectlist } = useGetAllSubjects();
   const { data: curriculumslist } = useGetAllCurriculums();
+  console.log("examTypelist", examTypelist);
 
   const examTypeOptions =
     examTypelist?.data?.map((item) => ({
@@ -158,11 +128,12 @@ function CreateQuestionPaper() {
       const subjectCode = examData.data.subjectCode
         ? examData.data.subjectCode.toString().split("").map(Number)
         : [];
-      console.log("subjectCode:", subjectCode);
+      console.log("subjectCode:", examTypeOptions);
       const formValues = {
         examName: examData.data.nameOfExam,
         examType: examTypeOptions.find(
-          (option) => option.value === examData.data.typeOfExamId
+          (option) =>
+            String(option.value) === String(examData.data.typeOfExamId)
         ),
         curriculum: curriculumTypeOptions.find(
           (option) => option.value === examData.data.curriculumId

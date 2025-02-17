@@ -77,12 +77,13 @@ function AddQuestionFromBank() {
 
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [selectedCount, setSelectedCount] = useState(0);
-  const [examId, setExamId] = useState(null);
   const [exam, setExam] = useState({});
+  const [examId, setExamId] = useState(null);
+  const [sectionId, setSectionId] = useState(null);
   const [sectionOptions, setSectionOptions] = useState([]);
 
   // State for pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
   const { data: examTypelist } = useExamAll();
@@ -97,7 +98,9 @@ function AddQuestionFromBank() {
   const handleChangeExam = (value) => {
     setExamId(value.value);
   };
-
+  const handleFilterSection = (value) => {
+    setSectionId(value.value);
+  };
   useEffect(() => {
     if (examValue?.data?.sections) {
       const formattedSections = examValue.data.sections.map((section) => ({
@@ -158,9 +161,10 @@ function AddQuestionFromBank() {
   });
 
   console.log("questionsData:", questionsData);
+  console.log("examValue:", examValue);
 
   const handlePageChange = (page, newSize) => {
-    setCurrentPage(page);
+    setCurrentPage(page - 1);
     if (newSize !== pageSize) {
       setPageSize(newSize); // Ensure pageSize updates properly
     }
@@ -206,7 +210,7 @@ function AddQuestionFromBank() {
               options={sectionOptions}
               placeholder="Select Section"
               isSearchable
-              onChange={(value) => handleFilterChange("examName", value)}
+              onChange={(value) => handleFilterSection(value)}
             />
           </div>
         </div>
@@ -294,6 +298,9 @@ function AddQuestionFromBank() {
             onSelectedRows={handleSetSelectedRow}
             currentPage={currentPage}
             pageSize={pageSize}
+            sectionId={sectionId}
+            examId={examId}
+            examValue={examValue}
             onPageChange={handlePageChange}
           />
         </div>

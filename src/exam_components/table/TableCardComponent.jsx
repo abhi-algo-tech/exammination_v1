@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Checkbox, Row, Col, Pagination } from "antd";
 import "./TableCardComponent.css";
 import QuestionBankCard from "../card/QuestionBankCard";
+import { CustomMessage } from "../../utils/CustomMessage";
 
 function transformData(data) {
   return data.map((item) => ({
@@ -10,13 +11,13 @@ function transformData(data) {
     topic: item.topic,
     questionName: item.name,
     subject: item.subject,
-    class: item.classes, // or you can add any other transformation if needed
-    curriculum: item.curriculum || "Not Available", // Default value if curriculum is null
+    class: item.classes,
+    curriculum: item.curriculum || "Not Available",
     marks: item.marks,
     questionType: item.type,
     options: item.options.split(", "), // Converting the options string to an array
     author: "Unknown", // Assuming you need to add an author dynamically
-    datePublished: new Date().toISOString().split("T")[0], // You can customize the date format
+    datePublished: new Date().toISOString().split("T")[0], // Custom date format
   }));
 }
 
@@ -26,33 +27,53 @@ const TableCardComponent = ({
   onSelectedRows,
   currentPage,
   pageSize,
+  sectionId,
+  examId,
+  examValue,
   onPageChange,
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
+
   const data = transformData(questions);
 
-  const handleSelectRow = (id) => {
-    setSelectedRows((prev) => {
-      const updatedSelection = prev.includes(id)
-        ? prev.filter((rowId) => rowId !== id)
-        : [...prev, id];
-
-      // Filter data based on updatedSelection (selected ids)
-      const selectedData = data.filter((item) =>
-        updatedSelection.includes(item.id)
+  // Initialize selection based on examValue's data
+  useEffect(() => {
+    if (examValue?.data?.examQuestions) {
+      const selectedQuestionIds = examValue?.data?.examQuestions.map(
+        (examQuestion) => examQuestion.id
       );
+      setSelectedRows(selectedQuestionIds);
+    }
+  }, [examValue]);
 
-      // Update selected rows in the parent component or wherever needed
-      onSelectedRows(selectedData); // Assuming setSelectedRow is a function passed as a prop
-      onSelectedCountChange(updatedSelection.length); // Pass the updated selected count to the parent
+  const handleSelectRow = (id) => {
+    if (examId) {
+      if (sectionId) {
+        setSelectedRows((prev) => {
+          const updatedSelection = prev.includes(id)
+            ? prev.filter((rowId) => rowId !== id) // Unselect if already selected
+            : [...prev, id]; // Select if not selected
 
-      return updatedSelection;
-    });
+          // Filter data based on updatedSelection (selected ids)
+          const selectedData = data.filter((item) =>
+            updatedSelection.includes(item.id)
+          );
+
+          // Update selected rows in the parent component or wherever needed
+          onSelectedRows(selectedData); // Assuming setSelectedRow is a function passed as a prop
+          onSelectedCountChange(updatedSelection.length); // Pass the updated selected count to the parent
+
+          return updatedSelection;
+        });
+      } else {
+        CustomMessage.error("First select Section");
+      }
+    } else {
+      CustomMessage.error("First select Exam");
+    }
   };
 
-  // Paginate data
-  const startIndex = (currentPage - 1) * pageSize;
-  const paginatedData = data.slice(startIndex, startIndex + pageSize);
+  const paginatedData = data;
 
   return (
     <div className="table-card-grid">
@@ -87,7 +108,7 @@ const TableCardComponent = ({
 
       {/* Table Rows */}
       {paginatedData.map((item, index) => {
-        const isSelected = selectedRows.includes(item.id);
+        const isSelected = selectedRows.includes(item.id); // Check if the item is selected
         return (
           <Card
             key={item.id}
@@ -127,7 +148,6 @@ const TableCardComponent = ({
                     <div className="topic">{item.topic}</div>
                   </div>
                 )}
-
                 {item.questionName}
                 {item.questionType === "Multiple Choice" && (
                   <ul className="options-list">
@@ -157,12 +177,14 @@ const TableCardComponent = ({
       {/* Pagination */}
       <div className="pagination-container">
         <Pagination
-          current={currentPage}
+          current={currentPage + 1}
           pageSize={pageSize}
           total={questions[0]?.totalRecords}
           onChange={(page) => onPageChange(page, pageSize)}
           showSizeChanger
-          onShowSizeChange={(current, newSize) => onPageChange(1, newSize)} // Reset to page 1 when size changes
+          onShowSizeChange={(current, newSize) =>
+            onPageChange(current, newSize)
+          } // Reset to page 1 when size changes
           pageSizeOptions={["5", "10", "15", "20"]} // Options for page sizes
         />
       </div>

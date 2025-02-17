@@ -23,9 +23,10 @@ export const useGetMasterLookupById = (id) => {
 // Hook to fetch master lookup by type
 export const useGetMasterLookupByType = (type) => {
   return useQuery({
-    queryKey: masterLookupKeys.Lookup,
+    queryKey: ["lookup", type], // Ensure unique query key per type
     queryFn: () => MasterLookupService.getMasterLookupByType(type),
     enabled: !!type, // Prevents query from running if type is undefined/null
+    staleTime: 5 * 60 * 1000, // Optional: Cache data for 5 minutes
   });
 };
 
