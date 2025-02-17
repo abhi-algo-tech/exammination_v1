@@ -23,3 +23,15 @@ export const questionKeys = {
 export const examQuestionKeys = {
   examQuestion: "examQuestion",
 };
+export const curriculumKeys = {
+  curriculum: "curriculum",
+};
+export const masterLookupKeys = {
+  Lookup: "Lookup",
+};
+export const classKeys = {
+  classes: "classes",
+};
+export const subjectKeys = {
+  subject: "subject",
+};

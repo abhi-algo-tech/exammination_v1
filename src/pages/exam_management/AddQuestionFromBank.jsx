@@ -1,18 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomSelect from "../../exam_components/select/CustomSelect";
 import { Col, Row } from "antd";
 import TableCardComponent from "../../exam_components/table/TableCardComponent";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import QuestionBankCard from "../../exam_components/card/QuestionBankCard";
 import { CustomMessage } from "../../utils/CustomMessage";
+import { useExamAll, useExamById } from "../../hooks/useExam";
+import { useQuestions } from "../../hooks/useQuestion";
 
-const examNameOptions = [
-  { value: "1", label: "Summative Assessment - I" },
-  { value: "2", label: "Summative Assessment - II" },
-  { value: "3", label: "Summative Assessment - III" },
-];
-
+// Options arrays for select inputs (same as before)
 const subjectNameOptions = [
   { value: "math", label: "Mathematics" },
   { value: "sci", label: "Science" },
@@ -63,6 +60,8 @@ const keywordNameOptions = [
 
 function AddQuestionFromBank() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const examData = location.state || {};
   const [selectedRow, setSelectedRow] = useState({});
   const [filters, setFilters] = useState({
     examName: null,
@@ -76,25 +75,54 @@ function AddQuestionFromBank() {
     keyword: null,
   });
 
-  const [showMoreFilters, setShowMoreFilters] = useState(false); // State to manage filter visibility
-  const [selectedCount, setSelectedCount] = useState(0); // State for selected questions count
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
+  const [selectedCount, setSelectedCount] = useState(0);
+  const [examId, setExamId] = useState(null);
+  const [exam, setExam] = useState({});
+  const [sectionOptions, setSectionOptions] = useState([]);
+
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const { data: examTypelist } = useExamAll();
+  const { data: examValue } = useExamById(examId);
+
+  const examNameOptions =
+    examTypelist?.data?.map((item) => ({
+      value: item.id,
+      label: item.nameOfExam,
+    })) || [];
+
+  const handleChangeExam = (value) => {
+    setExamId(value.value);
+  };
+
+  useEffect(() => {
+    if (examValue?.data?.sections) {
+      const formattedSections = examValue.data.sections.map((section) => ({
+        value: section.id,
+        label: `Section ${section.sectionName}`,
+      }));
+      setSectionOptions(formattedSections);
+    }
+  }, [examValue]);
 
   const handleFilterChange = (key, value) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       [key]: value,
     }));
-    console.log("Updated Filters:", { ...filters, [key]: value }); // To check updated filters
   };
 
   const toggleFilters = () => {
-    setShowMoreFilters(!showMoreFilters); // Toggle the visibility
+    setShowMoreFilters(!showMoreFilters);
   };
 
-  // Callback for updating the selected question count
   const handleSelectedCountChange = (count) => {
     setSelectedCount(count);
   };
+
   const handleSetSelectedRow = (data) => {
     setSelectedRow(data);
   };
@@ -108,7 +136,33 @@ function AddQuestionFromBank() {
         },
       });
     } else {
-      CustomMessage.error("Please select at least one question to proceed."); // Show warning message
+      CustomMessage.error("Please select at least one question to proceed.");
+    }
+  };
+
+  // Fetch questions based on filters using useQuestions
+  const {
+    data: questionsData,
+    isLoading,
+    error,
+  } = useQuestions({
+    page: currentPage,
+    size: pageSize, // Use pageSize for pagination
+    sortBy: filters.sortBy,
+    sortDirection: "desc",
+    subjectId: filters.subjectName?.value,
+    classId: filters.className?.value,
+    curriculumId: filters.cirriculumName?.value,
+    statusId: filters.questionType?.value,
+    search: filters.keyword?.value,
+  });
+
+  console.log("questionsData:", questionsData);
+
+  const handlePageChange = (page, newSize) => {
+    setCurrentPage(page);
+    if (newSize !== pageSize) {
+      setPageSize(newSize); // Ensure pageSize updates properly
     }
   };
 
@@ -139,6 +193,18 @@ function AddQuestionFromBank() {
             <CustomSelect
               options={examNameOptions}
               placeholder="Select Exam"
+              isSearchable
+              onChange={(value) => handleChangeExam(value)}
+            />
+          </div>
+          <div
+            style={{
+              paddingLeft: "20px",
+            }}
+          >
+            <CustomSelect
+              options={sectionOptions}
+              placeholder="Select Section"
               isSearchable
               onChange={(value) => handleFilterChange("examName", value)}
             />
@@ -223,8 +289,12 @@ function AddQuestionFromBank() {
         </div>
         <div>
           <TableCardComponent
+            questions={questionsData?.data || []}
             onSelectedCountChange={handleSelectedCountChange}
             onSelectedRows={handleSetSelectedRow}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
           />
         </div>
         <div
@@ -242,20 +312,8 @@ function AddQuestionFromBank() {
               bgColor="#F9A828"
               height="40px"
               width="236px"
-              label={`Add (${selectedCount}) Questions`}
-              labelColor="#FFF"
-              fontWeight="700"
+              label="Add Question"
               onClick={handleSelectedQuestionThroughBank}
-            />
-          </div>
-          <div>
-            <ButtonComponent
-              bgColor="rgba(7, 97, 125, 0.2)"
-              height="40px"
-              width="236px"
-              label="Cancel"
-              labelColor="#6E6E6E"
-              fontWeight="700"
             />
           </div>
         </div>

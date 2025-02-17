@@ -31,7 +31,7 @@ const QuestionBox = styled.div`
   }
 `;
 
-function RightSection({ sections = [], onPreview }) {
+function RightSection({ examData = [], sections = [], onPreview }) {
   const navigate = useNavigate();
 
   const handleMarksChange = (e) => {
@@ -49,8 +49,9 @@ function RightSection({ sections = [], onPreview }) {
     return acc;
   }, {});
 
-  const handleAddQuestionThroughBank = () => navigate("/add-question-by-bank");
-  const handleUpload = () => navigate("/upload-questions");
+  const handleAddQuestionThroughBank = () =>
+    navigate("/add-question-by-bank", { state: examData });
+  const handleUpload = () => navigate("/upload-questions", { state: examData });
 
   const renderQuestionGrid = (section) => {
     const highlightedQuestions = sectionQuestionMap[section.name] || new Set();

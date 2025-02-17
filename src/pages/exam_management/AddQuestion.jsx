@@ -162,7 +162,7 @@ const AddQuestion = () => {
       /> */}
       <div style={{ marginBottom: "24px" }}>
         {/* <CommonModalComponent /> */}
-        <div className="label-28-600">Summative Assessment - I</div>
+        <div className="label-28-600">{ExamQuestionList?.data?.nameOfExam}</div>
         <div className="label-14-600-blue">View Examination Details</div>
       </div>
       <Row gutter={[24, 24]}>
@@ -178,7 +178,12 @@ const AddQuestion = () => {
 
         {/* Right Section */}
         <Col xs={24} md={8}>
-          <RightSection sections={sections} onPreview={handlePreview} />;
+          <RightSection
+            examData={ExamQuestionList}
+            sections={sections}
+            onPreview={handlePreview}
+          />
+          ;
         </Col>
       </Row>
       {isReviewModalOpen && (

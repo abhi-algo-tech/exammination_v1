@@ -20,33 +20,37 @@ import { CustomMessage } from "../../utils/CustomMessage";
 import { useDispatch } from "react-redux";
 import { setExam, setExamForm } from "../../store/authSlice";
 import moment from "moment/moment";
+import { useGetMasterLookupByType } from "../../hooks/useMasterLookup";
+import { useGetAllClasses } from "../../hooks/useClass";
+import { useGetAllSubjects } from "../../hooks/useSubject";
+import { useGetAllCurriculums } from "../../hooks/useCurriculum";
 
 // Options for Select and Multi-select
-const examTypeOptions = [
-  { value: 1, label: "Midterm" },
-  { value: 2, label: "Final" },
-  { value: 3, label: "Quiz" },
-];
+// const examTypeOptions = [
+//   { value: 1, label: "Midterm" },
+//   { value: 2, label: "Final" },
+//   { value: 3, label: "Quiz" },
+// ];
 
-const classTypeOptions = [
-  { value: 1, label: "Class 8" },
-  { value: 2, label: "Class 9" },
-  { value: 3, label: "Class 10" },
-];
+// const classTypeOptions = [
+//   { value: 1, label: "Class 8" },
+//   { value: 2, label: "Class 9" },
+//   { value: 3, label: "Class 10" },
+// ];
 
-const subjectOptions = [
-  { value: 1, label: "Math" },
-  { value: 2, label: "Science" },
-  { value: 3, label: "History" },
-  { value: 4, label: "Geography" },
-];
+// const subjectOptions = [
+//   { value: 1, label: "Math" },
+//   { value: 2, label: "Science" },
+//   { value: 3, label: "History" },
+//   { value: 4, label: "Geography" },
+// ];
 
-const curriculumTypeOptions = [
-  { value: 1, label: "CBSC" },
-  { value: 2, label: "ICSE" },
-  { value: 3, label: "SB" },
-  { value: 4, label: "IB" },
-];
+// const curriculumTypeOptions = [
+//   { value: 1, label: "CBSC" },
+//   { value: 2, label: "ICSE" },
+//   { value: 3, label: "SB" },
+//   { value: 4, label: "IB" },
+// ];
 
 const formatDuration = (durationInput) => {
   const duration = moment.duration(durationInput); // Ensure it's a proper duration
@@ -122,7 +126,32 @@ function CreateQuestionPaper() {
     isError: isUpdateError,
   } = useUpdateExam();
 
-  const { data: examData } = useExamById(id);
+  const { data: examData, refetch } = useExamById(id);
+  const { data: examTypelist } = useGetMasterLookupByType("paper_type");
+  const { data: classTypelist } = useGetAllClasses();
+  const { data: subjectlist } = useGetAllSubjects();
+  const { data: curriculumslist } = useGetAllCurriculums();
+
+  const examTypeOptions =
+    examTypelist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+  const classTypeOptions =
+    classTypelist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+  const subjectOptions =
+    subjectlist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+  const curriculumTypeOptions =
+    curriculumslist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
 
   useEffect(() => {
     if (examData) {
@@ -232,6 +261,7 @@ function CreateQuestionPaper() {
       CustomMessage.success(
         examId ? "Exam updated successfully!" : "Exam created successfully!"
       );
+      refetch();
       dispatch(setExam(result.data)); // Store the exam ID in Redux
       navigate("/add-question");
     };

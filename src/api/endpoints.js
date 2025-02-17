@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
   exam: {
     BASE: "/exams",
     BY_ID: "/exams/{id}",
+    ALL: "/exams/all",
   },
   QUESTION: {
     BASE: "/questions",
@@ -23,5 +24,22 @@ export const API_ENDPOINTS = {
   },
   EXAMQUESTION: {
     BASE: "/exam-questions",
+  },
+  MASTERLOOKUP: {
+    BASE: "/masterlookup",
+    BY_ID: "/masterlookup/{id}",
+    BY_TYPE: "/masterlookup/type/{type}",
+  },
+  CURRICULUM: {
+    BASE: "/curriculums",
+    BY_ID: "/curriculums/{id}",
+  },
+  CLASSES: {
+    BASE: "/classes",
+    BY_ID: "/classes/{id}",
+  },
+  SUBJECT: {
+    BASE: "/subjects",
+    BY_ID: "/subjects/{id}",
   },
 };

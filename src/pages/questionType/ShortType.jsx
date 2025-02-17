@@ -71,6 +71,7 @@ export default function ShortType({
   const { mutate: createQuestion, isLoading, isError } = useCreateQuestion();
   const { mutate: updateQuestion } = useUpdateQuestion();
   // const { data: examQuestionList, refetch } = useExamById(id);
+  // console.log("examQuestionList:", examQuestionList);
 
   useEffect(() => {
     if (examQuestionList?.data?.examQuestions) {
@@ -228,6 +229,9 @@ export default function ShortType({
                 levelId: newLatestQuestion.level,
                 topic: newLatestQuestion.topic || "",
                 marks: newLatestQuestion.marks,
+                curriculumId: examQuestionList?.data?.curriculumId,
+                classesId: examQuestionList?.data?.classId,
+                subjectId: examQuestionList?.data?.subjectId,
                 isDeleted: false,
                 examQuestion: {
                   exam: exam?.id,
@@ -242,22 +246,22 @@ export default function ShortType({
                   CustomMessage.success("Question created successfully!");
                   refetch();
 
-                  if (response?.data) {
-                    const newQuestion = {
-                      id: response.data.id, // Use backend ID instead of manual numbering
-                      text: "",
-                      topic: "",
-                      marks: 0,
-                      isChecked: false,
-                      options: [],
-                    };
+                  const newQuestion = {
+                    id: section.questions.length + 1,
+                    text: "",
+                    // type: "Select Type", // Default type
+                    // level: "Select Level", // Default level
+                    topic: "",
+                    marks: 0,
+                    isChecked: false,
+                    options: [], // Options are initially empty
+                  };
+                  console.log("newQuestion: ", newQuestion);
 
-                    // Assuming you update the section state here
-                    updateSection((prevSection) => ({
-                      ...prevSection,
-                      questions: [...prevSection.questions, newQuestion],
-                    }));
-                  }
+                  return {
+                    ...section,
+                    questions: [...section.questions, newQuestion],
+                  };
                 },
                 onError: (error) => {
                   CustomMessage.error(
@@ -300,6 +304,9 @@ export default function ShortType({
           levelId: question.level,
           topic: question.topic || "",
           marks: question.marks,
+          curriculumId: examQuestionList?.data?.curriculumId,
+          classesId: examQuestionList?.data?.classId,
+          subjectId: examQuestionList?.data?.subjectId,
           isDeleted: false,
           examQuestion: {
             exam: exam?.id,

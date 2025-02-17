@@ -62,6 +62,20 @@ const ExamService = {
       throw error;
     }
   },
+  // Get an exam by ID (using BASE instead of BY_ID)
+  getExamAll: async () => {
+    try {
+      const token = getAuthToken();
+      const url = `${API_ENDPOINTS.exam.ALL}`;
+      const response = await axiosInstance.get(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error while fetching exam:", error);
+      throw error;
+    }
+  },
 
   // Create a new exam
   createExam: async (payload) => {

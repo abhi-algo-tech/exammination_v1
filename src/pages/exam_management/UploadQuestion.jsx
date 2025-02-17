@@ -10,6 +10,7 @@ import {
   useUploadQuestions,
 } from "../../hooks/useQuestion";
 import { CustomMessage } from "../../utils/CustomMessage";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const sections = [
   { key: 1, name: "SECTION - A", marks: 15, questions: 11 },
@@ -19,13 +20,16 @@ const sections = [
 ];
 
 const UploadQuestion = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const examData = location.state || {};
   const [fileList, setFileList] = useState([]);
   const [file, setFile] = useState([]);
   const [excelData, setExcelData] = useState([]);
   const [columns, setColumns] = useState([]);
   const [isUploading, setIsUploading] = useState(false); // Local loading state
   const { mutate: downloadTemplate } = useDownloadTemplate();
-  const { mutate: uploadQuestions } = useUploadQuestions();
+  const { mutateAsync: uploadQuestions } = useUploadQuestions(); // Get mutateAsync
 
   const handleUploadChange = (newFileList, files) => {
     setFileList(newFileList);
@@ -85,12 +89,21 @@ const UploadQuestion = () => {
 
     try {
       setIsUploading(true); // Start loading
-      await uploadQuestions(file); // Wait for upload to finish
+
+      // Await the mutation function properly
+      await uploadQuestions({
+        file,
+        curriculumId: examData?.data?.curriculumId,
+        classesId: examData?.data?.classId,
+        subjectId: examData?.data?.subjectId,
+      });
+
       CustomMessage.success("File successfully uploaded!");
 
       setFileList([]); // Clear file list after success
       setExcelData([]); // Clear preview data
       setColumns([]); // Clear table columns
+      navigate("/add-question-by-bank", { state: examData });
     } catch (error) {
       CustomMessage.error(`Upload failed: ${error.message}`);
     } finally {
@@ -101,18 +114,17 @@ const UploadQuestion = () => {
   return (
     <div>
       <div style={{ marginBottom: "24px" }}>
-        <div className="label-28-600">Summative Assessment - I</div>
+        <div className="label-28-600">{examData?.data?.nameOfExam}</div>
         <div className="label-14-600-blue">View Examination Details</div>
       </div>
       <Row gutter={[24, 24]}>
         <Col xs={24} md={16}>
-          <div className="d-flex align-items-center gap-2">
+          <div className="d-flex justify-content-between align-items-center gap-2">
             <div>Upload your Question Paper here.</div>
             <Tooltip title="Download Template">
-              <Button
-                icon={<DownloadOutlined />}
-                onClick={handleDownloadClick}
-              />
+              <Button icon={<DownloadOutlined />} onClick={handleDownloadClick}>
+                Download Template
+              </Button>
             </Tooltip>
           </div>
           <div className="mt-4">
@@ -149,7 +161,7 @@ const UploadQuestion = () => {
           )}
         </Col>
         <Col xs={24} md={8}>
-          <RightSection sections={sections} />
+          <RightSection examData={examData} sections={sections} />
         </Col>
       </Row>
     </div>

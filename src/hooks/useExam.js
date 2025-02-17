@@ -66,6 +66,18 @@ export const useExamById = (id) => {
     },
   });
 };
+export const useExamAll = () => {
+  return useQuery({
+    queryKey: [examKeys.exam],
+    queryFn: async () => {
+      const response = await ExamService.getExamAll();
+      return response; // ✅ Extract only 'data'
+    },
+    onError: (error) => {
+      console.error("Error fetching exam by ID:", error);
+    },
+  });
+};
 
 // Hook to create a new exam
 export const useCreateExam = () => {
