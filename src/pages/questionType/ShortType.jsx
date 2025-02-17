@@ -11,6 +11,7 @@ import {
 import { CustomMessage } from "../../utils/CustomMessage";
 import { useExamById } from "../../hooks/useExam";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
+import { useGetMasterLookupByType } from "../../hooks/useMasterLookup";
 
 const QuestionContainer = styled.div`
   margin-bottom: 24px;
@@ -70,8 +71,22 @@ export default function ShortType({
 
   const { mutate: createQuestion, isLoading, isError } = useCreateQuestion();
   const { mutate: updateQuestion } = useUpdateQuestion();
-  // const { data: examQuestionList, refetch } = useExamById(id);
-  // console.log("examQuestionList:", examQuestionList);
+  const { data: levelTypelist } = useGetMasterLookupByType("level");
+  const { data: questionTypeslist } =
+    useGetMasterLookupByType("question_types");
+
+  // Ensure correct mapping
+  const questionTypes =
+    questionTypeslist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+
+  const questionDifficulty =
+    levelTypelist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
 
   useEffect(() => {
     if (examQuestionList?.data?.examQuestions) {
@@ -83,34 +98,39 @@ export default function ShortType({
             examQuestionId: q.id,
             id: index + 1,
             isChecked: q.isPublished,
-            level: q.question.levelId.toString(),
+            level: questionDifficulty.find(
+              (option) => String(option.value) === String(q.question.levelId)
+            ) || { value: "", label: "Unknown Level" }, // Corrected
             marks: q.question.marks,
             options: q.question.options ? q.question.options.split(", ") : [],
             text: q.question.name,
             topic: q.question.topic,
-            type: q.question.typeId.toString(),
+            type: questionTypes.find(
+              (option) => String(option.value) === String(q.question.typeId)
+            ) || { value: "", label: "Unknown Type" }, // Corrected
           }));
+        console.log("questions", questions);
 
         return { ...section, questions };
       });
       setupdatedQuestion(updatedSections);
       setSectionsData(updatedSections);
     }
-  }, [examQuestionList]); // Dependency array to trigger effect when examQuestionList updates
+  }, [examQuestionList]);
 
-  const questionTypes = {
-    1: "Short Answer Type",
-    2: "Long Answer Type",
-    3: "Multiple Choice",
-    4: "True/False",
-  };
+  // const questionTypes = {
+  //   1: "Short Answer Type",
+  //   2: "Long Answer Type",
+  //   3: "Multiple Choice",
+  //   4: "True/False",
+  // };
 
-  const questionDifficulty = {
-    1: "Hard",
-    2: "Normal",
-    3: "Easy",
-    4: "Very Easy",
-  };
+  // const questionDifficulty = {
+  //   1: "Hard",
+  //   2: "Normal",
+  //   3: "Easy",
+  //   4: "Very Easy",
+  // };
 
   const handleQuestionChange = (sectionKey, questionId, field, value) => {
     setSectionsData((prevSections) => {
@@ -409,9 +429,9 @@ export default function ShortType({
                         style={{ width: 200 }}
                         placeholder="Select Type"
                       >
-                        {Object.entries(questionTypes).map(([key, type]) => (
-                          <Select.Option key={key} value={key}>
-                            {type}
+                        {questionTypes.map((type) => (
+                          <Select.Option key={type.value} value={type.value}>
+                            {type.label}
                           </Select.Option>
                         ))}
                       </Select>
@@ -441,13 +461,11 @@ export default function ShortType({
                         style={{ width: 200 }}
                         placeholder="Answer Difficulty"
                       >
-                        {Object.entries(questionDifficulty).map(
-                          ([key, level]) => (
-                            <Select.Option key={key} value={key}>
-                              {level}
-                            </Select.Option>
-                          )
-                        )}
+                        {questionDifficulty.map((type) => (
+                          <Select.Option key={type.value} value={type.value}>
+                            {type.label}
+                          </Select.Option>
+                        ))}
                       </Select>
                     </Form.Item>
 
@@ -549,7 +567,7 @@ export default function ShortType({
                     </div>
                   </div>
 
-                  {question.type == 3 && (
+                  {question?.type?.value == 7 && (
                     <div>
                       {question.options.map((option, idx) => (
                         <Form.Item
@@ -587,7 +605,54 @@ export default function ShortType({
                     </div>
                   )}
 
-                  {question.type == 4 && (
+                  {question?.type == 7 && (
+                    <div>
+                      {question.options.map((option, idx) => (
+                        <Form.Item
+                          key={idx}
+                          name={`question-${question.id}-${section.name}-option-${idx}`}
+                          initialValue={option}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please enter an option!",
+                            },
+                          ]}
+                        >
+                          <Input
+                            placeholder={`Option ${idx + 1}`}
+                            value={option}
+                            onChange={(e) =>
+                              handleOptionChange(
+                                question.id,
+                                idx,
+                                e.target.value
+                              )
+                            }
+                            style={{ marginTop: 8 }}
+                          />
+                        </Form.Item>
+                      ))}
+                      <Button
+                        type="dashed"
+                        onClick={() => addOption(question.id)}
+                        style={{ marginTop: 8 }}
+                      >
+                        Add Option
+                      </Button>
+                    </div>
+                  )}
+
+                  {question?.type?.value == 8 && (
+                    <div>
+                      <Checkbox disabled>True</Checkbox>
+                      <Checkbox disabled style={{ marginLeft: 16 }}>
+                        False
+                      </Checkbox>
+                    </div>
+                  )}
+
+                  {question?.type == 8 && (
                     <div>
                       <Checkbox disabled>True</Checkbox>
                       <Checkbox disabled style={{ marginLeft: 16 }}>
