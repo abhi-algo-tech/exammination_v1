@@ -40,7 +40,7 @@ const TableCardComponent = ({
   useEffect(() => {
     if (examValue?.data?.examQuestions) {
       const selectedQuestionIds = examValue?.data?.examQuestions.map(
-        (examQuestion) => examQuestion.id
+        (examQuestion) => examQuestion?.question?.id
       );
       setSelectedRows(selectedQuestionIds);
     }
@@ -48,26 +48,30 @@ const TableCardComponent = ({
 
   const handleSelectRow = (id) => {
     if (examId) {
-      if (sectionId) {
-        setSelectedRows((prev) => {
-          const updatedSelection = prev.includes(id)
-            ? prev.filter((rowId) => rowId !== id) // Unselect if already selected
-            : [...prev, id]; // Select if not selected
+      // if (sectionId) {
 
-          // Filter data based on updatedSelection (selected ids)
-          const selectedData = data.filter((item) =>
-            updatedSelection.includes(item.id)
-          );
+      setSelectedRows((prev) => {
+        const updatedSelection = prev.includes(id)
+          ? prev.filter((rowId) => rowId !== id) // Unselect if already selected
+          : [...prev, id]; // Select if not selected
+        console.log("updatedSelection:", updatedSelection);
 
-          // Update selected rows in the parent component or wherever needed
-          onSelectedRows(selectedData); // Assuming setSelectedRow is a function passed as a prop
-          onSelectedCountChange(updatedSelection.length); // Pass the updated selected count to the parent
+        // Filter data based on updatedSelection (selected ids)
+        const selectedData = data.filter((item) =>
+          updatedSelection.includes(item.id)
+        );
 
-          return updatedSelection;
-        });
-      } else {
-        CustomMessage.error("First select Section");
-      }
+        console.log("selectedData:", selectedData);
+
+        // Update selected rows in the parent component or wherever needed
+        onSelectedRows(updatedSelection); // Assuming setSelectedRow is a function passed as a prop
+        onSelectedCountChange(updatedSelection.length); // Pass the updated selected count to the parent
+
+        return updatedSelection;
+      });
+      // } else {
+      //   CustomMessage.error("First select Section");
+      // }
     } else {
       CustomMessage.error("First select Exam");
     }

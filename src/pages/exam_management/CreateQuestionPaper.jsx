@@ -533,7 +533,7 @@ function CreateQuestionPaper() {
                 n={4}
                 name="uniquePaperCode"
                 label="Unique Paper Code"
-                required={true}
+                required={false}
                 form={form} // Pass form to DynamicNumericInput
               />
             </Col>
