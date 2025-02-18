@@ -5,8 +5,15 @@ import ButtonComponent from "../../exam_components/button_component/ButtonCompon
 import DashboardCard from "./DashboardCard";
 import DashboardTable from "./DashboardTable";
 import SignatureModal from "../../exam_components/modal/SignatureModal";
+import { useGetUserProfile } from "../../hooks/useAuth";
 
 function Dashboard() {
+  const { data: userProfile, isLoading, error } = useGetUserProfile();
+
+  const hasInstitution =
+    !userProfile?.institution || userProfile?.institution.trim() === "";
+
+  console.log("hasInstitution:", hasInstitution, userProfile?.institution);
   const assessmentCards = [
     {
       title: "Summative Assessment - I",
@@ -37,7 +44,7 @@ function Dashboard() {
   ];
   return (
     <div className="mt-2">
-      <SignatureModal isVisible={true} />
+      <SignatureModal isVisible={hasInstitution} />
       <div className="d-flex justify-content-between">
         <div className="d-flex mt-2">
           <div style={{ paddingRight: "20px" }}>

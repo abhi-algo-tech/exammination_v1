@@ -1,20 +1,46 @@
 import React, { useState } from "react";
 import { Modal, Form, Select, Button, Row, Col, Input } from "antd";
 import ButtonComponent from "../button_component/ButtonComponent";
+import { useSelector } from "react-redux";
+import { useUpdateUserProfile } from "../../hooks/useAuth";
+import { CustomMessage } from "../../utils/CustomMessage";
 
 const { Option } = Select;
 
 const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const userProfile = useSelector((state) => state.auth.profile);
+  const updateUserProfile = useUpdateUserProfile();
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
       const values = await form.validateFields();
-      onSubmit(values);
-      form.resetFields();
-      onClose();
+
+      // ✅ Construct payload with user ID
+      const payload = {
+        userId: userProfile?.id, // Ensure the user ID is included
+        firstName: userProfile?.firstName,
+        lastName: userProfile?.lastName,
+        username: userProfile?.username,
+        email: userProfile?.email,
+        role: userProfile?.role,
+        phone: userProfile?.phone,
+        institution: values.institution,
+        university: values.university,
+        course: values.course,
+        subject: values.subject,
+        class: values.class,
+      };
+
+      // ✅ Call the mutation to update the profile
+      updateUserProfile.mutate(payload, {
+        onSuccess: () => {
+          form.resetFields();
+          onClose();
+        },
+      });
     } catch (error) {
       console.error("Validation failed:", error);
     } finally {
@@ -26,7 +52,7 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
     <>
       {isVisible && <div className="modal-blur"></div>} {/* Blur background */}
       <Modal
-        title="Select Institution Details"
+        title="Add Institution Details"
         open={isVisible}
         onCancel={onClose}
         closable={false}

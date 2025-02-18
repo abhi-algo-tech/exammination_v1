@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
-import { login, logout } from "../store/authSlice";
+import { login, logout, setProfile } from "../store/authSlice";
 import { authKeys } from "../utils/queryKeys";
 import AuthService from "../services/authService";
 import { CustomMessage } from "../utils/CustomMessage";
@@ -50,14 +50,32 @@ export const useUserLogin = () => {
 };
 // User login hook
 export const useGetUserProfile = () => {
+  const dispatch = useDispatch();
   return useQuery({
-    // queryKey: [examKeys.exam],
+    queryKey: ["userProfile"], // ✅ Unique query key
     queryFn: async () => {
       const response = await AuthService.getUserProfile();
-      return response; // ✅ Extract only 'data'
+      dispatch(setProfile(response.data));
+      return response.data; // ✅ Extract only 'data'
     },
     onError: (error) => {
-      console.error("Error fetching exam by ID:", error);
+      console.error("Error fetching user profile:", error);
+    },
+  });
+};
+
+export const useUpdateUserProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload) => AuthService.updateUserProfile(payload),
+    onSuccess: () => {
+      CustomMessage.success("Profile updated successfully!");
+      queryClient.invalidateQueries(["userProfile"]); // Refetch user profile data
+    },
+    onError: (error) => {
+      console.error("Error updating user profile:", error);
+      // CustomMessage.error("Failed to update profile. Please try again.");
     },
   });
 };

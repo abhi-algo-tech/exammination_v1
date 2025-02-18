@@ -5,6 +5,7 @@ const initialState = {
   token: null,
   user: null,
   exam: [],
+  profile: [],
   examName: null,
   examType: null,
   curriculum: null,
@@ -30,9 +31,13 @@ const authSlice = createSlice({
       state.token = null;
       state.user = null;
       state.exam = [];
+      state.profile = [];
     },
     setExam: (state, action) => {
       state.exam = action.payload;
+    },
+    setProfile: (state, action) => {
+      state.profile = action.payload;
     },
     setExamForm: (state, action) => {
       const {
@@ -59,5 +64,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { login, logout, setExam, setExamForm } = authSlice.actions;
+export const { login, logout, setExam, setProfile, setExamForm } =
+  authSlice.actions;
 export default authSlice.reducer;
