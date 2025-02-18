@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from "../api/endpoints";
 const AuthService = {
   getUserProfile: async () => {
     try {
-      const response = await axiosInstance.post(API_ENDPOINTS.AUTH.LOGIN);
+      const response = await axiosInstance.get(API_ENDPOINTS.USER.USER_PROFILE);
       return response.data;
     } catch (error) {
       console.error("Error while login:", error);

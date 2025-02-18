@@ -37,7 +37,7 @@ function Dashboard() {
   ];
   return (
     <div className="mt-2">
-      {/* <SignatureModal isVisible={true} /> */}
+      <SignatureModal isVisible={true} />
       <div className="d-flex justify-content-between">
         <div className="d-flex mt-2">
           <div style={{ paddingRight: "20px" }}>

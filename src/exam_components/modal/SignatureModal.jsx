@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Form, Select, Button, Row, Col } from "antd";
+import { Modal, Form, Select, Button, Row, Col, Input } from "antd";
 import ButtonComponent from "../button_component/ButtonComponent";
 
 const { Option } = Select;
@@ -46,80 +46,71 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
         <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col xs={24} sm={12}>
+              <div className="mb-2">
+                Institution <span className="text-danger">*</span>
+              </div>
               <Form.Item
                 name="institution"
-                label="Select Institution"
                 rules={[
-                  { required: true, message: "Please select an institution" },
+                  { required: true, message: "Please enter an institution" },
                 ]}
               >
-                <Select placeholder="Select an institution">
-                  <Option value="institution1">Institution 1</Option>
-                  <Option value="institution2">Institution 2</Option>
-                  <Option value="institution3">Institution 3</Option>
-                </Select>
+                <Input placeholder="Enter an institution" />
               </Form.Item>
             </Col>
 
             <Col xs={24} sm={12}>
+              <div className="mb-2">
+                University <span className="text-danger">*</span>
+              </div>
               <Form.Item
                 name="university"
-                label="Select University"
+                label=""
                 rules={[
-                  { required: true, message: "Please select a university" },
+                  { required: true, message: "Please enter a university" },
                 ]}
               >
-                <Select placeholder="Select a university">
-                  <Option value="university1">University 1</Option>
-                  <Option value="university2">University 2</Option>
-                  <Option value="university3">University 3</Option>
-                </Select>
+                <Input placeholder="Enter a university" />
               </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col xs={24} sm={12}>
+              <div className="mb-2">
+                Course <span className="text-danger">*</span>
+              </div>
               <Form.Item
                 name="course"
-                label="Select Course"
-                rules={[{ required: true, message: "Please select a course" }]}
+                rules={[{ required: true, message: "Please enter a course" }]}
               >
-                <Select placeholder="Select a course">
-                  <Option value="course1">Course 1</Option>
-                  <Option value="course2">Course 2</Option>
-                  <Option value="course3">Course 3</Option>
-                </Select>
+                <Input placeholder="Enter a course" />
               </Form.Item>
             </Col>
 
             <Col xs={24} sm={12}>
+              <div className="mb-2">
+                Subject <span className="text-danger">*</span>
+              </div>
               <Form.Item
                 name="subject"
-                label="Select Subject"
-                rules={[{ required: true, message: "Please select a subject" }]}
+                rules={[{ required: true, message: "Please enter a subject" }]}
               >
-                <Select placeholder="Select a subject">
-                  <Option value="subject1">Subject 1</Option>
-                  <Option value="subject2">Subject 2</Option>
-                  <Option value="subject3">Subject 3</Option>
-                </Select>
+                <Input placeholder="Enter a subject" />
               </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col xs={24} sm={12}>
+              <div className="mb-2">
+                Class <span className="text-danger">*</span>
+              </div>
               <Form.Item
                 name="class"
-                label="Select Class"
-                rules={[{ required: true, message: "Please select a class" }]}
+                rules={[{ required: true, message: "Please enter a class" }]}
               >
-                <Select placeholder="Select a class">
-                  <Option value="class1">Class 1</Option>
-                  <Option value="class2">Class 2</Option>
-                  <Option value="class3">Class 3</Option>
-                </Select>
+                <Input placeholder="Enter a class" />
               </Form.Item>
             </Col>
           </Row>
