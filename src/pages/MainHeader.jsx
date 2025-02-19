@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { useUserLogout } from "../hooks/useAuth";
+import { useSelector } from "react-redux";
 
 const { Header } = Layout;
 
@@ -19,14 +20,16 @@ function MainHeader({
   isMobile,
 }) {
   const logout = useUserLogout();
+  const userProfile = useSelector((state) => state.auth.profile);
+  console.log("userProfile:", userProfile);
 
   const handleLogout = () => {
     logout(); // Perform logout action
   };
   const profileData = {
-    name: "Anna Smith",
-    role: "Teacher",
-    avatar: "/exam_images/person1.png",
+    name: `Helo ${userProfile?.firstName}`,
+    role: userProfile?.roleDto?.name,
+    avatar: "/exam_images/profile.jpg",
     menuItems: [
       { key: "1", label: "Profile" },
       { key: "2", label: "Settings" },

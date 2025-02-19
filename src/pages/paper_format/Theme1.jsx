@@ -435,10 +435,10 @@ const Theme1 = () => {
     return `${day}-${month}-${year}`;
   };
   const questionTypes = {
-    1: "Short Answer Questions", //"Short Answer Questions",
-    2: "Long Answer Questions", //"Long Answer Questions",
-    3: "Choose the correct option from the following", //"Multiple Choice Questions",
-    4: "State whether the following statements are True or False", //"True/False Questions",
+    5: "Short Answer Questions", //"Short Answer Questions",
+    6: "Long Answer Questions", //"Long Answer Questions",
+    7: "Choose the correct option from the following", //"Multiple Choice Questions",
+    8: "State whether the following statements are True or False", //"True/False Questions",
   };
 
   const groupByTypeId = (questions) => {
@@ -446,25 +446,37 @@ const Theme1 = () => {
       return {}; // Return empty object if no questions
     }
 
-    const order = [4, 3, 1, 2];
+    const order = [7, 8, 5, 6];
     const grouped = questions.reduce((acc, question) => {
       const typeId = question?.question?.typeId;
+      const marks = question?.question?.marks || 0;
+
       if (!typeId) return acc; // Skip invalid questions
 
       if (!acc[typeId]) {
-        acc[typeId] = [];
+        acc[typeId] = { questions: [], totalMarks: 0 };
       }
-      acc[typeId].push(question);
+
+      acc[typeId].questions.push(question);
+      acc[typeId].totalMarks += marks;
+
       return acc;
     }, {});
 
     return Object.fromEntries(
       order
-        .map((type) => [type, grouped[type] || []])
-        .filter(([_, q]) => q && q.length > 0)
+        .map((type) => [
+          type,
+          grouped[type] || { questions: [], totalMarks: 0 },
+        ])
+        .filter(([_, group]) => group.questions.length > 0)
     );
   };
 
+  // console.log(
+  //   "paperData?.data?.examQuestions:",
+  //   paperData?.data?.examQuestions
+  // );
   const groupedQuestions = groupByTypeId(paperData?.data?.examQuestions);
   // console.log("groupedQuestions", groupedQuestions);
   return (

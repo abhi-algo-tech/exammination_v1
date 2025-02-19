@@ -46,7 +46,7 @@ function Dashboard() {
     <div className="mt-2">
       {hasInstitution && <SignatureModal isVisible={hasInstitution} />}
 
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-end">
         <div className="d-flex mt-2">
           <div style={{ paddingRight: "20px" }}>
             <Form.Item>

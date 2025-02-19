@@ -4,6 +4,7 @@ import ButtonComponent from "../button_component/ButtonComponent";
 import { useSelector } from "react-redux";
 import { useUpdateUserProfile } from "../../hooks/useAuth";
 import { CustomMessage } from "../../utils/CustomMessage";
+import { InputChipComponent } from "../input_chip_component/InputChipComponent ";
 
 const { Option } = Select;
 
@@ -17,6 +18,7 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
     try {
       setLoading(true);
       const values = await form.validateFields();
+      console.log("values:", values);
 
       // ✅ Construct payload with user ID
       const payload = {
@@ -31,7 +33,7 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
         university: values.university,
         course: values.course,
         subject: values.subject,
-        class: values.class,
+        className: values.class,
       };
 
       // ✅ Call the mutation to update the profile
@@ -85,7 +87,7 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
               </Form.Item>
             </Col>
 
-            <Col xs={24} sm={12}>
+            {/* <Col xs={24} sm={12}>
               <div className="mb-2">
                 University <span className="text-danger">*</span>
               </div>
@@ -98,10 +100,7 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
               >
                 <Input placeholder="Enter a university" />
               </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
+            </Col> */}
             <Col xs={24} sm={12}>
               <div className="mb-2">
                 Course <span className="text-danger">*</span>
@@ -113,8 +112,27 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
                 <Input placeholder="Enter a course" />
               </Form.Item>
             </Col>
+          </Row>
 
+          <Row gutter={16}>
             <Col xs={24} sm={12}>
+              <div className="mb-2">
+                University <span className="text-danger">*</span>
+              </div>
+              <Form.Item
+                name="university"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please add at least one university",
+                  },
+                ]}
+              >
+                <InputChipComponent form={form} name="university" />
+              </Form.Item>
+            </Col>
+
+            {/* <Col xs={24} sm={12}>
               <div className="mb-2">
                 Subject <span className="text-danger">*</span>
               </div>
@@ -124,11 +142,27 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
               >
                 <Input placeholder="Enter a subject" />
               </Form.Item>
+            </Col> */}
+            <Col xs={24} sm={12}>
+              <div className="mb-2">
+                Subject <span className="text-danger">*</span>
+              </div>
+              <Form.Item
+                name="subject"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please add at least one subject",
+                  },
+                ]}
+              >
+                <InputChipComponent form={form} name="subject" />
+              </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
-            <Col xs={24} sm={12}>
+            {/* <Col xs={24} sm={12}>
               <div className="mb-2">
                 Class <span className="text-danger">*</span>
               </div>
@@ -137,6 +171,22 @@ const SignatureModal = ({ isVisible, onClose, onSubmit }) => {
                 rules={[{ required: true, message: "Please enter a class" }]}
               >
                 <Input placeholder="Enter a class" />
+              </Form.Item>
+            </Col> */}
+            <Col xs={24} sm={12}>
+              <div className="mb-2">
+                Class <span className="text-danger">*</span>
+              </div>
+              <Form.Item
+                name="class"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please add at least one class",
+                  },
+                ]}
+              >
+                <InputChipComponent form={form} name="class" />
               </Form.Item>
             </Col>
           </Row>

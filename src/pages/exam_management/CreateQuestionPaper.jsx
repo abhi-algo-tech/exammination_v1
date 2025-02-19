@@ -100,7 +100,6 @@ function CreateQuestionPaper() {
   const { data: classTypelist } = useGetAllClasses();
   const { data: subjectlist } = useGetAllSubjects();
   const { data: curriculumslist } = useGetAllCurriculums();
-  console.log("examTypelist", examTypelist);
 
   const examTypeOptions =
     examTypelist?.data?.map((item) => ({

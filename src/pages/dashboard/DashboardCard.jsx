@@ -1,17 +1,117 @@
 import { Card, Col, Row } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useGetAllSubjects } from "../../hooks/useSubject";
 
-function DashboardCard({ assessmentCards = [] }) {
+// const subjects = [
+//   {
+//     name: "Mathematics",
+//     totalNoPaper: 0,
+//     publishcount: 0,
+//     reviewCount: 0,
+//     onprocesscount: 0,
+//   },
+//   {
+//     name: "Physics",
+//     totalNoPaper: 0,
+//     publishcount: 0,
+//     reviewCount: 0,
+//     onprocesscount: 0,
+//   },
+//   {
+//     name: "Chemistry",
+//     totalNoPaper: 0,
+//     publishcount: 0,
+//     reviewCount: 0,
+//     onprocesscount: 0,
+//   },
+//   {
+//     name: "Biology",
+//     totalNoPaper: 0,
+//     publishcount: 0,
+//     reviewCount: 0,
+//     onprocesscount: 0,
+//   },
+// ];
+
+function DashboardCard() {
   const navigate = useNavigate();
-  //   console.log("assessmentCards", assessmentCards);
-  const handlePaper = () => {
-    navigate("/paper");
+  const { data: subjectlist } = useGetAllSubjects();
+
+  const subjects = () => {
+    return (
+      subjectlist?.data?.map((subject) => ({
+        name: subject.name,
+        totalNoPaper: 0,
+        publishcount: 0,
+        reviewCount: 0,
+        onprocesscount: 0,
+      })) || []
+    );
+  };
+
+  const handlePaper = (subjectName) => {
+    console.log("subjectName:", subjectName);
   };
 
   return (
     <>
-      <Row gutter={[8, 8]}>
+      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+        <Col xs={24} sm={12} md={8} lg={6}>
+          <Card
+            title="Total Subjects"
+            bordered={false}
+            style={{
+              textAlign: "center",
+              fontSize: "4rem",
+              fontWeight: "bold",
+              background: "#f0f2f5",
+            }}
+          >
+            {subjects().length}
+          </Card>
+        </Col>
+
+        {subjects().map((subject, index) => (
+          <Col key={index} xs={24} sm={12} md={8} lg={6}>
+            <Card
+              bordered={false}
+              hoverable
+              onClick={() => handlePaper(subject.name)}
+              style={{
+                cursor: "pointer",
+                background: "#ffffff",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                borderRadius: "8px",
+              }}
+            >
+              <h3 style={{ textAlign: "center", marginBottom: "16px" }}>
+                {subject.name}
+              </h3>
+              <p>
+                <strong>Total Papers:</strong> {subject.totalNoPaper}
+              </p>
+              <p>
+                <strong>Published:</strong> {subject.publishcount}
+              </p>
+              <p>
+                <strong>Review:</strong> {subject.reviewCount}
+              </p>
+              <p>
+                <strong>In Process:</strong> {subject.onprocesscount}
+              </p>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </>
+  );
+}
+
+export default DashboardCard;
+
+{
+  /* <Row gutter={[8, 8]}>
         {assessmentCards &&
           assessmentCards.length > 0 &&
           assessmentCards.map((card, index) => (
@@ -76,9 +176,5 @@ function DashboardCard({ assessmentCards = [] }) {
               </Card>
             </Col>
           ))}
-      </Row>
-    </>
-  );
+      </Row> */
 }
-
-export default DashboardCard;
