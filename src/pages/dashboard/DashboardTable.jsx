@@ -14,11 +14,11 @@ function transformExamData(apiResponse) {
   const exam = apiResponse.data.map((exam, index) => ({
     key: String(exam.id || index + 1),
     name: exam.nameOfExam || "Unknown Exam",
-    subject: getSubjectName(exam.subjectId),
-    class: getClassString(exam.classId, exam.division),
-    curriculum: getCurriculumName(exam.curriculumId),
+    subject: exam.subject,
+    class: exam.className,
+    curriculum: exam.curriculum,
     totalMarks: exam.marks || 0,
-    status: getStatusString(exam.statusId),
+    status: exam.statusName,
     author: getAuthorName(exam.examCreatedBy),
     lastEdited: formatDate(exam.createdOn),
   }));
