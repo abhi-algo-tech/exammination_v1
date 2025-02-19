@@ -2,6 +2,9 @@ export const authKeys = {
   login: "login",
   signup: "signup",
 };
+export const userKeys = {
+  checkName: "checkName",
+};
 export const examKeys = {
   exam: "exam",
 };

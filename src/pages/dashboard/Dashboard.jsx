@@ -13,7 +13,7 @@ function Dashboard() {
   const hasInstitution =
     !userProfile?.institution || userProfile?.institution.trim() === "";
 
-  console.log("hasInstitution:", hasInstitution, userProfile?.institution);
+  // console.log("hasInstitution:", hasInstitution, userProfile?.institution);
   const assessmentCards = [
     {
       title: "Summative Assessment - I",

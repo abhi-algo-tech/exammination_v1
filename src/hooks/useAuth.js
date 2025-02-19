@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { login, logout, setProfile } from "../store/authSlice";
-import { authKeys } from "../utils/queryKeys";
+import { authKeys, userKeys } from "../utils/queryKeys";
 import AuthService from "../services/authService";
 import { CustomMessage } from "../utils/CustomMessage";
 import { useNavigate } from "react-router-dom";
@@ -48,7 +48,7 @@ export const useUserLogin = () => {
     },
   });
 };
-// User login hook
+// User Profile hook
 export const useGetUserProfile = () => {
   const dispatch = useDispatch();
   return useQuery({
@@ -60,6 +60,32 @@ export const useGetUserProfile = () => {
     },
     onError: (error) => {
       console.error("Error fetching user profile:", error);
+    },
+  });
+};
+// User role hook
+export const useGetUserRole = () => {
+  return useQuery({
+    queryKey: ["userRole"], // ✅ Unique query key
+    queryFn: async () => {
+      const response = await AuthService.getUserRole();
+      return response.data; // ✅ Extract only 'data'
+    },
+    onError: (error) => {
+      console.error("Error fetching user profile:", error);
+    },
+  });
+};
+// Check User is exist or not hook
+export const useCheckUserExistOrNot = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload) => AuthService.userExistOrNot(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries(userKeys.checkName); // Refetch any related queries if needed
+    },
+    onError: (error) => {
+      console.error("Login failed:", error);
     },
   });
 };

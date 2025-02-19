@@ -3,7 +3,11 @@ import { Form, Input, Button, Steps, Select, Row, Col } from "antd";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { login } from "../../../store/authSlice";
-import { useUserSignUp } from "../../../hooks/useAuth";
+import {
+  useCheckUserExistOrNot,
+  useGetUserRole,
+  useUserSignUp,
+} from "../../../hooks/useAuth";
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -21,14 +25,29 @@ const SignUpStepForm = () => {
   const [current, setCurrent] = useState(0);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [form] = Form.useForm();
+  const [username, setUsername] = useState("");
   const [finalFormData, setFinalFormData] = useState({});
   const userSignUpMutation = useUserSignUp();
+  const checkUserExistOrNot = useCheckUserExistOrNot();
+  const { data: userRole, isLoading, error } = useGetUserRole();
+
+  // console.log("checkUserExistOrNot:", checkUserExistOrNot);
 
   useEffect(() => {
     if (current === 1) {
       setIsButtonDisabled(true);
     }
   }, [current]);
+
+  useEffect(() => {
+    if (username) {
+      const delay = setTimeout(() => {
+        checkUserExist();
+      }, 1000); // 500ms delay
+
+      return () => clearTimeout(delay); // Clear timeout if user types again
+    }
+  }, [username]);
   const handleFieldsChange = (_, allFields) => {
     // debugger;
     if (current === 0 || current === 1 || current === 2) {
@@ -72,11 +91,8 @@ const SignUpStepForm = () => {
           onFieldsChange={handleFieldsChange}
         >
           <Row gutter={16}>
-            {" "}
-            {/* Add spacing between columns */}
+            {/* First Name */}
             <Col xs={24} sm={12}>
-              {" "}
-              {/* First column */}
               <div>
                 <span className="lable-18-400-b">
                   First Name <span className="text-danger"> *</span>
@@ -86,14 +102,18 @@ const SignUpStepForm = () => {
                 name="firstName"
                 rules={[
                   { required: true, message: "Please enter your first name!" },
+                  {
+                    pattern: /^[A-Za-z]+$/,
+                    message: "First name must contain only alphabets.",
+                  },
                 ]}
               >
                 <Input className="auth-input" placeholder="First name" />
               </Form.Item>
             </Col>
+
+            {/* Last Name */}
             <Col xs={24} sm={12}>
-              {" "}
-              {/* Second column */}
               <div>
                 <span className="lable-18-400-b">
                   Last Name <span className="text-danger"> *</span>
@@ -103,6 +123,10 @@ const SignUpStepForm = () => {
                 name="lastName"
                 rules={[
                   { required: true, message: "Please enter your last name!" },
+                  {
+                    pattern: /^[A-Za-z]+$/,
+                    message: "Last name must contain only alphabets.",
+                  },
                 ]}
               >
                 <Input className="auth-input" placeholder="Last name" />
@@ -110,6 +134,7 @@ const SignUpStepForm = () => {
             </Col>
           </Row>
 
+          {/* Username */}
           <div>
             <span className="lable-18-400-b">
               Username <span className="text-danger"> *</span>
@@ -117,10 +142,20 @@ const SignUpStepForm = () => {
           </div>
           <Form.Item
             name="username"
-            rules={[{ required: true, message: "Please enter your username!" }]}
+            rules={[
+              { required: true, message: "Please enter your username!" },
+              // Optionally add a pattern if needed for username validation
+            ]}
           >
-            <Input className="auth-input" placeholder="Enter your username" />
+            <Input
+              className="auth-input"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </Form.Item>
+
+          {/* Phone Number */}
           <div>
             <span className="lable-18-400-b">
               Phone Number <span className="text-danger"> *</span>
@@ -129,14 +164,17 @@ const SignUpStepForm = () => {
           <Form.Item
             name="phone"
             rules={[
+              { required: true, message: "Please enter your phone number!" },
               {
-                required: true,
-                message: "Please enter your phone number or email ID!",
+                pattern: /^\d{10}$/,
+                message: "Phone number must be exactly 10 digits.",
               },
             ]}
           >
             <Input className="auth-input" placeholder="Enter your phone no." />
           </Form.Item>
+
+          {/* Email ID */}
           <div>
             <span className="lable-18-400-b">
               Email ID <span className="text-danger"> *</span>
@@ -145,32 +183,12 @@ const SignUpStepForm = () => {
           <Form.Item
             name="email"
             rules={[
-              {
-                required: true,
-                message: "Please enter your phone number or email ID!",
-              },
+              { required: true, message: "Please enter your email ID!" },
+              { type: "email", message: "Please enter a valid email address!" },
             ]}
           >
             <Input className="auth-input" placeholder="Enter your email ID" />
           </Form.Item>
-          {/* <div>
-            <span className="lable-18-400-b">
-              Educational Institution <span className="text-danger"> *</span>
-            </span>
-          </div>
-          <Form.Item
-            name="institution"
-            className="dropdown"
-            rules={[
-              { required: true, message: "Please choose an institution!" },
-            ]}
-          >
-            <Select className="mr14 alignCenter" placeholder="Subject">
-              <Option value={1}>Chemistry</Option>
-              <Option value={2}>Physics</Option>
-              <Option value={3}>Maths</Option>
-            </Select>
-          </Form.Item> */}
         </Form>
       ),
     },
@@ -184,6 +202,7 @@ const SignUpStepForm = () => {
           initialValues={{ remember: true }}
           onFieldsChange={handleFieldsChange}
         >
+          {/* Password */}
           <div>
             <span className="lable-18-400-b">
               Enter Your Password <span className="text-danger"> *</span>
@@ -191,13 +210,23 @@ const SignUpStepForm = () => {
           </div>
           <Form.Item
             name="password"
-            rules={[{ required: true, message: "Please enter your password!" }]}
+            rules={[
+              { required: true, message: "Please enter your password!" },
+              {
+                pattern:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                message:
+                  "Password must be at least 8 characters and contain uppercase, lowercase, number, and special character.",
+              },
+            ]}
           >
             <Input.Password
               className="auth-input"
               placeholder="Enter your password"
             />
           </Form.Item>
+
+          {/* Confirm Password */}
           <div>
             <span className="lable-18-400-b">
               Re-enter Your Password <span className="text-danger"> *</span>
@@ -247,9 +276,17 @@ const SignUpStepForm = () => {
             rules={[{ required: true, message: "Please choose your role!" }]}
           >
             <Select placeholder="Select your role">
-              <Option value="1">Admin</Option>
-              <Option value="2">Teacher</Option>
-              <Option value="3">Student</Option>
+              {userRole &&
+                userRole.map((role) => (
+                  <Option key={role.id} value={role.id}>
+                    {role.name.toUpperCase()}
+                  </Option>
+                ))}
+              {!userRole && (
+                <Option value="" disabled={true}>
+                  Loading ...
+                </Option>
+              )}
             </Select>
           </Form.Item>
         </Form>
@@ -314,6 +351,41 @@ const SignUpStepForm = () => {
     setCurrent(current - 1);
   };
 
+  const checkUserExist = () => {
+    const payload = { name: username };
+    checkUserExistOrNot.mutate(payload, {
+      onSuccess: (data) => {
+        if (data.data) {
+          // Set error below the username field
+          form.setFields([
+            {
+              name: "username",
+              errors: ["Username already exists!"],
+            },
+          ]);
+          setIsButtonDisabled(true);
+        } else {
+          // Clear any existing errors
+          form.setFields([
+            {
+              name: "username",
+              errors: [],
+            },
+          ]);
+          setIsButtonDisabled(false);
+        }
+      },
+      onError: (error) => {
+        // Optionally set a generic error if the API call fails
+        form.setFields([
+          {
+            name: "username",
+            errors: [`Failed to check user: ${error.message}`],
+          },
+        ]);
+      },
+    });
+  };
   const handleFinish = () => {
     form.validateFields().then((values) => {
       const finalData = {
@@ -321,7 +393,7 @@ const SignUpStepForm = () => {
         ...values,
         role: Number(values.role),
       };
-      console.log("Final Form Data:", finalData);
+      // console.log("Final Form Data:", finalData);
       const payload = finalData;
       userSignUpMutation.mutate(payload, {
         onSuccess: () => {
@@ -340,6 +412,11 @@ const SignUpStepForm = () => {
     <div className="d-flex flex-column align-items-center auth-form-container">
       <div className="box-orange"></div>
       <div className="mt20 text-center">
+        {/* <img
+          src="/icons/png/auth-logo.png"
+          alt="Logo"
+          style={{ transition: "width 0.3s", width: "300px" }}
+        /> */}
         <div className="label-36-600-b">{formLable(current + 1)?.main}</div>
         <div className="label-16-400">{formLable(current + 1)?.sub}</div>
       </div>
@@ -368,8 +445,8 @@ const SignUpStepForm = () => {
                 block
                 className="auth-btn"
                 style={{
-                  backgroundColor: isButtonDisabled ? "#BDBDC2" : "#215988",
-                  borderColor: isButtonDisabled ? "#BDBDC2" : "#215988",
+                  backgroundColor: "#215988",
+                  borderColor: "#215988",
                   color: "#fff",
                 }}
               >

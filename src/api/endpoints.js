@@ -16,6 +16,8 @@ export const API_ENDPOINTS = {
     BY_ID: "/user/{id}",
     ALL: "/user/all",
     USER_PROFILE: "/user/profile",
+    ROLE: "/roles",
+    IS_EXIST: "/users/check-name",
   },
   exam: {
     BASE: "/exams",

@@ -20,6 +20,20 @@ const AuthService = {
       throw error;
     }
   },
+  getUserRole: async () => {
+    try {
+      const token = getAuthToken();
+      const response = await axiosInstance.get(API_ENDPOINTS.USER.ROLE, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error while getting profile:", error);
+      throw error;
+    }
+  },
   updateUserProfile: async (payload) => {
     try {
       const token = getAuthToken();
@@ -48,6 +62,18 @@ const AuthService = {
       return response.data;
     } catch (error) {
       console.error("Error while login:", error);
+      throw error;
+    }
+  },
+  userExistOrNot: async (payload) => {
+    try {
+      const response = await axiosInstance.post(
+        API_ENDPOINTS.USER.IS_EXIST,
+        payload
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error while checking the users:", error);
       throw error;
     }
   },
