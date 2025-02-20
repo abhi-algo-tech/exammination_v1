@@ -93,11 +93,11 @@ const PreviewPaper = () => {
     ExamQuestionList?.data?.examQuestions
   );
 
-  console.log("sections:", sections);
+  // console.log("sections:", sections);
 
   useEffect(() => {
     if (ExamQuestionList?.data?.examQuestions) {
-      console.log("first:", ExamQuestionList?.data?.examQuestions);
+      // console.log("first:", ExamQuestionList?.data?.examQuestions);
       const transformedQuestions = ExamQuestionList.data.examQuestions
         .filter((q) => q.isPublished === true) // ✅ Filter only published questions
         .map((q) => ({
@@ -109,14 +109,14 @@ const PreviewPaper = () => {
           class: q.question.class,
           curriculum: q.question.curriculum,
           marks: q.question.marks,
-          // questionType: q.question.type,
-          questionType: "Short Answer Type",
+          questionType: q.question.type,
+          // questionType: "Short Answer Type",
           options: q.question.options ? q.question.options.split(", ") : [],
           author: q.question.author,
           datePublished: q.question.datePublished,
           section: q.section,
         }));
-      console.log("transformedQuestions:", transformedQuestions);
+      // console.log("transformedQuestions:", transformedQuestions);
       setQuestionList(transformedQuestions);
     }
   }, [ExamQuestionList]);
@@ -252,7 +252,7 @@ const PreviewPaper = () => {
                   />
                 </div>
               </div>
-              <div className="diflex gap-3 mb20">
+              <div className="d-flex gap-3 mb20">
                 <div className="d-flex align-items-center gap-3 mb20">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
