@@ -109,7 +109,7 @@ function AddQuestionFromBank() {
     if (examValue?.data?.sections) {
       const formattedSections = examValue.data.sections.map((section) => ({
         value: section.id,
-        label: `Section ${section.sectionName}`,
+        label: `Section - ${section.sectionName}`,
       }));
       setSectionOptions(formattedSections);
     }

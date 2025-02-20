@@ -7,6 +7,8 @@ import QuestionBankCard from "../../exam_components/card/QuestionBankCard";
 import { Col, Row, Checkbox, Space, Popconfirm, message } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
+import { useUpsertExamQuestions } from "../../hooks/useExamQuestion";
+import { CustomMessage } from "../../utils/CustomMessage";
 
 // const examNameOptions = [
 //   { value: "1", label: "Summative Assessment - I" },
@@ -30,6 +32,9 @@ function SelectedQuestionFromBank() {
   const [selectedCount, setSelectedCount] = useState(initialSelectedCount);
   const [filteredData, setFilteredData] = useState([]);
   const [examName, setExamName] = useState(null);
+
+  const { mutate: upsertExamQuestions } = useUpsertExamQuestions();
+
   console.log("initialselectedRowsMap:", initialselectedRowsMap);
 
   // Generate unique exam options
@@ -67,7 +72,37 @@ function SelectedQuestionFromBank() {
   };
 
   const handlePreview = () => {
-    navigate("/preview-questions");
+    if (!initialselectedRowsMap || initialselectedRowsMap.length === 0) {
+      CustomMessage.warning("No questions selected for preview.");
+      return;
+    }
+
+    const payload = initialselectedRowsMap.flatMap((section) =>
+      section.data.map((question) => ({
+        exam: section.examId,
+        question: question.id,
+        section: section.section.toUpperCase(),
+      }))
+    );
+
+    if (payload.length === 0) {
+      CustomMessage.warning("No valid questions to add.");
+      return;
+    }
+
+    // console.info("Adding exam questions with payload:", payload);
+
+    upsertExamQuestions(payload, {
+      onSuccess: () => {
+        CustomMessage.success("Exam questions added successfully.");
+        // console.log("Exam questions upserted successfully.");
+        navigate("/add-question-by-bank");
+      },
+      onError: (error) => {
+        CustomMessage.error("Failed to add exam questions.");
+        // console.error("Failed to upsert exam questions:", error);
+      },
+    });
   };
 
   const handleCheckboxChange = (questionId, checked) => {

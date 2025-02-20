@@ -23,3 +23,29 @@ export const useUpdateExamQuestionStatus = () => {
     },
   });
 };
+
+// Hook to upsert exam questions (add or update)
+export const useUpsertExamQuestions = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload) => {
+      if (!Array.isArray(payload) || payload.length === 0) {
+        throw new Error(
+          "Invalid input: ExamQuestionDtos list is missing or empty."
+        );
+      }
+      return await ExamQuestionService.upsertExamQuestions(payload);
+    },
+    onSuccess: () => {
+      console.info("Exam questions upserted successfully.");
+      // Invalidate related queries to fetch fresh data
+      queryClient.invalidateQueries({
+        queryKey: examQuestionKeys.examQuestion,
+      });
+    },
+    onError: (error) => {
+      console.error("Error upserting exam questions:", error.message || error);
+    },
+  });
+};

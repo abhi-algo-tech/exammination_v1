@@ -22,6 +22,29 @@ const ExamQuestionService = {
       throw error;
     }
   },
+  /**
+   * Add or update exam questions
+   * @param {Array} payload - List of exam question DTOs
+   * @returns {Promise<Object>} Response data
+   */
+  upsertExamQuestions: async (payload) => {
+    try {
+      const token = getAuthToken();
+      const response = await axiosInstance.post(
+        `${API_ENDPOINTS.EXAMQUESTION.UPSERT}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error while upserting exam questions:", error);
+      throw error;
+    }
+  },
 };
 
 export default ExamQuestionService;

@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
   },
   EXAMQUESTION: {
     BASE: "/exam-questions",
+    UPSERT: "/exam-questions/add-or-update",
   },
   MASTERLOOKUP: {
     BASE: "/masterlookup",
