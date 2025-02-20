@@ -8,16 +8,17 @@ import { Col, Row, Checkbox, Space, Popconfirm, message } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
 
-const examNameOptions = [
-  { value: "1", label: "Summative Assessment - I" },
-  { value: "2", label: "Summative Assessment - II" },
-  { value: "3", label: "Summative Assessment - III" },
-];
+// const examNameOptions = [
+//   { value: "1", label: "Summative Assessment - I" },
+//   { value: "2", label: "Summative Assessment - II" },
+//   { value: "3", label: "Summative Assessment - III" },
+// ];
 
 function SelectedQuestionFromBank() {
   const navigate = useNavigate();
   const location = useLocation();
   const {
+    selectedRowsMap: initialselectedRowsMap,
     selectedRow: initialSelectedRows,
     selectedCount: initialSelectedCount,
   } = location.state || {
@@ -25,13 +26,44 @@ function SelectedQuestionFromBank() {
     selectedCount: 0,
   };
 
-  const [selectedRows, setSelectedRows] = useState(initialSelectedRows || []);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [selectedCount, setSelectedCount] = useState(initialSelectedCount);
+  const [filteredData, setFilteredData] = useState([]);
   const [examName, setExamName] = useState(null);
+  console.log("initialselectedRowsMap:", initialselectedRowsMap);
+
+  // Generate unique exam options
+  const examNameOptions = Array.from(
+    new Map(
+      initialselectedRowsMap.map(({ examId, exam }) => [
+        examId,
+        { value: String(examId), label: exam },
+      ])
+    ).values()
+  );
+
+  // Function to get section options based on selected exam
+  const getSectionOptions = (selectedExamId) => {
+    console.log("selectedExamId:", selectedExamId);
+    return initialselectedRowsMap
+      .filter(({ examId }) => examId === Number(selectedExamId)) // Filter by examId
+      .map(({ sectionId, section }) => ({
+        value: String(sectionId),
+        label: section,
+      }));
+  };
+
+  const sectionOptions = getSectionOptions(examName?.value);
+  console.log("sectionOptions:", sectionOptions);
 
   const handleFilterChange = (value) => {
     setExamName(value);
-    console.log("examName", value);
+  };
+  const handleFilterSection = (value) => {
+    const result = initialselectedRowsMap.find(
+      (item) => item.sectionId === Number(value.value)
+    );
+    setSelectedRows(result ? result.data : []);
   };
 
   const handlePreview = () => {
@@ -60,16 +92,15 @@ function SelectedQuestionFromBank() {
   };
 
   const getQuestionsByType = (type) => {
-    console.log("initialSelectedRows", initialSelectedRows);
-    return (initialSelectedRows || []).filter(
+    return (selectedRows || []).filter(
       (question) => question.questionType === type
     );
   };
 
   const questionTypes = [
     "Multiple Choice",
-    "Short Answer",
-    "Long Answer",
+    "Short Answer Type",
+    "Long Answer Type",
     "True/False",
   ];
 
@@ -88,7 +119,7 @@ function SelectedQuestionFromBank() {
             fill="black"
           />
         </svg>
-        {` Add (${selectedCount}) Selected Questions`}
+        {` Add Selected Questions`}
       </h2>
 
       <div className="d-flex align-items-center mt-2">
@@ -99,6 +130,18 @@ function SelectedQuestionFromBank() {
             placeholder="Select Exam"
             isSearchable
             onChange={handleFilterChange}
+          />
+        </div>
+        <div
+          style={{
+            paddingLeft: "20px",
+          }}
+        >
+          <CustomSelect
+            options={sectionOptions}
+            placeholder="Select Section"
+            isSearchable
+            onChange={(value) => handleFilterSection(value)}
           />
         </div>
       </div>
@@ -120,7 +163,7 @@ function SelectedQuestionFromBank() {
                     >
                       <div className="ml2 ">
                         <Checkbox
-                          checked={selectedRows.includes(question.id)}
+                          checked={question.checkFlag}
                           onChange={(e) =>
                             handleCheckboxChange(question.id, e.target.checked)
                           }
@@ -139,7 +182,7 @@ function SelectedQuestionFromBank() {
                           {/* Added padding styles */}{" "}
                         </span>
                         <DeleteOutlined style={{ cursor: "pointer" }} />
-                        {question.options && (
+                        {question.options && question.options.length > 1 && (
                           <ul className="options-list">
                             {question.options.map((option, index) => (
                               <li key={index} className="option-item">

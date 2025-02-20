@@ -5,6 +5,10 @@ import InputWithSearch from "../../components/input/InputWithSearch";
 import { useExams } from "../../hooks/useExam";
 import { debounce } from "lodash";
 import { useNavigate } from "react-router-dom";
+import { useGetMasterLookupByType } from "../../hooks/useMasterLookup";
+import { useGetAllClasses } from "../../hooks/useClass";
+import { useGetAllSubjects } from "../../hooks/useSubject";
+import { useGetAllCurriculums } from "../../hooks/useCurriculum";
 
 function transformExamData(apiResponse) {
   if (!apiResponse || !apiResponse.data || !Array.isArray(apiResponse.data)) {
@@ -100,6 +104,31 @@ function DashboardTable() {
   const [statusId, setStatusId] = useState(null);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const { data: statusTypelist } = useGetMasterLookupByType("status");
+  const { data: classTypelist } = useGetAllClasses();
+  const { data: subjectlist } = useGetAllSubjects();
+  const { data: curriculumslist } = useGetAllCurriculums();
+
+  const statusTypes =
+    statusTypelist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+  const classTypes =
+    classTypelist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+  const subjectTypes =
+    subjectlist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
+  const curriculumsTypes =
+    curriculumslist?.data?.map((item) => ({
+      value: item.id,
+      label: item.name,
+    })) || [];
   const handleEditClick = (id) => {
     navigate("/create-question-paper", { state: { id } });
   };
@@ -303,9 +332,11 @@ function DashboardTable() {
           style={{ width: 137 }}
           placeholder="Subject"
         >
-          <Option value={1}>Chemistry</Option>
-          <Option value={2}>Physics</Option>
-          <Option value={3}>Maths</Option>
+          {subjectTypes.map((type) => (
+            <Select.Option key={type.value} value={type.value}>
+              {type.label}
+            </Select.Option>
+          ))}
         </Select>
 
         <Select
@@ -315,8 +346,11 @@ function DashboardTable() {
           style={{ width: 137 }}
           placeholder="class"
         >
-          <Option value={10}>Class 10</Option>
-          <Option value={9}>Class 9</Option>
+          {classTypes.map((type) => (
+            <Select.Option key={type.value} value={type.value}>
+              {type.label}
+            </Select.Option>
+          ))}
         </Select>
 
         <Select
@@ -326,8 +360,11 @@ function DashboardTable() {
           style={{ width: 137 }}
           placeholder="curriculum"
         >
-          <Option value={1}>CBSE</Option>
-          <Option value={2}>ICSE</Option>
+          {statusTypes.map((type) => (
+            <Select.Option key={type.value} value={type.value}>
+              {type.label}
+            </Select.Option>
+          ))}
         </Select>
 
         <Select
@@ -337,10 +374,11 @@ function DashboardTable() {
           style={{ width: 137 }}
           placeholder="status"
         >
-          <Option value={1}>Published</Option>
-          <Option value={2}>In-Progress</Option>
-          <Option value={3}>In-Review</Option>
-          <Option value={4}>Exam Details</Option>
+          {statusTypes.map((type) => (
+            <Select.Option key={type.value} value={type.value}>
+              {type.label}
+            </Select.Option>
+          ))}
         </Select>
 
         <Input

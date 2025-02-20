@@ -5,10 +5,12 @@ import QuestionBankCard from "../card/QuestionBankCard";
 import { CustomMessage } from "../../utils/CustomMessage";
 
 function transformData(data) {
+  console.log("datanew:", data);
   return data.map((item) => ({
     id: item.id,
     level: item.level,
     topic: item.topic,
+    questionNumber: item.examQuestion?.questionNumber,
     questionName: item.name,
     subject: item.subject,
     class: item.classes,
@@ -33,6 +35,7 @@ const TableCardComponent = ({
   onPageChange,
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
+  const [finalSelectedRows, inalSelectedRows] = useState([]);
 
   const data = transformData(questions);
 
@@ -48,30 +51,56 @@ const TableCardComponent = ({
 
   const handleSelectRow = (id) => {
     if (examId) {
-      // if (sectionId) {
+      if (sectionId) {
+        // setSelectedRows((prev) => {
+        //   const updatedSelection = prev.includes(id)
+        //     ? prev.filter((rowId) => rowId !== id) // Unselect if already selected
+        //     : [...prev, id]; // Select if not selected
+        //   console.log("updatedSelection:", updatedSelection);
 
-      setSelectedRows((prev) => {
-        const updatedSelection = prev.includes(id)
-          ? prev.filter((rowId) => rowId !== id) // Unselect if already selected
-          : [...prev, id]; // Select if not selected
-        console.log("updatedSelection:", updatedSelection);
+        //   // console.log("data", data);
 
-        // Filter data based on updatedSelection (selected ids)
-        const selectedData = data.filter((item) =>
-          updatedSelection.includes(item.id)
-        );
+        //   // Filter data based on updatedSelection (selected ids)
+        //   // const selectedData = data.filter((item) =>
+        //   //   updatedSelection.includes(item.id)
+        //   // );
+        //   const selectedData = data.find((item) => item.id === id);
 
-        console.log("selectedData:", selectedData);
+        //   // console.log("selectedData:", selectedData);
 
-        // Update selected rows in the parent component or wherever needed
-        onSelectedRows(updatedSelection); // Assuming setSelectedRow is a function passed as a prop
-        onSelectedCountChange(updatedSelection.length); // Pass the updated selected count to the parent
+        //   // Update selected rows in the parent component or wherever needed
+        //   onSelectedRows(selectedData); // Assuming setSelectedRow is a function passed as a prop
+        //   onSelectedCountChange(updatedSelection.length); // Pass the updated selected count to the parent
 
-        return updatedSelection;
-      });
-      // } else {
-      //   CustomMessage.error("First select Section");
-      // }
+        //   return updatedSelection;
+        // });
+        setSelectedRows((prev) => {
+          const isAlreadySelected = prev.includes(id);
+
+          // ✅ Toggle checkFlag based on selection status
+          const updatedSelection = isAlreadySelected
+            ? prev.filter((rowId) => rowId !== id) // Remove if already selected
+            : [...prev, id]; // Add if not selected
+
+          // console.log("updatedSelection:", updatedSelection);
+
+          // ✅ Find the selected data and update `checkFlag`
+          let selectedData = data.find((item) => item.id === id);
+          if (selectedData) {
+            selectedData = { ...selectedData, checkFlag: !isAlreadySelected };
+          }
+
+          // console.log("selectedData:", selectedData);
+
+          // ✅ Pass selected data to the parent
+          onSelectedRows(selectedData);
+          onSelectedCountChange(updatedSelection.length); // Pass updated count
+
+          return updatedSelection;
+        });
+      } else {
+        CustomMessage.error("First select Section");
+      }
     } else {
       CustomMessage.error("First select Exam");
     }

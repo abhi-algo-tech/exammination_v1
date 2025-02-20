@@ -75,7 +75,7 @@ function Dashboard() {
       </div>
       <div className="question-paper-manager">
         {/* Assessment Cards */}
-        <DashboardCard assessmentCards={assessmentCards} />
+        <DashboardCard />
         {/* Assessment Table */}
         <DashboardTable />
       </div>

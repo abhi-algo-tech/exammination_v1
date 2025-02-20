@@ -65,7 +65,15 @@ function DashboardCard() {
               textAlign: "center",
               fontSize: "4rem",
               fontWeight: "bold",
-              background: "#f0f2f5",
+              background: "#ffffff",
+              height: "250px",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              borderRadius: "8px",
             }}
           >
             {subjects().length}
@@ -81,8 +89,14 @@ function DashboardCard() {
               style={{
                 cursor: "pointer",
                 background: "#ffffff",
+                height: "250px",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 borderRadius: "8px",
+                padding: "16px",
               }}
             >
               <h3 style={{ textAlign: "center", marginBottom: "16px" }}>

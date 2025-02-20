@@ -80,7 +80,9 @@ function AddQuestionFromBank() {
   const [exam, setExam] = useState({});
   const [examId, setExamId] = useState(null);
   const [sectionId, setSectionId] = useState(null);
+  const [section, setSection] = useState(null);
   const [sectionOptions, setSectionOptions] = useState([]);
+  const [selectedRowsMap, setSelectedRowsMap] = useState([]);
 
   // State for pagination
   const [currentPage, setCurrentPage] = useState(0);
@@ -97,9 +99,11 @@ function AddQuestionFromBank() {
 
   const handleChangeExam = (value) => {
     setExamId(value.value);
+    setExam(value.label);
   };
   const handleFilterSection = (value) => {
     setSectionId(value.value);
+    setSection(value.label);
   };
   useEffect(() => {
     if (examValue?.data?.sections) {
@@ -127,13 +131,68 @@ function AddQuestionFromBank() {
   };
 
   const handleSetSelectedRow = (data) => {
+    console.log("data:", data);
     setSelectedRow(data);
+    // setSelectedRowsMap((prev) => {
+    //   const updatedSelection = {
+    //     ...prev,
+    //     [examId]: {
+    //       ...(prev[examId] || {}),
+    //       [sectionId]: data,
+    //     },
+    //   };
+
+    //   console.log("Updated Selection:", updatedSelection);
+    //   return updatedSelection;
+    // });
+    const updatedSelection = {
+      examId,
+      exam, // Keeping exam label
+      sectionId,
+      section, // Keeping section label
+      data: Array.isArray(data) ? data : [data], // Ensure data is an array
+    };
+
+    setSelectedRowsMap((prev) => {
+      const existingItem = prev.find(
+        (item) => item.examId === examId && item.sectionId === sectionId
+      );
+
+      let newList;
+      if (existingItem) {
+        // Ensure existingItem.data is an array before merging
+        const existingData = Array.isArray(existingItem.data)
+          ? existingItem.data
+          : [];
+
+        // ✅ Merge only if `data` is an array
+        const newData = Array.isArray(data) ? data : [data];
+        const mergedData = [...existingData, ...newData];
+
+        const updatedItem = {
+          ...existingItem,
+          data: mergedData,
+        };
+
+        newList = prev.map((item) =>
+          item.examId === examId && item.sectionId === sectionId
+            ? updatedItem
+            : item
+        );
+      } else {
+        // ✅ If no existing entry, ensure `data` is an array
+        newList = [...prev, updatedSelection];
+      }
+
+      return newList;
+    });
   };
 
   const handleSelectedQuestionThroughBank = () => {
     if (selectedCount > 0) {
       navigate("/selected-question-by-bank", {
         state: {
+          selectedRowsMap: selectedRowsMap,
           selectedRow: selectedRow,
           selectedCount: selectedCount,
         },
