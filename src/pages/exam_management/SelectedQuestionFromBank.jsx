@@ -35,8 +35,6 @@ function SelectedQuestionFromBank() {
 
   const { mutate: upsertExamQuestions } = useUpsertExamQuestions();
 
-  console.log("initialselectedRowsMap:", initialselectedRowsMap);
-
   // Generate unique exam options
   const examNameOptions = Array.from(
     new Map(

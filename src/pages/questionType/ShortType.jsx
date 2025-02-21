@@ -68,7 +68,7 @@ export default function ShortType({
 
   const sections = formatSections(exam?.sections);
   const [sectionsData, setSectionsData] = useState(sections);
-
+  const [isCreating, setIsCreating] = useState(false);
   const { mutate: createQuestion, isLoading, isError } = useCreateQuestion();
   const { mutate: updateQuestion } = useUpdateQuestion();
   const { data: levelTypelist } = useGetMasterLookupByType("level");
@@ -262,9 +262,13 @@ export default function ShortType({
               };
 
               createQuestion(payload, {
+                onMutate: () => {
+                  setIsCreating(true); // Start loading
+                },
                 onSuccess: (response) => {
                   CustomMessage.success("Question created successfully!");
                   refetch();
+                  setIsCreating(false); // Stop loading after success
 
                   const newQuestion = {
                     id: section.questions.length + 1,
@@ -287,12 +291,14 @@ export default function ShortType({
                   CustomMessage.error(
                     "Failed to create question. Please try again."
                   );
+                  setIsCreating(false); // Stop loading
                   console.error("Error creating question:", error);
                 },
               });
             })
             .catch((error) => {
               console.log("Form validation failed:", error);
+              setIsCreating(false); // Stop loading
             });
         }
 
@@ -320,8 +326,8 @@ export default function ShortType({
           options: question?.options?.join(", ") || "",
           optionLength: question?.options?.length || 0,
           // answer: "",
-          typeId: question.type,
-          levelId: question.level,
+          typeId: question.type.value,
+          levelId: question.level.value,
           topic: question.topic || "",
           marks: question.marks,
           curriculumId: examQuestionList?.data?.curriculumId,
@@ -688,8 +694,9 @@ export default function ShortType({
                 type="link"
                 icon={<PlusOutlined />}
                 onClick={() => addQuestionToSection(section.key)}
+                disabled={isCreating}
               >
-                Add a New Question
+                {isCreating ? "Creating..." : "Add a New Question"}
               </AddButton>
             </Form>
           ),
