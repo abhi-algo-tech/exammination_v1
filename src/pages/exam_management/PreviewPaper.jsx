@@ -193,7 +193,7 @@ const PreviewPaper = () => {
   return (
     <div>
       <div style={{ marginBottom: "24px" }}>
-        <div className="label-28-600">
+        <div className="label-18-500-b">
           You are currently viewing the paper in Review Mode
         </div>
         <div className="label-14-600-blue">View Examination Details</div>

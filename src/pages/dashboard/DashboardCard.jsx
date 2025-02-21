@@ -2,6 +2,7 @@ import { Card, Col, Row } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetAllSubjects } from "../../hooks/useSubject";
+import DynamicGrid from "./DynamicGrid";
 
 // const subjects = [
 //   {
@@ -56,7 +57,7 @@ function DashboardCard() {
 
   return (
     <>
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      {/* <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
         <Col xs={24} sm={12} md={8} lg={6}>
           <Card
             title="Total Subjects"
@@ -117,7 +118,8 @@ function DashboardCard() {
             </Card>
           </Col>
         ))}
-      </Row>
+      </Row> */}
+      <DynamicGrid subjects={subjects} />
     </>
   );
 }
