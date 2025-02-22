@@ -27,7 +27,7 @@ function MainHeader({
     logout(); // Perform logout action
   };
   const profileData = {
-    name: `Helo ${userProfile?.firstName}`,
+    name: `Hello ${userProfile?.firstName}`,
     role: userProfile?.roleDto?.name,
     avatar: "/exam_images/profile.jpg",
     menuItems: [
