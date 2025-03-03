@@ -11,6 +11,8 @@ import ReviewModal from "./ReviewModal";
 import { useSelector } from "react-redux";
 import { useExamById } from "../../hooks/useExam";
 import { CustomMessage } from "../../utils/CustomMessage";
+import QuestionForm from "../questionType/QuestionForm";
+import RightGroupSection from "./RightGroupSection";
 
 const QuestionGrid = styled.div`
   display: grid;
@@ -78,6 +80,7 @@ const AddQuestion = () => {
   const id = exam?.id;
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
   const [updatedQuestion, setupdatedQuestion] = useState([]);
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [activeSection, setActiveSection] = useState(1);
   const [questionType, setQuestionType] = useState("Short Answer Type");
   const [marks, setMarks] = useState(0);
@@ -118,6 +121,11 @@ const AddQuestion = () => {
     }
     setReviewModalOpen(true);
   };
+  const handleGroupPreview = () => {
+    navigate("/preview-group-paper");
+  };
+
+  console.log("sections.length:", sections.length);
 
   // const handleMarksChange = (e) => {
   //   const value = e.target.value; // Get the input value as a string
@@ -168,22 +176,37 @@ const AddQuestion = () => {
       <Row gutter={[24, 24]}>
         {/* Left Section */}
         <Col xs={24} md={16}>
-          <ShortType
-            examQuestionList={ExamQuestionList}
-            refetch={refetch}
-            exam={exam}
-            setupdatedQuestion={setupdatedQuestion}
-          />
+          {sections.length !== 0 && (
+            <ShortType
+              examQuestionList={ExamQuestionList}
+              refetch={refetch}
+              exam={exam}
+              setupdatedQuestion={setupdatedQuestion}
+            />
+          )}
+          {sections.length === 0 && (
+            <QuestionForm
+              examQuestionList={ExamQuestionList}
+              selectedQuestion={selectedQuestion}
+            />
+          )}
         </Col>
-
         {/* Right Section */}
         <Col xs={24} md={8}>
-          <RightSection
-            examData={ExamQuestionList}
-            sections={sections}
-            onPreview={handlePreview}
-          />
-          ;
+          {sections.length !== 0 && (
+            <RightSection
+              examData={ExamQuestionList}
+              sections={sections}
+              onPreview={handlePreview}
+            />
+          )}
+          {sections.length === 0 && (
+            <RightGroupSection
+              examData={ExamQuestionList}
+              setSelectedQuestion={setSelectedQuestion}
+              onPreview={handleGroupPreview}
+            />
+          )}
         </Col>
       </Row>
       {isReviewModalOpen && (

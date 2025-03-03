@@ -12,6 +12,8 @@
     "zeplin-connect-dev-mode": "zeplin connect --dev"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^34.0.0",
+    "@ckeditor/ckeditor5-react": "^5.0.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^3.9.1",
@@ -55,6 +57,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@types/ckeditor__ckeditor5-build-classic": "^29.0.1",
     "@types/file-saver": "^2.0.7",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

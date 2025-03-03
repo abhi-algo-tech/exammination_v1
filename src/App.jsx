@@ -29,6 +29,7 @@ import Theme1 from "./pages/paper_format/Theme1";
 import Theme2 from "./pages/paper_format/Theme2";
 import ImageReader from "./components/reader/ImageReader";
 import PDFTextExtractor from "./components/reader/PDFTextExtractor";
+import PreviewGroupPaper from "./pages/exam_management/PreviewGroupPaper";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -57,6 +58,10 @@ function App() {
             <Route path="/upload-questions" element={<UploadQuestion />} />
             <Route path="/preview-questions" element={<ReviewQuestions />} />
             <Route path="/preview-paper" element={<PreviewPaper />} />
+            <Route
+              path="/preview-group-paper"
+              element={<PreviewGroupPaper />}
+            />
             <Route path="/paper" element={<ExamminationRule />} />
             <Route path="/student-paper" element={<StudentPaper />} />
             <Route path="/publish-questions" element={<PublishForm />} />
