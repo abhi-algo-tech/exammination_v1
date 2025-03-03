@@ -556,10 +556,10 @@ function CreateQuestionPaper() {
                   label="Total sections"
                   name="numberSections"
                   rules={[
-                    {
-                      required: true,
-                      message: "Please enter Total number of sections!",
-                    },
+                    // {
+                    //   required: true,
+                    //   message: "Please enter Total number of sections!",
+                    // },
                     {
                       pattern: /^[0-9]+$/,
                       message: "Please enter only numeric values!",

@@ -38,3 +38,7 @@ export const classKeys = {
 export const subjectKeys = {
   subject: "subject",
 };
+
+export const groupQuestionKeys = {
+  groupQuestion: "groupQuestion",
+};
