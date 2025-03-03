@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Form, Input, Select, Button, Checkbox, Divider } from "antd";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
