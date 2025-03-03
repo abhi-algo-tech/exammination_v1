@@ -23,6 +23,7 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
   const [options, setOptions] = useState([""]);
   const [subQuestions, setSubQuestions] = useState([]);
   const [questionCount, setQuestionCount] = useState(1);
+  // console.log("examQuestionList:", examQuestionList);
 
   const { data: questionTypeslist } =
     useGetMasterLookupByType("question_types");
@@ -34,7 +35,6 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
   useEffect(() => {
     if (selectedQuestion) {
       setQuestionValue(selectedQuestion);
-      console.log("Pre-filling form with selected question:", selectedQuestion);
 
       setQuestionCount(selectedQuestion.questionNumber);
       setQuestionName(selectedQuestion?.groupQuestion?.name || "");
@@ -60,7 +60,6 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
             marks: sq.marks,
           }));
 
-        console.log("Setting sub-questions:", formattedSubQuestions);
         setSubQuestions(formattedSubQuestions);
       }
     }
@@ -127,61 +126,6 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
     setSubQuestions(updatedSubQuestions);
   };
 
-  // const handleSave = () => {
-  //   form.validateFields().then((values) => {
-  //     const questionData = {
-  //       srNo: questionCount,
-  //       ...values,
-  //       name: questionName,
-  //       body: questionType == 15 ? questionBody : "",
-  //       topic: values.topic,
-  //       options: questionType == 7 ? options?.join(", ") || "" : "",
-  //       optionLength: options?.length,
-  //       examGroupQuestion: {
-  //         exam: examQuestionList?.data?.id,
-  //         questionNumber: questionCount,
-  //         isPublished: false,
-  //       },
-  //       subGroupQuestions:
-  //         questionType === 15
-  //           ? subQuestions.map(({ id, ...sq }) => ({
-  //               ...sq,
-  //               name: sq.name,
-  //               marks: sq.marks,
-  //               options:
-  //                 sq.questionType === 7 ? sq.options?.join(", ") || "" : "",
-  //               typeId: sq.questionType,
-  //               optionLength: Array.isArray(sq.options)
-  //                 ? sq.options?.length
-  //                 : 0,
-  //               topic: sq.topic,
-  //             }))
-  //           : [],
-
-  //       marks: parseInt(values.marks, 10) || 0, // Convert marks to an integer
-  //       typeId: 7,
-  //     };
-
-  //     console.log("Saved Question Data:", questionData);
-
-  //     createGroupQuestion(questionData, {
-  //       onSuccess: (data) => {
-  //         CustomMessage.success("Question Created Successfully");
-  //         // console.log("Group Question Created Successfully:",  );
-  //         setQuestions([...questions, data]); // Assuming API returns the saved question
-  //         // resetForm();
-  //       },
-  //       onError: (error) => {
-  //         CustomMessage.error("Failed to create Question");
-  //         // console.error("Error creating group question:", error);
-  //       },
-  //     });
-
-  //     setQuestions([...questions, questionData]);
-  //     // resetForm();
-  //   });
-  // };
-
   const handleSave = () => {
     form.validateFields().then((values) => {
       const questionData = {
@@ -192,6 +136,9 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
         topic: values.topic,
         options: questionType == 7 ? options?.join(", ") || "" : "",
         optionLength: options?.length,
+        subjectId: examQuestionList?.data?.subjectId,
+        curriculumId: examQuestionList?.data?.curriculumId,
+        classesId: examQuestionList?.data?.classId,
         examGroupQuestion: {
           exam: examQuestionList?.data?.id,
           questionNumber: questionCount,
@@ -203,6 +150,9 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
                 name: sq.name || "",
                 body: sq.body || "",
                 marks: sq.marks || 0,
+                subjectId: examQuestionList?.data?.subjectId,
+                curriculumId: examQuestionList?.data?.curriculumId,
+                classesId: examQuestionList?.data?.classId,
                 options:
                   sq.questionType === 7 ? sq.options?.join(", ") || "" : "",
                 typeId: sq.questionType,
@@ -217,10 +167,10 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
         typeId: questionType,
       };
 
-      console.log("Saved Question Data:", questionData);
+      // console.log("Saved Question Data:", questionData);
 
       if (questionValue === null) {
-        console.log("questionValue:", questionValue);
+        // console.log("questionValue:", questionValue);
         createGroupQuestion(questionData, {
           onSuccess: (data) => {
             CustomMessage.success("Question Saved Successfully");
@@ -229,11 +179,11 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
           },
           onError: (error) => {
             CustomMessage.error("Failed to save Question");
-            console.error("Error creating group question:", error);
+            // console.error("Error creating group question:", error);
           },
         });
       } else {
-        console.log("questionValue:", questionValue);
+        // console.log("questionValue:", questionValue);
         updateGroupQuestion(
           { id: questionValue?.groupQuestion?.id, payload: questionData }, // Pass the correct parameters
           {
@@ -243,7 +193,7 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
             },
             onError: (error) => {
               CustomMessage.error("Failed to update Question");
-              console.error("Error updating group question:", error);
+              // console.error("Error updating group question:", error);
             },
           }
         );
