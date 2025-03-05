@@ -8,6 +8,7 @@ import {
 } from "../../hooks/useGroupQuestion";
 import { useGetMasterLookupByType } from "../../hooks/useMasterLookup";
 import { CustomMessage } from "../../utils/CustomMessage";
+import { useDocumentUpload } from "../../hooks/useDocument";
 
 const { Option } = Select;
 
@@ -21,10 +22,15 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
   const [options, setOptions] = useState([""]);
   const [subQuestions, setSubQuestions] = useState([]);
   const [questionCount, setQuestionCount] = useState(1);
-  // console.log("examQuestionList:", examQuestionList);
+
+  const examId = examQuestionList?.data?.id;
+
+  const { uploadDocument } = useDocumentUpload();
 
   const { data: questionTypeslist } =
     useGetMasterLookupByType("question_types");
+
+  console.log("questionTypeslist:", questionTypeslist);
 
   const { mutate: createGroupQuestion, isLoading } = useCreateGroupQuestion(); // Use the mutation hook
 
@@ -215,12 +221,39 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
   };
 
   function CustomUploadAdapterPlugin(editor) {
+    // console.log("🚀 CustomUploadAdapterPlugin initialized");
+
+    if (!editor.plugins.has("FileRepository")) {
+      console.error("❌ FileRepository plugin is missing!");
+      return;
+    }
+
     editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+      // console.log("🔥 Loader object received:", loader);
+
       return {
         upload: async () => {
-          const file = await loader.file;
-          const url = ""; // Placeholder for upload URL
-          return { default: url };
+          // console.log("📤 Upload function triggered");
+
+          try {
+            const file = await loader.file;
+            // console.log("📂 File selected:", file);
+
+            const moduleName = "group_Question";
+            const documentData = {};
+
+            const response = await uploadDocument(
+              file,
+              moduleName,
+              documentData
+            );
+            console.log("✅ Upload API Response:", response);
+
+            return { default: response?.fileUrl };
+          } catch (error) {
+            console.error("❌ Upload failed:", error);
+            throw error;
+          }
         },
       };
     };
@@ -299,7 +332,9 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
           >
             <CKEditor
               editor={ClassicEditor}
-              config={{ extraPlugins: [CustomUploadAdapterPlugin] }}
+              config={{
+                extraPlugins: [CustomUploadAdapterPlugin],
+              }}
               data={questionBody}
               onChange={(event, editor) => {
                 setQuestionBody(editor.getData());

@@ -4,6 +4,17 @@ import "./TableCardComponent.css";
 import QuestionBankCard from "../card/QuestionBankCard";
 import { CustomMessage } from "../../utils/CustomMessage";
 
+function convertOptions(optionsString) {
+  if (!optionsString) {
+    return []; // Return an empty array if the input is null or undefined
+  }
+  console.log(
+    "option:",
+    optionsString.split(",").map((opt) => opt.trim())
+  );
+  return optionsString.split(",").map((opt) => opt.trim());
+}
+
 function transformData(data) {
   console.log("datanew:", data);
   return data.map((item) => ({
@@ -17,7 +28,7 @@ function transformData(data) {
     curriculum: item.curriculum || "Not Available",
     marks: item.marks,
     questionType: item.type,
-    options: item.options.split(", "), // Converting the options string to an array
+    options: convertOptions(item.options), // Converting the options string to an array
     author: "Unknown", // Assuming you need to add an author dynamically
     datePublished: new Date().toISOString().split("T")[0], // Custom date format
   }));

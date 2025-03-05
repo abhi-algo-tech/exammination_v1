@@ -60,6 +60,70 @@ const QuestionContent = styled.div`
   margin-bottom: 16px;
 `;
 
+function transformExamGroupQuestions(examGroupQuestions) {
+  // if (!Array.isArray(examGroupQuestions)) {
+  //   throw new Error("Input must be an array");
+  // }
+
+  return examGroupQuestions?.map((item) => {
+    const groupQuestion = item.groupQuestion;
+
+    // Determine question type
+    let questionType = "Short Answer Type";
+    if (groupQuestion.type === "Group Question") {
+      questionType =
+        groupQuestion.subGroupQuestions &&
+        groupQuestion.subGroupQuestions.length > 0 &&
+        groupQuestion.subGroupQuestions[0].type === "Multiple Choice"
+          ? "Multiple Choice"
+          : "Long Answer Type";
+    } else if (groupQuestion.type === "Multiple Choice") {
+      questionType = "Multiple Choice";
+    } else if (groupQuestion.body && groupQuestion.body.length > 100) {
+      questionType = "Long Answer Type";
+    }
+
+    // Process subquestions
+    const subQuestions = groupQuestion.subGroupQuestions
+      ? groupQuestion.subGroupQuestions.map((subQ) => {
+          const baseSubQuestion = {
+            id: subQ.id,
+            questionName: stripHtmlTags(subQ.name || ""),
+            marks: subQ.marks || 0,
+          };
+
+          // Add Multiple Choice specific properties if applicable
+          if (subQ.type === "Multiple Choice" && subQ.options) {
+            const options = subQ.options.split(",").map((opt) => opt.trim());
+            return {
+              ...baseSubQuestion,
+              questionType: "Multiple Choice",
+              options: options.map((opt) => opt),
+              correctAnswer: options[0], // Assuming first option is correct, adjust as needed
+            };
+          }
+
+          return baseSubQuestion;
+        })
+      : [];
+
+    return {
+      id: item.id || 0,
+      questionName: stripHtmlTags(groupQuestion.name || ""),
+      marks: groupQuestion.marks || 0,
+      questionType: questionType,
+      isPublished: item.isPublished || false,
+      subQuestions: subQuestions,
+    };
+  });
+}
+
+// Helper function to strip HTML tags
+function stripHtmlTags(html) {
+  if (!html) return "";
+  return html.replace(/<\/?[^>]+(>|$)/g, "");
+}
+
 // Sample data for questions and sub-questions
 const sampleQuestions = [
   {
@@ -135,14 +199,14 @@ const sampleQuestions = [
     id: 5,
     questionName: "Analyze the following chemical reactions:",
     marks: 9,
-    questionType: "MCQ",
+    questionType: "Multiple Choice",
     isPublished: true,
     subQuestions: [
       {
         id: 6.1,
         questionName: "Who is known as the father of computers?",
         marks: 2,
-        questionType: "MCQ",
+        questionType: "Multiple Choice",
         options: [
           "A) Charles Babbage",
           "B) Alan Turing",
@@ -155,7 +219,7 @@ const sampleQuestions = [
         id: 6.2,
         questionName: "Which planet is known as the Red Planet?",
         marks: 2,
-        questionType: "MCQ",
+        questionType: "Multiple Choice",
         options: ["A) Earth", "B) Mars", "C) Jupiter", "D) Venus"],
         correctAnswer: "B) Mars",
       },
@@ -163,7 +227,7 @@ const sampleQuestions = [
         id: 6.3,
         questionName: "Solve the logical sequence: 2, 6, 12, 20, ?",
         marks: 2,
-        questionType: "MCQ",
+        questionType: "Multiple Choice",
         options: ["A) 28", "B) 30", "C) 32", "D) 34"],
         correctAnswer: "B) 30",
       },
@@ -186,6 +250,13 @@ export default function PreviewGroupPaper() {
 
   const [publishedQuestions, setPublishedQuestions] = useState({});
   const { data: ExamQuestionList, refetch } = useExamById(id);
+
+  // console.log("ExamQuestionList:", ExamQuestionList);
+
+  const transformedQuestions = transformExamGroupQuestions(
+    ExamQuestionList?.data?.examGroupQuestions
+  );
+  console.log("transformedQuestions:", transformedQuestions);
 
   const handleCheckboxChange = (questionId) => {
     setPublishedQuestions((prev) => ({
@@ -286,11 +357,11 @@ export default function PreviewGroupPaper() {
               <div className="label-14-400-g">{question.questionType}</div>
             </QuestionContent>
 
-            {/* Handle MCQ Options */}
-            {question.questionType === "MCQ" && (
-              <div className="mcq-options">
+            {/* Handle Multiple Choice Options */}
+            {question.questionType === "Multiple Choice" && (
+              <div className="Multiple Choice-options">
                 {question?.options?.map((option, optionIndex) => (
-                  <div key={optionIndex} className="mcq-option">
+                  <div key={optionIndex} className="Multiple Choice-option">
                     <label
                       htmlFor={`option-${question.id}-${optionIndex}`}
                       className="label-14-400"
@@ -318,11 +389,14 @@ export default function PreviewGroupPaper() {
                       </span>
                     </div>
 
-                    {/* Handle MCQ Options for Sub-questions */}
-                    {subQuestion?.questionType === "MCQ" && (
-                      <div className="mcq-options">
+                    {/* Handle Multiple Choice Options for Sub-questions */}
+                    {subQuestion?.questionType === "Multiple Choice" && (
+                      <div className="Multiple Choice-options">
                         {subQuestion.options.map((option, subOptionIndex) => (
-                          <div key={subOptionIndex} className="mcq-option">
+                          <div
+                            key={subOptionIndex}
+                            className="Multiple Choice-option"
+                          >
                             <label
                               htmlFor={`subOption-${subQuestion.id}-${subOptionIndex}`}
                               className="label-14-400"

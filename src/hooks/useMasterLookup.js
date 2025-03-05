@@ -20,13 +20,30 @@ export const useGetMasterLookupById = (id) => {
   });
 };
 
-// Hook to fetch master lookup by type
 export const useGetMasterLookupByType = (type) => {
   return useQuery({
-    queryKey: ["lookup", type], // Ensure unique query key per type
-    queryFn: () => MasterLookupService.getMasterLookupByType(type),
-    enabled: !!type, // Prevents query from running if type is undefined/null
-    staleTime: 5 * 60 * 1000, // Optional: Cache data for 5 minutes
+    queryKey: ["lookup", type],
+    queryFn: async () => {
+      // console.log(
+      //   "Fetching data for type:",
+      //   type,
+      //   "at:",
+      //   new Date().toLocaleTimeString()
+      // );
+      try {
+        const response = await MasterLookupService.getMasterLookupByType(type);
+        return response;
+      } catch (error) {
+        console.error("Error in useGetMasterLookupByType:", error);
+        throw error;
+      }
+    },
+    enabled: Boolean(type),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: 0,
   });
 };
 

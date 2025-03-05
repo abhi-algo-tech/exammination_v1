@@ -42,6 +42,10 @@ export const API_ENDPOINTS = {
     BASE: "/exam-group-questions",
     UPSERT: "/exam-group-questions/add-or-update",
   },
+  DOCUMENT: {
+    BASE: "/documents",
+    UPLOAD: "/documents/upload",
+  },
   MASTERLOOKUP: {
     BASE: "/masterlookup",
     BY_ID: "/masterlookup/{id}",
