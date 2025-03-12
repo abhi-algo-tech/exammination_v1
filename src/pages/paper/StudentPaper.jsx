@@ -98,7 +98,7 @@ const StudentPaper = () => {
   return (
     <div>
       <div style={{ marginBottom: "24px" }}>
-        <div className="label-28-600">Chemistry Summative Assessment - I</div>
+        <div className="label-28-600">Math Summative Assessment - I</div>
         <div className="label-14-600-blue">View Examination Details</div>
       </div>
       <div>

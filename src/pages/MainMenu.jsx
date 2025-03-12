@@ -42,6 +42,12 @@ const menuItems = [
     link: "/exam-management",
   },
   {
+    key: "question-management",
+    icon: <MdOutlineCollectionsBookmark style={{ width: 25, height: 25 }} />,
+    label: "Question Management",
+    link: "/question-management",
+  },
+  {
     key: "image-reader",
     icon: <TbPhotoScan style={{ width: 25, height: 25 }} />,
     label: "Image Reader",

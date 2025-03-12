@@ -30,9 +30,21 @@ import Theme2 from "./pages/paper_format/Theme2";
 import ImageReader from "./components/reader/ImageReader";
 import PDFTextExtractor from "./components/reader/PDFTextExtractor";
 import PreviewGroupPaper from "./pages/exam_management/PreviewGroupPaper";
+import QuestionBank from "./pages/exam_management/QuestionBank";
+import EnhancedStudentPaper from "./pages/paper/EnhancedStudentPaper";
+import StudentQuestionPaper from "./pages/student/StudentQuestionPaper";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const role = useSelector((state) => state.auth?.profile?.roleDto?.name);
+
+  const ExamManagement = () => {
+    return role === "student" ? (
+      <StudentQuestionPaper />
+    ) : (
+      <TeacherQuestionPaper />
+    );
+  };
 
   return (
     <Router>
@@ -54,7 +66,8 @@ function App() {
         {isAuthenticated ? (
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/exam-management" element={<TeacherQuestionPaper />} />
+            <Route path="/exam-management" element={<ExamManagement />} />
+            <Route path="/question-management" element={<QuestionBank />} />
             <Route path="/upload-questions" element={<UploadQuestion />} />
             <Route path="/preview-questions" element={<ReviewQuestions />} />
             <Route path="/preview-paper" element={<PreviewPaper />} />
@@ -64,6 +77,10 @@ function App() {
             />
             <Route path="/paper" element={<ExamminationRule />} />
             <Route path="/student-paper" element={<StudentPaper />} />
+            <Route
+              path="/student-paper-nosection"
+              element={<EnhancedStudentPaper />}
+            />
             <Route path="/publish-questions" element={<PublishForm />} />
             <Route
               path="/selected-question-by-bank"

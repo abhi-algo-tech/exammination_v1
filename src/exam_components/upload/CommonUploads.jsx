@@ -1,5 +1,5 @@
 import { Upload, Button, Card } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
 const CommonUploads = ({ onChange, accept, fileList: propFileList }) => {
@@ -38,6 +38,23 @@ const CommonUploads = ({ onChange, accept, fileList: propFileList }) => {
         onChange={handleOnChange}
         accept={accept}
         fileList={internalFileList}
+        showUploadList={{ showPreviewIcon: false, showRemoveIcon: true }}
+        itemRender={(originNode, file, currFileList, actions) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginTop: "4px",
+            }}
+          >
+            <span>{file.name}</span>
+            <DeleteOutlined
+              style={{ color: "red", cursor: "pointer" }}
+              onClick={() => actions.remove(file)} // Remove file on click
+            />
+          </div>
+        )}
       >
         <Button icon={<UploadOutlined />}>Upload Excel</Button>
       </Upload>

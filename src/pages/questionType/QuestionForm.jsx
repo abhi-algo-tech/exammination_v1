@@ -130,8 +130,85 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
     setSubQuestions(updatedSubQuestions);
   };
 
-  const handleSave = () => {
-    form.validateFields().then((values) => {
+  // const handleSave = async () => {
+  //   form.validateFields().then((values) => {
+  //     const questionData = {
+  //       srNo: questionCount,
+  //       ...values,
+  //       name: questionName,
+  //       body: questionType == 15 ? questionBody : "",
+  //       topic: values.topic,
+  //       options: questionType == 7 ? options?.join(", ") || "" : "",
+  //       optionLength: options?.length,
+  //       subjectId: examQuestionList?.data?.subjectId,
+  //       curriculumId: examQuestionList?.data?.curriculumId,
+  //       classesId: examQuestionList?.data?.classId,
+  //       examGroupQuestion: {
+  //         exam: examQuestionList?.data?.id,
+  //         questionNumber: questionCount,
+  //         isPublished: false,
+  //       },
+  //       subGroupQuestions:
+  //         questionType === 15
+  //           ? subQuestions.map(({ id, ...sq }) => ({
+  //               name: sq.name || "",
+  //               body: sq.body || "",
+  //               marks: sq.marks || 0,
+  //               subjectId: examQuestionList?.data?.subjectId,
+  //               curriculumId: examQuestionList?.data?.curriculumId,
+  //               classesId: examQuestionList?.data?.classId,
+  //               options:
+  //                 sq.questionType === 7 ? sq.options?.join(", ") || "" : "",
+  //               typeId: sq.questionType,
+  //               optionLength: Array.isArray(sq.options)
+  //                 ? sq.options?.length
+  //                 : 0,
+  //               topic: sq.topic || "",
+  //             }))
+  //           : [],
+
+  //       marks: Number.parseInt(values.marks, 10) || 0,
+  //       typeId: questionType,
+  //     };
+
+  //     // console.log("Saved Question Data:", questionData);
+
+  //     if (questionValue === null) {
+  //       // console.log("questionValue:", questionValue);
+  //       createGroupQuestion(questionData, {
+  //         onSuccess: (data) => {
+  //           CustomMessage.success("Question Saved Successfully");
+  //           setQuestions([...questions, data]);
+  //           // No form reset here, just save the current question
+  //         },
+  //         onError: (error) => {
+  //           CustomMessage.error("Failed to save Question");
+  //           // console.error("Error creating group question:", error);
+  //         },
+  //       });
+  //     } else {
+  //       // console.log("questionValue:", questionValue);
+  //       updateGroupQuestion(
+  //         { id: questionValue?.groupQuestion?.id, payload: questionData }, // Pass the correct parameters
+  //         {
+  //           onSuccess: (data) => {
+  //             CustomMessage.success("Question Updated Successfully");
+  //             setQuestions(questions.map((q) => (q.id === data.id ? data : q))); // Update the list
+  //           },
+  //           onError: (error) => {
+  //             CustomMessage.error("Failed to update Question");
+  //             // console.error("Error updating group question:", error);
+  //           },
+  //         }
+  //       );
+  //     }
+  //   });
+  // };
+
+  const handleSave = async () => {
+    try {
+      const values = await form.validateFields(); // Await validation
+
       const questionData = {
         srNo: questionCount,
         ...values,
@@ -139,7 +216,7 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
         body: questionType == 15 ? questionBody : "",
         topic: values.topic,
         options: questionType == 7 ? options?.join(", ") || "" : "",
-        optionLength: options?.length,
+        optionLength: options?.length || 0,
         subjectId: examQuestionList?.data?.subjectId,
         curriculumId: examQuestionList?.data?.curriculumId,
         classesId: examQuestionList?.data?.classId,
@@ -160,49 +237,41 @@ export default function QuestionForm({ examQuestionList, selectedQuestion }) {
                 options:
                   sq.questionType === 7 ? sq.options?.join(", ") || "" : "",
                 typeId: sq.questionType,
-                optionLength: Array.isArray(sq.options)
-                  ? sq.options?.length
-                  : 0,
+                optionLength: Array.isArray(sq.options) ? sq.options.length : 0,
                 topic: sq.topic || "",
               }))
             : [],
-
         marks: Number.parseInt(values.marks, 10) || 0,
         typeId: questionType,
       };
 
-      // console.log("Saved Question Data:", questionData);
-
       if (questionValue === null) {
-        // console.log("questionValue:", questionValue);
         createGroupQuestion(questionData, {
           onSuccess: (data) => {
             CustomMessage.success("Question Saved Successfully");
             setQuestions([...questions, data]);
-            // No form reset here, just save the current question
           },
           onError: (error) => {
             CustomMessage.error("Failed to save Question");
-            // console.error("Error creating group question:", error);
           },
         });
       } else {
-        // console.log("questionValue:", questionValue);
         updateGroupQuestion(
-          { id: questionValue?.groupQuestion?.id, payload: questionData }, // Pass the correct parameters
+          { id: questionValue?.groupQuestion?.id, payload: questionData },
           {
             onSuccess: (data) => {
               CustomMessage.success("Question Updated Successfully");
-              setQuestions(questions.map((q) => (q.id === data.id ? data : q))); // Update the list
+              setQuestions(questions.map((q) => (q.id === data.id ? data : q)));
             },
             onError: (error) => {
               CustomMessage.error("Failed to update Question");
-              // console.error("Error updating group question:", error);
             },
           }
         );
       }
-    });
+    } catch (error) {
+      console.error("Validation Failed:", error);
+    }
   };
 
   const handleSaveAndAddNew = () => {

@@ -118,7 +118,7 @@ const UploadQuestion = () => {
         <div className="label-14-600-blue">View Examination Details</div>
       </div>
       <Row gutter={[24, 24]}>
-        <Col xs={24} md={16}>
+        <Col xs={24} md={24}>
           <div className="d-flex justify-content-between align-items-center gap-2">
             <div>Upload your Question Paper here.</div>
             <Tooltip title="Download Template">
@@ -160,9 +160,9 @@ const UploadQuestion = () => {
             </div>
           )}
         </Col>
-        <Col xs={24} md={8}>
+        {/* <Col xs={24} md={8}>
           <RightSection examData={examData} sections={sections} />
-        </Col>
+        </Col> */}
       </Row>
     </div>
   );

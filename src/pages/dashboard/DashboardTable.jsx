@@ -135,9 +135,7 @@ function DashboardTable() {
   const columns = [
     {
       className: "label-14-400",
-      title: (
-        <span className="label-16-700-g">Name of the Question Paper/Bank</span>
-      ),
+      title: <span className="label-16-700-g">Name of the Question Paper</span>,
       dataIndex: "name",
       key: "name",
     },
@@ -220,6 +218,16 @@ function DashboardTable() {
                 onClick: () => handleEditClick(record.key),
               },
               { key: "2", label: "Delete" },
+              {
+                key: "3",
+                label: "Run Exam",
+                onClick: () => navigate("/paper"),
+              },
+              {
+                key: "4",
+                label: "Run Exam WithOut Section",
+                onClick: () => navigate("/student-paper-nosection"),
+              },
             ],
           }}
           trigger={["click"]}
