@@ -42,3 +42,20 @@ export const subjectKeys = {
 export const groupQuestionKeys = {
   groupQuestion: "groupQuestion",
 };
+export const examScheduleKeys = {
+  examSchedule: "examSchedule",
+};
+export const examResultKeys = {
+  examResult: "examResult",
+};
+export const studentExamAnswersKeys = {
+  studentExamAnswers: ["studentExamAnswers"],
+
+  studentExamAnswersByExamAndStudent: (examId, studentId) => [
+    "studentExamAnswers",
+    "exam",
+    examId,
+    "student",
+    studentId,
+  ],
+};

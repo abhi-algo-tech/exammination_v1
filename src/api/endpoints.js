@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
   exam: {
     BASE: "/exams",
     BY_ID: "/exams/{id}",
+    ANSWER_BY_ID: "/exams/answers",
     ALL: "/exams/all",
   },
   QUESTION: {
@@ -34,6 +35,11 @@ export const API_ENDPOINTS = {
     BASE: "/exam-questions",
     UPSERT: "/exam-questions/add-or-update",
   },
+  EXAMQUESTIONANSWER: {
+    BASE: "/student-exam-answers",
+    UPSERT: "/student-exam-answers/upsert",
+    GET_BY_EXAM_AND_STUDENT: "/student-exam-answers/exam",
+  },
   GROUPQUESTION: {
     BASE: "/group-questions",
     BY_ID: "/group-questions/{id}",
@@ -42,6 +48,15 @@ export const API_ENDPOINTS = {
     BASE: "/exam-group-questions",
     UPSERT: "/exam-group-questions/add-or-update",
   },
+  EXAMSCHEDULE: {
+    BASE: "/exam-schedules",
+    BY_SEARCH: "/exam-schedules/search",
+  },
+  EXAMRESULTS: {
+    BASE: "/exam-results",
+    CREATE: "/exam-results/create",
+  },
+
   DOCUMENT: {
     BASE: "/documents",
     UPLOAD: "/documents/upload",

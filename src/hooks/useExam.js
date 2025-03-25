@@ -1,7 +1,7 @@
 // useExam.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { examKeys } from "../utils/queryKeys";
-import ExamService from "../services/examService";
+import ExamService from "../services/ExamService";
 // Hook to fetch all exams with pagination and sorting
 
 export const useExams = ({
@@ -66,6 +66,21 @@ export const useExamById = (id) => {
     },
   });
 };
+
+export const getExamAnswerById = (id) => {
+  return useQuery({
+    queryKey: [examKeys.exam, id],
+    queryFn: async () => {
+      const response = await ExamService.getExamAnswerById(id);
+      return response; // ✅ Extract only 'data'
+    },
+    enabled: !!id,
+    onError: (error) => {
+      console.error("Error fetching exam by ID:", error);
+    },
+  });
+};
+
 export const useExamAll = () => {
   return useQuery({
     queryKey: [examKeys.exam],

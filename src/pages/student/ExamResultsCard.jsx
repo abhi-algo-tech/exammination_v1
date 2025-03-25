@@ -1,8 +1,19 @@
 import React from "react";
 import "./ExamResultsCard.css";
 import ButtonComponent from "../../exam_components/button_component/ButtonComponent";
+import { useExamResultByExamAndStudent } from "../../hooks/useExamResult";
+import { useSelector } from "react-redux";
 
-export default function ExamResultsCard() {
+export default function ExamResultsCard({ examId, stuentId }) {
+  const firstName = useSelector((state) => state.auth?.profile?.firstName);
+  const lastName = useSelector((state) => state.auth?.profile?.lastName);
+  const name = `${firstName} ${lastName}`;
+  const { data: examResult, isLoading } = useExamResultByExamAndStudent(
+    examId,
+    stuentId
+  );
+
+  console.log("examResult:", examResult);
   const studentData = {
     name: "Virat Kholi",
     type: "Average Student",
@@ -85,21 +96,25 @@ export default function ExamResultsCard() {
         <div className="student-info">
           <img
             src={studentData.profileImage}
-            alt={studentData.name}
+            alt={name}
             className="profile-pic"
           />
           <div>
-            <h2>{studentData.name}</h2>
+            <h2>{name}</h2>
             <div className="student-meta">
-              <span className="student-type">{studentData.type}</span>
+              <span className="student-type">
+                {examResult?.data?.studentType} student
+              </span>
               <span className="dot">•</span>
-              <span>Student ID: {studentData.id}</span>
+              <span>Student ID: {examResult?.data?.id}</span>
             </div>
           </div>
           <div className="marks-card">
             <div>Marks Scored</div>
-            <div className="score-circle">{studentData.score}</div>
-            <div>/{examData.maxMarks} marks</div>
+            <div className="score-circle">
+              {examResult?.data?.marksObtained}
+            </div>
+            <div>/{examResult?.data?.marks} marks</div>
           </div>
         </div>
       </div>
@@ -109,19 +124,19 @@ export default function ExamResultsCard() {
         <div className="exam-details-row">
           <div className="exam-details-col">
             <p className="label">Name of the Exam</p>
-            <p>{examData.name}</p>
+            <p>{examResult?.data?.examName}</p>
           </div>
           <div className="exam-details-col">
             <p className="label">Paper Code</p>
-            <p>{examData.paperCode}</p>
+            <p>{examResult?.data?.uniquePaperCode}</p>
           </div>
           <div className="exam-details-col">
             <p className="label">Subject</p>
-            <p>{examData.subject}</p>
+            <p>{examResult?.data?.subject}</p>
           </div>
           <div className="exam-details-col">
             <p className="label">Exam Date</p>
-            <p>{examData.date}</p>
+            <p>{examResult?.data?.dateOfExam}</p>
           </div>
         </div>
         {/* Second Row */}
@@ -132,15 +147,15 @@ export default function ExamResultsCard() {
           </div>
           <div className="exam-details-col">
             <p className="label">Curriculum</p>
-            <p>{examData.curriculum}</p>
+            <p>{examResult?.data?.curriculum}</p>
           </div>
           <div className="exam-details-col">
             <p className="label">Institution</p>
-            <p>{examData.institution}</p>
+            <p>{examResult?.data?.institution}</p>
           </div>
           <div className="exam-details-col">
             <p className="label">Max Marks</p>
-            <p>{examData.maxMarks}</p>
+            <p>{examResult?.data?.marks}</p>
           </div>
         </div>
       </div>
@@ -157,9 +172,11 @@ export default function ExamResultsCard() {
         {/* Topics */}
         <div className="d-flex gap-4 ">
           <div className="strongest-topic">
-            Strongest: {topicData.strongest}
+            Strongest: {examResult?.data?.strongTopic}
           </div>
-          <div className="weakest-topic">Weakest: {topicData.weakest}</div>
+          <div className="weakest-topic">
+            Weakest: {examResult?.data?.weekTopic}
+          </div>
         </div>
         {/* Marks Breakdown */}
         <div className="mt20 ">
@@ -174,10 +191,10 @@ export default function ExamResultsCard() {
               Breakdown of Marks
             </label>
             <div>
-              {studentData.score}/{studentData.maxScore}
+              {examResult?.data?.marksObtained}/{examResult?.data?.marks}
             </div>
           </div>
-          <div className="mt10 d-flex gap10 ">
+          {/* <div className="mt10 d-flex gap10 ">
             {sectionData.map((section, index) => (
               <div
                 style={{
@@ -186,9 +203,9 @@ export default function ExamResultsCard() {
                 key={index}
               >{`${section.name} (${section.marks} marks)`}</div>
             ))}
-          </div>
+          </div> */}
 
-          <div className="marks-breakdown mt20">
+          {/* <div className="marks-breakdown mt20">
             {sectionData.map((section, index) => (
               <div key={index} className="section">
                 <p className="section-name">{section.name}</p>
@@ -213,11 +230,28 @@ export default function ExamResultsCard() {
                 </p>
               </div>
             ))}
-          </div>
+          </div> */}
           {/* nosection marks */}
-          {/* <div className="mt10 d-flex gap10 ">
-            
-            </div> */}
+          <div className="mt10  gap10 ">
+            <div>
+              Q attempted:{" "}
+              {examResult?.data?.correctAnswer + examResult?.data?.wrongAnswer}
+              <p
+                style={{
+                  fontSize: 10,
+                }}
+              >
+                Total Q: {examResult?.data?.totalQuestion}
+              </p>
+            </div>
+
+            <p className="incorrect">
+              Incorrect: {examResult?.data?.wrongAnswer}
+            </p>
+            <p className="correct ">
+              Correct: {examResult?.data?.correctAnswer}
+            </p>
+          </div>
         </div>
       </div>
 
